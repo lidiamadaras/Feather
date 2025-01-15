@@ -1,4 +1,4 @@
-package com.example.feather
+package com.example.feather.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
