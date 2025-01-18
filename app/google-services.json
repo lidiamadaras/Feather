@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "790502916636",
+    "project_id": "dreamtracker-c1abc",
+    "storage_bucket": "dreamtracker-c1abc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790502916636:android:f8bfccc347be5febc195d9",
+        "android_client_info": {
+          "package_name": "com.example.feather"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6ZnRaYnyrYEgBvIiG465VOW2KA43p_GM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
