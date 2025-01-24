@@ -4,8 +4,10 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -32,10 +34,39 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.HomeTitleTextView.text = "Home"
+
+        binding.fabLog.setOnClickListener {
+            showPopupMenu(it)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Clear binding to prevent memory leaks
+    }
+
+    private fun showPopupMenu(anchor: View) {
+        val popupMenu = PopupMenu(requireContext(), anchor)
+        popupMenu.menuInflater.inflate(R.menu.popup_menu, popupMenu.menu)
+
+        popupMenu.setOnMenuItemClickListener { menuItem: MenuItem ->
+            when (menuItem.itemId) {
+                R.id.action_fragment1 -> {
+                    findNavController().navigate(R.id.profileFragment)
+                    true
+                }
+                R.id.action_fragment2 -> {
+                    findNavController().navigate(R.id.profileFragment)
+                    true
+                }
+                R.id.action_fragment3 -> {
+                    findNavController().navigate(R.id.profileFragment)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        popupMenu.show()
     }
 }

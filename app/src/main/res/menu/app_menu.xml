@@ -1,22 +1,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/dreamAnalysisFragment"
-        android:title="Analysis"
+        android:title="@string/dream_analysis"
         android:icon="@drawable/selector_dreamanalysis"/>
     <item
         android:id="@+id/exploreFragment"
-        android:title="Explore"
+        android:title="@string/explore"
         android:icon="@drawable/selector_explore"/>
     <item
         android:id="@+id/homeFragment"
-        android:title="Home"
+        android:title="@string/home"
         android:icon="@drawable/selector_home"/>
     <item
         android:id="@+id/statsFragment"
-        android:title="Stats"
+        android:title="@string/stats"
         android:icon="@drawable/selector_stats"/>
     <item
         android:id="@+id/profileFragment"
-        android:title="Profile"
+        android:title="@string/profile"
         android:icon="@drawable/selector_profile"/>
 </menu>
