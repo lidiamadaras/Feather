@@ -1,7 +1,12 @@
 package com.example.feather.activities
 
+import android.content.Context
+import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
-import androidx.activity.ComponentActivity
+import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,32 +21,58 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import com.example.feather.R
+import com.example.feather.databinding.ActivityMainBinding
 import com.example.feather.ui.theme.FeatherTheme
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.firestore.FirebaseFirestore
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity()  {
+
+    private lateinit var navController: NavController
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            FeatherTheme {
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    content = { innerPadding ->
-                        FirestoreUserFirstName(modifier = Modifier.padding(innerPadding))
-                    }
-                )
+
+        // Inflate the layout and set the content view
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Retrieve the NavController from the NavHostFragment
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        navController = navHostFragment.navController
+
+        // Set up the BottomNavigationView with the NavController
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.dreamAnalysisFragment -> {
+                    navController.navigate(R.id.dreamAnalysisFragment)
+                    true
+                }
+                R.id.exploreFragment -> {
+                    navController.navigate(R.id.exploreFragment)
+                    true
+                }
+                R.id.homeFragment -> {
+                    navController.navigate(R.id.homeFragment)
+                    true
+                }
+                R.id.statsFragment -> {
+                    navController.navigate(R.id.statsFragment)
+                    true
+                }
+                R.id.profileFragment -> {
+                    navController.navigate(R.id.profileFragment)
+                    true
+                }
+                else -> false
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
 @Composable
