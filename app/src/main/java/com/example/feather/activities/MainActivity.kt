@@ -46,6 +46,8 @@ class MainActivity : AppCompatActivity()  {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         navController = navHostFragment.navController
 
+        binding.bottomNavigationView.selectedItemId = R.id.homeFragment
+
         // Set up the BottomNavigationView with the NavController
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {

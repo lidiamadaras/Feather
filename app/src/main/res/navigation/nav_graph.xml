@@ -26,6 +26,18 @@
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_logDreamFragment"
+            app:destination="@id/logDreamFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_logFeelingFragment"
+            app:destination="@id/logFeelingFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_reflectionFragment"
+            app:destination="@id/reflectionFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_affirmationFragment"
+            app:destination="@id/affirmationFragment" />
     </fragment>
     <fragment
         android:id="@+id/statsFragment"
@@ -38,6 +50,32 @@
         android:name="com.example.feather.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/logDreamFragment"
+        android:name="com.example.feather.ui.log.LogDreamFragment"
+        android:label="fragment_log_dream"
+        tools:layout="@layout/fragment_log_dream" >
+    </fragment>
+    <fragment
+        android:id="@+id/logFeelingFragment"
+        android:name="com.example.feather.ui.log.LogFeelingFragment"
+        android:label="fragment_log_feeling"
+        tools:layout="@layout/fragment_log_feeling" >
+    </fragment>
+    <fragment
+        android:id="@+id/reflectionFragment"
+        android:name="com.example.feather.ui.log.ReflectionFragment"
+        android:label="fragment_reflection"
+        tools:layout="@layout/fragment_reflection" >
+    </fragment>
+    <fragment
+        android:id="@+id/affirmationFragment"
+        android:name="com.example.feather.ui.log.AffirmationFragment"
+        android:label="fragment_affirmation"
+        tools:layout="@layout/fragment_affirmation" >
     </fragment>
 
 
