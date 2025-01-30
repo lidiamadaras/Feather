@@ -74,8 +74,10 @@ dependencies {
     //firebase:
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation (libs.firebase.ui.auth)
 
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
 }
