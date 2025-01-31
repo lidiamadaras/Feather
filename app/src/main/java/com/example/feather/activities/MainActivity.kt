@@ -27,12 +27,14 @@ import com.example.feather.R
 import com.example.feather.databinding.ActivityMainBinding
 import com.example.feather.ui.theme.FeatherTheme
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity()  {
 
     private lateinit var navController: NavController
     private lateinit var binding: ActivityMainBinding
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,17 @@ class MainActivity : AppCompatActivity()  {
         // Inflate the layout and set the content view
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+
+        //Redirect to AuthActivity from MainActivity if Not Logged In:
+
+        auth = FirebaseAuth.getInstance()
+
+        val currentUser = auth.currentUser
+        if (currentUser == null) {
+            startActivity(Intent(this, AuthActivity::class.java))
+            finish()
+        }
 
         // Retrieve the NavController from the NavHostFragment
         val navHostFragment = supportFragmentManager
@@ -74,6 +87,9 @@ class MainActivity : AppCompatActivity()  {
                 else -> false
             }
         }
+        //navigate to Home when authentication is done:
+
+        navController.navigate(R.id.homeFragment)
     }
 }
 
