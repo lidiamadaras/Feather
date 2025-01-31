@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feather.R
 import com.example.feather.databinding.FragmentHomeBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeFragment : Fragment() {
@@ -38,6 +39,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("HomeFragment", "onViewCreated called. Binding initialized? ${_binding != null}")
+
         //binding.HomeTitleTextView.text = "Home"
 
         binding.fabLog.setOnClickListener {
@@ -46,11 +49,6 @@ class HomeFragment : Fragment() {
 
         //welcome user message:
         fetchAndDisplayWelcomeMessage()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null // Clear binding to prevent memory leaks
     }
 
     private fun showPopupMenu(anchor: View) {
@@ -85,28 +83,41 @@ class HomeFragment : Fragment() {
     //trying out database a bit, change later:
 
     private fun fetchAndDisplayWelcomeMessage() {
-        // Access the 'users' collection and get the first document
+        val auth = FirebaseAuth.getInstance() // Initialize FirebaseAuth
+        val currentUser = auth.currentUser
+
+        if (currentUser == null) {
+            Log.e("HomeFragment", "User is not logged in!")
+            _binding?.HomeTitleTextView?.text = "Welcome, User!"
+            return
+        }
+
+        Log.d("HomeFragment", "Fetching user data for UID: ${currentUser.uid}")
+
         firestore.collection("users")
-            .limit(1) // Limit to only the first user
+            .whereEqualTo("uid", currentUser.uid) // Search by the stored 'uid' field
+            .limit(1) // Should only return one document
             .get()
             .addOnSuccessListener { querySnapshot ->
                 if (!querySnapshot.isEmpty) {
-                    // Get the first document and extract the 'firstName' field
-                    val firstUser = querySnapshot.documents[0]
-                    val firstName = firstUser.getString("firstName") ?: "User"
-
-                    // Update the UI with the welcome message using binding
-                    binding.HomeTitleTextView.text = "Welcome, $firstName!"
+                    val document = querySnapshot.documents[0]
+                    val firstName = document.getString("firstName") ?: "User"
+                    Log.d("HomeFragment", "User data found: First Name = $firstName")
+                    _binding?.HomeTitleTextView?.text = "Welcome, $firstName!"
                 } else {
-                    // Handle the case where no users are found
-                    binding.HomeTitleTextView.text = "Welcome, User!"
+                    Log.e("HomeFragment", "User document does not exist in Firestore!")
+                    _binding?.HomeTitleTextView?.text = "Welcome, User!"
                 }
             }
             .addOnFailureListener { exception ->
-                // Handle errors
-                //binding.HomeTitleTextView.text = "Error: ${exception.message}"
-                binding.HomeTitleTextView.text = "Home"
+                Log.e("HomeFragment", "Error fetching user data: ${exception.message}")
+                _binding?.HomeTitleTextView?.text = "Home"
             }
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // Clear binding to prevent memory leaks
+    }
 }
