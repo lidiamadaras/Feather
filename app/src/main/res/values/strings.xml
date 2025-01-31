@@ -5,4 +5,13 @@
     <string name="explore">Explore</string>
     <string name="dream_analysis">Analysis</string>
     <string name="stats">Stats</string>
+
+    <string-array name="dream_categories">
+        <item>Good Dream</item>
+        <item>Nightmare</item>
+        <item>Lucid Dream</item>
+        <item>Prophetic Dream</item>
+        <item>Emotional Dream</item>
+        <item>Fantasy Dream</item>
+    </string-array>
 </resources>
