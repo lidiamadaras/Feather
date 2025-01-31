@@ -34,6 +34,15 @@
                 android:backgroundTint="@color/purple_500"
                 android:textColor="@android:color/white" />
 
+            <Button
+                android:id="@+id/deleteAccountButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete Account"
+                android:textColor="@color/white"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"/>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
