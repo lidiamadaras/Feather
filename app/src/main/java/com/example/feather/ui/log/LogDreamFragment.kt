@@ -22,9 +22,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feather.R
 import com.example.feather.databinding.FragmentHomeBinding
 import com.example.feather.databinding.FragmentLogDreamBinding
-import com.example.feather.models.Dream
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.feather.models.DreamModel
+import com.example.feather.viewmodels.DreamViewModel
 import com.google.firebase.Timestamp
 
 class LogDreamFragment : Fragment() {
@@ -38,6 +37,8 @@ class LogDreamFragment : Fragment() {
     private lateinit var dreamInputEditText: EditText
     private lateinit var saveDreamButton: Button
     private lateinit var dreamTitleEditText: EditText
+
+    private val dreamViewModel : DreamViewModel by viewModels()
 
 
 
@@ -94,6 +95,18 @@ class LogDreamFragment : Fragment() {
         ).also { adapter ->
             dreamCategorySpinner.adapter = adapter
         }
+
+        dreamViewModel.saveResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(requireContext(), "Dream saved successfully!", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp() // Navigate back after saving
+            }
+            result.onFailure { exception ->
+                Toast.makeText(requireContext(), "Error saving dream: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
     }
 
     private fun saveDream() {
@@ -103,48 +116,16 @@ class LogDreamFragment : Fragment() {
         val title = dreamTitleEditText.text.toString().trim()
 
 
-        // Validation
-        if (dreamText.isEmpty()) {
-            Toast.makeText(requireContext(), "Please describe your dream", Toast.LENGTH_SHORT).show()
-            return
-        }
+        val dream = DreamModel(
+            dateAdded = Timestamp.now(), // Automatically get the current timestamp
+            description = dreamText,
+            category = category,
+            hoursSlept = hoursSleptTextView.text.toString(),
+            isRecurring = isRecurring,
+            title = title
+        )
 
-        if (title.isEmpty()) {
-            Toast.makeText(requireContext(), "Please add a title for your dream", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val currentUser = FirebaseAuth.getInstance().currentUser
-        if (currentUser != null) {
-
-            val dream = Dream(
-                dateAdded = Timestamp.now(), // Automatically get the current timestamp
-                description = dreamText,
-                category = category,
-                hoursSlept = hoursSleptTextView.text.toString(),
-                isRecurring = isRecurring,
-                title = title
-            )
-
-            val db = FirebaseFirestore.getInstance()
-            db.collection("users")
-                .document(currentUser.uid)
-                .collection("dreams")
-                .add(dream)
-                .addOnSuccessListener {
-                    // Successfully saved the dream
-                    Toast.makeText(requireContext(), "Dream saved!", Toast.LENGTH_SHORT).show()
-                    findNavController().navigateUp()
-                }
-                .addOnFailureListener { e ->
-                    // Handle error
-                    Toast.makeText(
-                        requireContext(),
-                        "Error saving dream: ${e.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-        }
+        dreamViewModel.saveDream(dream)
     }
 
 
