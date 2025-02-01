@@ -2,10 +2,11 @@ package com.example.feather.service
 
 import com.example.feather.models.DreamModel
 import com.example.feather.repository.DreamRepository
+import javax.inject.Inject
 
 //for business logic, validation: service layer
 
-class DreamService(private val dreamRepository: DreamRepository) {
+class DreamService @Inject constructor(private val dreamRepository: DreamRepository) {
 
     suspend fun saveDream(dream: DreamModel): Result<Unit> {
         // Validate title and description, they can't be empty when saving:
@@ -14,6 +15,4 @@ class DreamService(private val dreamRepository: DreamRepository) {
 
         return dreamRepository.saveDream(dream)
     }
-
-/
 }

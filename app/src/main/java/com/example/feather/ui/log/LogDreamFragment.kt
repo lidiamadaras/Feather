@@ -25,7 +25,9 @@ import com.example.feather.databinding.FragmentLogDreamBinding
 import com.example.feather.models.DreamModel
 import com.example.feather.viewmodels.DreamViewModel
 import com.google.firebase.Timestamp
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LogDreamFragment : Fragment() {
 
     private var _binding: FragmentLogDreamBinding? = null

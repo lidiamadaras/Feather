@@ -29,7 +29,9 @@ import com.example.feather.ui.theme.FeatherTheme
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity()  {
 
     private lateinit var navController: NavController
