@@ -8,6 +8,12 @@ data class DreamModel(
     val category: String?,
     val hoursSlept: String?,
     val isRecurring: Boolean?,
-    val title: String?
+    val title: String?,
+    val keywords: List<String> = emptyList()
+)
+
+data class KeywordModel(
+    val name: String,
+    val dateAdded: Timestamp?
 )
 

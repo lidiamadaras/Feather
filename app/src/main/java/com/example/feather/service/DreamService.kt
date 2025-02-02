@@ -1,6 +1,8 @@
 package com.example.feather.service
 
+import android.util.Log
 import com.example.feather.models.DreamModel
+import com.example.feather.models.KeywordModel
 import com.example.feather.repository.DreamRepository
 import javax.inject.Inject
 
@@ -15,4 +17,15 @@ class DreamService @Inject constructor(private val dreamRepository: DreamReposit
 
         return dreamRepository.saveDream(dream)
     }
+
+    suspend fun saveKeyword(keyword: KeywordModel): Result<Unit> {
+        if(keyword.name.isBlank()) return Result.failure(Exception("Keyword cannot be empty"))
+        return dreamRepository.saveKeyword(keyword)
+    }
+
+    suspend fun getUserKeywords(): List<KeywordModel> {
+        Log.d("keyword", dreamRepository.getUserKeywords().toString())
+        return dreamRepository.getUserKeywords()
+    }
+
 }
