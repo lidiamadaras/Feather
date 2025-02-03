@@ -47,6 +47,7 @@ class LogFeelingFragment : Fragment() {
     private val feelingViewModel : FeelingViewModel by viewModels()
 
     private var selectedEmotion = mutableListOf<EmotionModel>()
+    private var firstEmotion = EmotionModel()
 
 
     //for hours slept selector:
@@ -89,6 +90,8 @@ class LogFeelingFragment : Fragment() {
         emotionSelectionButton.setOnClickListener {
             showEmotionSelectionDialog()
         }
+
+        feelingViewModel.getUserEmotions()
 
         saveFeelingButton.setOnClickListener {
             saveFeeling()
@@ -159,6 +162,22 @@ class LogFeelingFragment : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
+        feelingViewModel.saveEmotionResult.observe(viewLifecycleOwner) { result ->
+            if( result.isSuccess){
+                feelingViewModel.userEmotions.observe(viewLifecycleOwner) { emotions ->
+                    emotionList.clear()
+                    emotionList.addAll(emotions)
+                    adapter.clear()
+                    adapter.addAll(emotions.map { it.name })
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
+
+
+
+        //feelingViewModel.getUserEmotions()
+
         addEmotionButton.setOnClickListener {
             showAddEmotionDialog()
         }
@@ -189,12 +208,21 @@ class LogFeelingFragment : Fragment() {
     private fun saveFeeling() {
         val intensity = intensitySpinner.selectedItem.toString()
 
+
+
+        if (selectedEmotion.isNotEmpty()) {
+            firstEmotion = selectedEmotion.first()
+        } else {
+            Toast.makeText(requireContext(), "Please select an emotion first", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val feeling = FeelingModel(
             dateAdded = Timestamp.now(), // Automatically get the current timestamp
             timeStarted = timeStartedTextView.text.toString(),
             timeEnded = timeEndedTextView.text.toString(),
             intensity = intensity,
-            emotion = selectedEmotion.first().name
+            emotion = firstEmotion.name
         )
 
 
