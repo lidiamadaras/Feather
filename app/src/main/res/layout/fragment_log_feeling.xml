@@ -1,39 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:gravity="center_horizontal">
 
+            <!-- Title at the top -->
             <TextView
                 android:id="@+id/HomeTitleTextView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Log Your Feeling"
                 android:textSize="24sp"
                 android:textStyle="bold"
-                android:layout_marginBottom="10dp"/>
+                android:gravity="center"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time lasted:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"
+                android:layout_gravity="left"/>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="2"
+                android:layout_marginBottom="16dp">
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:id="@+id/timeStartedTextView"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="7:00"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:padding="2dp"
+                        android:gravity="center"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp"
+                        android:layout_gravity="center"/>
+
+                    <TextView
+                        android:id="@+id/timeEndedTextView"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:text="7:00"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:padding="2dp"
+                        android:paddingRight="5dp"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/selectEmotionButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select an Emotion"
+                android:textSize="16sp"
+                android:layout_marginBottom="20dp"
+                android:layout_gravity="left"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pick intensity level:"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"
+                android:layout_gravity="left"/>
+
+
+            <Spinner
+                android:id="@+id/intensitySpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:layout_marginBottom="8dp"/>
+
+            <Button
+                android:id="@+id/saveFeelingButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save Feeling"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp"
+                android:layout_gravity="center"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-
-
-
-
-
-
-
-

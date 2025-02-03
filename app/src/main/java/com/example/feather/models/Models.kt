@@ -18,3 +18,17 @@ data class KeywordModel(
     val dateAdded: Timestamp? = null
 )
 
+data class FeelingModel(
+    val dateAdded: Timestamp? = null,
+    val timeStarted: String = "",   //user can add when they started feeling this way
+    val timeEnded : String = "",   //user can add when they stopped feeling this way
+    val intensity: String = "",
+    val emotion: String = ""              //selected from user's saved emotions
+)
+
+//similar to keywords in dreams, you add emotions to a feeling log from user's saved emotions:
+data class EmotionModel(
+    val name: String = "",
+    val dateAdded: Timestamp? = null,
+    val description: String? = null
+)
