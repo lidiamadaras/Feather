@@ -1,6 +1,7 @@
 package com.example.feather.models
 
 import com.google.firebase.Timestamp
+import java.util.Date
 
 data class DreamModel(
     val dateAdded: Timestamp?,
@@ -13,7 +14,7 @@ data class DreamModel(
 )
 
 data class KeywordModel(
-    val name: String,
-    val dateAdded: Timestamp?
+    val name: String = "",
+    val dateAdded: Timestamp? = null
 )
 

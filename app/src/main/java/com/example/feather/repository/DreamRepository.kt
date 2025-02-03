@@ -34,6 +34,7 @@ class DreamRepository  @Inject constructor() {
                     "hoursSlept" to dream.hoursSlept,
                     "isRecurring" to dream.isRecurring,
                     "title" to dream.title,
+                    "keywords" to dream.keywords
                 )
 
                 dreamRef.set(dreamFields).await()
