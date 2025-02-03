@@ -3,6 +3,7 @@ package com.example.feather.repository
 import android.util.Log
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.feather.models.DreamModel
 import com.example.feather.models.EmotionModel
 import com.example.feather.models.FeelingModel
 import com.google.firebase.Timestamp
@@ -79,6 +80,28 @@ class FeelingRepository @Inject constructor() {
                 val emotions = snapshot.documents.mapNotNull { it.toObject(EmotionModel::class.java) }
 
                 return emotions
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            e.message?.let { Log.e("FeelingRepo", it) }
+            emptyList()
+        }
+    }
+
+    suspend fun getUserFeelings(): List<FeelingModel>{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val feelingsRef = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("feelings") // Global keyword list
+
+                val snapshot = feelingsRef.get().await()
+
+                val feelings = snapshot.documents.mapNotNull { it.toObject(FeelingModel::class.java) }
+
+                return feelings
             } else {
                 emptyList()
             }

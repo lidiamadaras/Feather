@@ -24,6 +24,9 @@ class DreamViewModel @Inject constructor(private val dreamService: DreamService)
     private val _userKeywords = MutableLiveData<List<KeywordModel>>()
     val userKeywords: LiveData<List<KeywordModel>> = _userKeywords
 
+    private val _userDreams = MutableLiveData<List<DreamModel>>()
+    val userDreams: LiveData<List<DreamModel>> = _userDreams
+
 
     fun saveDream(dream: DreamModel) {
         viewModelScope.launch {
@@ -43,6 +46,13 @@ class DreamViewModel @Inject constructor(private val dreamService: DreamService)
             val keywords = dreamService.getUserKeywords()
             Log.d("keyword vm2", keywords.toString())
             _userKeywords.value = keywords
+        }
+    }
+
+    fun getUserDreams() {
+        viewModelScope.launch {
+            val dreams = dreamService.getUserDreams()
+            _userDreams.value = dreams
         }
     }
 

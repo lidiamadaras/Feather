@@ -101,4 +101,26 @@ class DreamRepository  @Inject constructor() {
         }
     }
 
+    suspend fun getUserDreams(): List<DreamModel>{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val dreamsRef = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("dreams") // Global keyword list
+
+                val snapshot = dreamsRef.get().await()
+
+                val dreams = snapshot.documents.mapNotNull { it.toObject(DreamModel::class.java) }
+
+                return dreams
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            e.message?.let { Log.e("DreamRepo", it) }
+            emptyList()
+        }
+    }
+
 }

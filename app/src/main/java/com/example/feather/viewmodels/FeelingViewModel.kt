@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.feather.models.DreamModel
 import com.example.feather.models.EmotionModel
 import com.example.feather.models.FeelingModel
 import com.example.feather.service.FeelingService
@@ -23,6 +24,9 @@ class FeelingViewModel @Inject constructor(private val feelingService: FeelingSe
 
     private val _userEmotions = MutableLiveData<List<EmotionModel>>()
     val userEmotions: LiveData<List<EmotionModel>> = _userEmotions
+
+    private val _userFeelings = MutableLiveData<List<FeelingModel>>()
+    val userFeelings: LiveData<List<FeelingModel>> = _userFeelings
 
 
     fun saveFeeling(feeling: FeelingModel) {
@@ -44,6 +48,12 @@ class FeelingViewModel @Inject constructor(private val feelingService: FeelingSe
         }
     }
 
+    fun getUserFeelings() {
+        viewModelScope.launch {
+            val feelings = feelingService.getUserFeelings()
+            _userFeelings.value = feelings
+        }
+    }
 
 
 }

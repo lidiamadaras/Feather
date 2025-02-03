@@ -1,6 +1,7 @@
 package com.example.feather.service
 
 import android.util.Log
+import com.example.feather.models.DreamModel
 import com.example.feather.models.EmotionModel
 import com.example.feather.models.FeelingModel
 import com.example.feather.repository.FeelingRepository
@@ -24,6 +25,10 @@ class FeelingService @Inject constructor(private val feelingRepository: FeelingR
 
     suspend fun getUserEmotions(): List<EmotionModel> {
         return feelingRepository.getUserEmotions()
+    }
+
+    suspend fun getUserFeelings(): List<FeelingModel> {
+        return feelingRepository.getUserFeelings()
     }
 
 }

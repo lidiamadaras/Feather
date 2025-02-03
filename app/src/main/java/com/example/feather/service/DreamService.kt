@@ -28,4 +28,8 @@ class DreamService @Inject constructor(private val dreamRepository: DreamReposit
         return dreamRepository.getUserKeywords()
     }
 
+    suspend fun getUserDreams(): List<DreamModel> {
+        return dreamRepository.getUserDreams()
+    }
+
 }
