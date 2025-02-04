@@ -15,14 +15,18 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feather.R
 import com.example.feather.databinding.FragmentHomeBinding
+import com.example.feather.viewmodels.AffirmationViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val affirmationViewModel : AffirmationViewModel by viewModels()
 
     //database:
     private val firestore by lazy { FirebaseFirestore.getInstance() }
@@ -46,6 +50,20 @@ class HomeFragment : Fragment() {
         binding.fabLog.setOnClickListener {
             showPopupMenu(it)
         }
+
+        val affirmationTextView = binding.affirmationTextView
+
+        affirmationViewModel.randomUserAffirmation.observe(viewLifecycleOwner) { affirmation ->
+            if (affirmation != null) {
+                affirmationTextView.text = affirmation.text
+            }else {
+                affirmationTextView.setOnClickListener(){
+                    findNavController().navigate(R.id.affirmationFragment)
+                }
+            }
+        }
+
+        affirmationViewModel.getRandomUserAffirmation()
 
         //welcome user message:
         fetchAndDisplayWelcomeMessage()

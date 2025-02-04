@@ -13,7 +13,10 @@ data class DreamModel(
     val keywords: List<String> = emptyList()
 )
 
-
+data class AffirmationModel(
+    val dateAdded: Timestamp? = null,
+    val text: String = "",
+)
 
 data class KeywordModel(
     val name: String = "",

@@ -25,7 +25,41 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="10dp"/>
 
+            <LinearLayout
+                android:id="@+id/affirmationContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#E6D0FF"
+                android:padding="16dp"
+                android:layout_marginTop="10dp"
+                android:elevation="4dp"
+                android:orientation="vertical"
+                android:radius="8dp">
+
+            <TextView
+                android:id="@+id/affirmationTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Today's Affirmation:"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#000"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:id="@+id/affirmationTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Add an affirmation to get started..."
+                android:textSize="16sp"
+                android:textStyle="italic"
+                android:textColor="#000"
+                android:gravity="start"/>
+
         </LinearLayout>
+
+
+    </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
