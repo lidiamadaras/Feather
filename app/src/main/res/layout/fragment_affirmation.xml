@@ -33,7 +33,7 @@
                 android:hint="Enter affirmation"
                 android:gravity="top"
                 android:inputType="textMultiLine"
-                android:maxLength="5000"
+                android:maxLength="100"
                 android:scrollbars="vertical"
                 android:padding="12dp"/>
 

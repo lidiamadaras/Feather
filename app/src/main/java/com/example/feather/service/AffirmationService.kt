@@ -3,7 +3,6 @@ package com.example.feather.service
 import android.util.Log
 import com.example.feather.models.AffirmationModel
 import com.example.feather.repository.AffirmationRepository
-import com.example.feather.repository.FeelingRepository
 import javax.inject.Inject
 
 //for business logic, validation: service layer

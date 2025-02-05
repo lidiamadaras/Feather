@@ -79,6 +79,7 @@ class AffirmationFragment : Fragment() {
         )
         affirmationViewModel.saveAffirmation(affirmation)
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Clear binding to prevent memory leaks

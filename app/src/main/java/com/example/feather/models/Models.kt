@@ -15,6 +15,11 @@ data class DreamModel(
 
 data class AffirmationModel(
     val dateAdded: Timestamp? = null,
+    val text: String = ""
+)
+
+data class ReflectionModel(
+    val dateAdded: Timestamp? = null,
     val text: String = "",
 )
 

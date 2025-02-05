@@ -7,25 +7,35 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.ListView
 import android.widget.PopupMenu
+import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feather.R
-import com.example.feather.databinding.FragmentHomeBinding
 import com.example.feather.databinding.FragmentReflectionBinding
-import com.google.firebase.firestore.FirebaseFirestore
+import com.example.feather.models.ReflectionModel
+import com.example.feather.viewmodels.ReflectionViewModel
+import com.google.firebase.Timestamp
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ReflectionFragment : Fragment() {
 
     private var _binding: FragmentReflectionBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var reflectionEditText: EditText
+    private lateinit var saveReflectionButton: Button
 
-    //database:
-    private val firestore by lazy { FirebaseFirestore.getInstance() }
+    private val reflectionViewModel : ReflectionViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +49,35 @@ class ReflectionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
+        reflectionEditText = binding.reflectionEditText
+        saveReflectionButton = binding.saveReflectionButton
+
         binding.HomeTitleTextView.text = "Reflect on your day"
+
+        saveReflectionButton.setOnClickListener {
+            saveReflection()
+        }
+
+        reflectionViewModel.saveResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(requireContext(), "Reflection saved successfully!", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp() // Navigate back after saving
+            }
+            result.onFailure { exception ->
+                Toast.makeText(requireContext(), "Error saving reflection: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun saveReflection() {
+        val reflectionText = reflectionEditText.text.toString().trim()
+
+        val reflection = ReflectionModel(
+            dateAdded = Timestamp.now(), // Automatically get the current timestamp
+            text = reflectionText
+        )
+        reflectionViewModel.saveReflection(reflection)
     }
 
     override fun onDestroyView() {
