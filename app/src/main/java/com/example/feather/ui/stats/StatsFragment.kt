@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.feather.R
 import com.example.feather.databinding.FragmentStatsBinding
 
 class StatsFragment : Fragment() {
@@ -27,6 +29,22 @@ class StatsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.HomeTitleTextView.text = "Stats"
+
+        binding.myDreamsTextView.setOnClickListener {
+            findNavController().navigate(R.id.myDreamsFragment)
+        }
+
+        binding.myFeelingsTextView.setOnClickListener {
+            findNavController().navigate(R.id.myFeelingsFragment)
+        }
+
+        binding.myAffirmationsTextView.setOnClickListener {
+            findNavController().navigate(R.id.myAffirmationsFragment)
+        }
+
+        binding.myReflectionsTextView.setOnClickListener {
+            findNavController().navigate(R.id.myReflectionsFragment)
+        }
     }
 
     override fun onDestroyView() {

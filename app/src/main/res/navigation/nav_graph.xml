@@ -44,6 +44,18 @@
         android:name="com.example.feather.ui.stats.StatsFragment"
         android:label="fragment_stats"
         tools:layout="@layout/fragment_stats" >
+        <action
+            android:id="@+id/action_statsFragment_to_myDreamsFragment"
+            app:destination="@id/myDreamsFragment" />
+        <action
+            android:id="@+id/action_statsFragment_to_myFeelingsFragment"
+            app:destination="@id/myFeelingsFragment" />
+        <action
+            android:id="@+id/action_statsFragment_to_myAffirmationsFragment"
+            app:destination="@id/myAffirmationsFragment" />
+        <action
+            android:id="@+id/action_statsFragment_to_myReflectionsFragment"
+            app:destination="@id/myReflectionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -76,6 +88,32 @@
         android:name="com.example.feather.ui.log.AffirmationFragment"
         android:label="fragment_affirmation"
         tools:layout="@layout/fragment_affirmation" >
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/myDreamsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MyDreamsFragment"
+        android:label="fragment_my_dreams"
+        tools:layout="@layout/fragment_my_dreams" >
+    </fragment>
+    <fragment
+        android:id="@+id/myFeelingsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MyFeelingsFragment"
+        android:label="fragment_my_feelings"
+        tools:layout="@layout/fragment_my_feelings" >
+    </fragment>
+    <fragment
+        android:id="@+id/myAffirmationsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MyAffirmationsFragment"
+        android:label="fragment_my_affirmations"
+        tools:layout="@layout/fragment_my_affirmations" >
+    </fragment>
+    <fragment
+        android:id="@+id/myReflectionsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MyReflectionsFragment"
+        android:label="fragment_my_reflections"
+        tools:layout="@layout/fragment_my_reflections" >
     </fragment>
 
 
