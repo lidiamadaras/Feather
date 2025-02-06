@@ -61,7 +61,7 @@ class MyDreamsFragment : Fragment() {
         adapter = DreamsAdapter(
             listOf(),
             onItemClick = { dream ->
-                //navigateToDreamDetail(dream.id)
+                navigateToDreamDetail(dream.id)
             },
             onItemLongClick = { dream ->
                 showDeleteConfirmationDialog(dream)
@@ -97,16 +97,16 @@ class MyDreamsFragment : Fragment() {
 
     }
 
-//    private fun navigateToDreamDetail(id: Int) {
-//        val bundle = Bundle().apply {
-//            putInt("recipeId", id) // Pass only the recipe ID
-//        }
-//        findNavController().navigate(
-//            R.id.action_myDreamsFragment_to_recipeDetailFragment,
-//            bundle
-//        )
-//    }
-//
+    private fun navigateToDreamDetail(id: String) {
+        val bundle = Bundle().apply {
+            putString("dreamId", id) // Pass only the recipe ID
+        }
+        findNavController().navigate(
+            R.id.action_myDreamsFragment_to_dreamDetailFragment,
+            bundle
+        )
+    }
+
     private fun showDeleteConfirmationDialog(dream: DreamModel) {
         val builder = AlertDialog.Builder(requireContext())
             .setTitle("Delete Dream")

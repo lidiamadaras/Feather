@@ -142,4 +142,31 @@ class DreamRepository  @Inject constructor() {
             Result.failure(e)
         }
     }
+
+    suspend fun getDreamById(dreamId: String): DreamModel?{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val dreamDoc = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("dreams")
+                    .document(dreamId)
+                    .get()
+                    .await()
+
+                if (dreamDoc.exists()) {
+                    dreamDoc.toObject(DreamModel::class.java)?.copy(id = dreamDoc.id)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("DreamRepo", "Error fetching dream: ${e.message}")
+            null
+        }
+
+    }
+
 }

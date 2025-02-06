@@ -21,7 +21,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feather.R
-import com.example.feather.databinding.FragmentHomeBinding
 import com.example.feather.databinding.FragmentLogDreamBinding
 import com.example.feather.models.DreamModel
 import com.example.feather.models.KeywordModel

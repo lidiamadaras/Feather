@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <!-- Title at the top -->
+            <TextView
+                android:id="@+id/HomeTitleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dream"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="16dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="2"
+                android:layout_marginBottom="16dp">
+
+                <!-- Hours Slept Dropdown -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginEnd="2dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Slept:"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_marginEnd="0dp"/>
+
+                    <TextView
+                        android:id="@+id/hoursSleptTextView"
+                        android:layout_width="80dp"
+                        android:layout_height="wrap_content"
+                        android:text="7:00"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:padding="7dp"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <!-- Recurring Checkbox -->
+                <CheckBox
+                    android:id="@+id/recurringCheckBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="20sp"
+                    android:text="Recurring"
+                    android:clickable="false"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/dreamCategoryTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:padding="10dp"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/keywordsTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:maxLength="100"
+                android:padding="10dp"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
+                android:id="@+id/dreamTextView"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:textSize="18sp"
+                android:gravity="top"
+                android:scrollbars="vertical"
+                android:padding="10dp"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
