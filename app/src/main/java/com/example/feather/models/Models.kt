@@ -15,11 +15,13 @@ data class DreamModel(
 )
 
 data class AffirmationModel(
+    val id: String = "",
     val dateAdded: Timestamp? = null,
     val text: String = ""
 )
 
 data class ReflectionModel(
+    val id: String = "",
     val dateAdded: Timestamp? = null,
     val text: String = "",
 )
@@ -30,6 +32,7 @@ data class KeywordModel(
 )
 
 data class FeelingModel(
+    val id: String = "",
     val dateAdded: Timestamp? = null,
     val timeStarted: String = "",   //user can add when they started feeling this way
     val timeEnded : String = "",   //user can add when they stopped feeling this way

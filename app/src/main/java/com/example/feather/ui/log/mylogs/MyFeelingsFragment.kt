@@ -19,8 +19,13 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feather.R
 import com.example.feather.databinding.FragmentMyFeelingsBinding
+import com.example.feather.models.FeelingModel
+import com.example.feather.ui.adapter.FeelingsAdapter
+import com.example.feather.viewmodels.FeelingViewModel
 import com.google.firebase.Timestamp
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,10 +35,9 @@ class MyFeelingsFragment : Fragment() {
     private var _binding: FragmentMyFeelingsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var reflectionEditText: EditText
-    private lateinit var saveReflectionButton: Button
+    private val feelingViewModel : FeelingViewModel by viewModels()
 
-    //private val reflectionViewModel : ReflectionViewModel by viewModels()
+    private lateinit var adapter: FeelingsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,25 +51,72 @@ class MyFeelingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.HomeTitleTextView.text = "My feelings"
 
-        reflectionEditText = binding.reflectionEditText
-        saveReflectionButton = binding.saveReflectionButton
+        feelingViewModel.getUserFeelings()
 
-        binding.HomeTitleTextView.text = "Reflect on your day"
+        adapter = FeelingsAdapter(
+            listOf(),
+            onItemClick = { feeling ->
+                navigateToDreamDetail(feeling.id)
+            },
+            onItemLongClick = { feeling ->
+                showDeleteConfirmationDialog(feeling)
+            }
+        )
+
+        // Set up the RecyclerView
+        binding.feelingsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.feelingsRecyclerView.adapter = adapter
+
+        binding.feelingsRecyclerView.addItemDecoration(
+            DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
+        )
 
 
-//        reflectionViewModel.saveResult.observe(viewLifecycleOwner) { result ->
-//            result.onSuccess {
-//                Toast.makeText(requireContext(), "Reflection saved successfully!", Toast.LENGTH_SHORT).show()
-//                findNavController().navigateUp() // Navigate back after saving
-//            }
-//            result.onFailure { exception ->
-//                Toast.makeText(requireContext(), "Error saving reflection: ${exception.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+        feelingViewModel.userFeelings.observe(viewLifecycleOwner) { feelings ->
+            if (!feelings.isNullOrEmpty()) {
+                adapter.updateFeelings(feelings)
+            } else {
+                Toast.makeText(context, "No feelings available", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        feelingViewModel.deleteResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(requireContext(), "Dream deleted", Toast.LENGTH_SHORT).show()
+                feelingViewModel.getUserFeelings()              //immediately refresh list
+            }
+            result.onFailure { exception ->
+                Toast.makeText(requireContext(), "Error deleting feeling: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
+    private fun navigateToFeelingDetail(id: String) {
+        val bundle = Bundle().apply {
+            putString("feelingId", id) // Pass only the recipe ID
+        }
+        findNavController().navigate(
+            R.id.action_myDreamsFragment_to_feelingDetailFragment,
+            bundle
+        )
+    }
 
+    private fun showDeleteConfirmationDialog(feeling: FeelingModel) {
+        val builder = AlertDialog.Builder(requireContext())
+            .setTitle("Delete Feeling")
+            .setMessage("Are you sure you want to proceed?")
+            .setPositiveButton("Yes, delete") { dialog, _ ->
+                feelingViewModel.deleteFeeling(feeling.id)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+        builder.create().show()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -26,25 +26,11 @@
                 android:gravity="center"
                 android:layout_marginBottom="16dp"/>
 
-            <EditText
-                android:id="@+id/reflectionEditText"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/reflectionsRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:hint="How was your day?..."
-                android:gravity="top"
-                android:inputType="textMultiLine"
-                android:maxLength="500"
-                android:scrollbars="vertical"
-                android:padding="12dp"/>
-
-            <Button
-                android:id="@+id/saveReflectionButton"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Save Reflection"
-                android:textSize="18sp"
-                android:layout_marginTop="16dp"
-                android:layout_gravity="center"/>
+                android:scrollbars="vertical" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

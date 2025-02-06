@@ -35,9 +35,6 @@ class MyDreamsFragment : Fragment() {
     private var _binding: FragmentMyDreamsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var reflectionEditText: EditText
-    private lateinit var saveReflectionButton: Button
-
     private val dreamViewModel : DreamViewModel by viewModels()
 
     private lateinit var adapter: DreamsAdapter
