@@ -64,7 +64,7 @@ class MyDreamsFragment : Fragment() {
                 //navigateToDreamDetail(dream.id)
             },
             onItemLongClick = { dream ->
-                //showDeleteConfirmationDialog(dream)  // Show the delete confirmation dialog
+                showDeleteConfirmationDialog(dream)
             }
         )
 
@@ -79,9 +79,19 @@ class MyDreamsFragment : Fragment() {
 
         dreamViewModel.userDreams.observe(viewLifecycleOwner) { dreams ->
             if (!dreams.isNullOrEmpty()) {
-                adapter.updateRecipes(dreams)
+                adapter.updateDreams(dreams)
             } else {
                 Toast.makeText(context, "No dreams available", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dreamViewModel.deleteResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(requireContext(), "Dream deleted", Toast.LENGTH_SHORT).show()
+                dreamViewModel.getUserDreams()              //immediately refresh list
+            }
+            result.onFailure { exception ->
+                Toast.makeText(requireContext(), "Error deleting dream: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -97,19 +107,19 @@ class MyDreamsFragment : Fragment() {
 //        )
 //    }
 //
-//    private fun showDeleteConfirmationDialog(dream: DreamModel) {
-//        val builder = AlertDialog.Builder(requireContext())
-//            .setTitle("Delete Dream")
-//            .setMessage("Are you sure you want to proceed?")
-//            .setPositiveButton("Yes, delete") { dialog, _ ->
-//                dreamViewModel.deleteDream(dream)
-//                dialog.dismiss()
-//            }
-//            .setNegativeButton("Cancel") { dialog, _ ->
-//                dialog.dismiss()
-//            }
-//        builder.create().show()
-//    }
+    private fun showDeleteConfirmationDialog(dream: DreamModel) {
+        val builder = AlertDialog.Builder(requireContext())
+            .setTitle("Delete Dream")
+            .setMessage("Are you sure you want to proceed?")
+            .setPositiveButton("Yes, delete") { dialog, _ ->
+                dreamViewModel.deleteDream(dream.id)
+                dialog.dismiss()
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+        builder.create().show()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

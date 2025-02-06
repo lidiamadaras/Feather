@@ -111,9 +111,9 @@ class DreamRepository  @Inject constructor() {
 
                 val snapshot = dreamsRef.get().await()
 
-                val dreams = snapshot.documents.mapNotNull { it.toObject(DreamModel::class.java) }
-
-                return dreams
+                snapshot.documents.mapNotNull { document ->
+                    document.toObject(DreamModel::class.java)?.copy(id = document.id) // Store Firestore ID
+                }
             } else {
                 emptyList()
             }
@@ -123,4 +123,23 @@ class DreamRepository  @Inject constructor() {
         }
     }
 
+    suspend fun deleteDream(dreamId: String): Result<Unit>{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("dreams")
+                    .document(dreamId)
+                    .delete()
+                    .await()
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("User not logged in"))
+            }
+        } catch (e: Exception) {
+            Log.e("DreamRepo", "Error deleting dream: ${e.message}")
+            Result.failure(e)
+        }
+    }
 }

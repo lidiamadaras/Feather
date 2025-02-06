@@ -32,4 +32,9 @@ class DreamService @Inject constructor(private val dreamRepository: DreamReposit
         return dreamRepository.getUserDreams()
     }
 
+    suspend fun deleteDream(dreamId: String): Result<Unit>  {
+        if (dreamId.isBlank()) return Result.failure(Exception("DreamId is empty"))
+        return dreamRepository.deleteDream(dreamId)
+    }
+
 }

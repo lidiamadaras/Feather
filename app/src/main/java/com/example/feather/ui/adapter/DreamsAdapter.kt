@@ -57,7 +57,7 @@ class DreamsAdapter(
         }
     }
 
-    fun updateRecipes(newDreams: List<DreamModel>) {
+    fun updateDreams(newDreams: List<DreamModel>) {
         dreams = newDreams
         notifyDataSetChanged() // Notify the adapter that the data has changed
     }
@@ -68,7 +68,7 @@ class DreamsAdapter(
             val sdf = SimpleDateFormat("yyyy.MM.dd", Locale.getDefault())
             sdf.format(date)
         } else {
-            "Date: N/A" // Fallback if dateAdded is null
+            "Date: N/A" // if dateAdded is null
         }
     }
 

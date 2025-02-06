@@ -4,6 +4,7 @@ import com.google.firebase.Timestamp
 import java.util.Date
 
 data class DreamModel(
+    val id: String = "",
     val dateAdded: Timestamp? = null,
     val description: String = "",
     val category: String = "",
