@@ -105,19 +105,31 @@
         android:name="com.example.feather.ui.log.mylogs.MyFeelingsFragment"
         android:label="fragment_my_feelings"
         tools:layout="@layout/fragment_my_feelings" >
+        <action
+            android:id="@+id/action_myFeelingsFragment_to_feelingDetailFragment"
+            app:destination="@id/feelingDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/myAffirmationsFragment"
         android:name="com.example.feather.ui.log.mylogs.MyAffirmationsFragment"
         android:label="fragment_my_affirmations"
         tools:layout="@layout/fragment_my_affirmations" >
+        <action
+            android:id="@+id/action_myAffirmationsFragment_to_affirmationDetailFragment"
+            app:destination="@id/affirmationDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/myReflectionsFragment"
         android:name="com.example.feather.ui.log.mylogs.MyReflectionsFragment"
         android:label="fragment_my_reflections"
         tools:layout="@layout/fragment_my_reflections" >
+        <action
+            android:id="@+id/action_myReflectionsFragment_to_reflectionDetailFragment"
+            app:destination="@id/reflectionDetailFragment" />
     </fragment>
+
+
+
 
     <fragment
         android:id="@+id/dreamDetailFragment"
@@ -125,6 +137,27 @@
         android:label="fragment_dream_details"
         tools:layout="@layout/fragment_dream_detail" >
     </fragment>
+    <fragment
+        android:id="@+id/feelingDetailFragment"
+        android:name="com.example.feather.ui.log.mylogs.details.FeelingDetailFragment"
+        android:label="fragment_feeling_details"
+        tools:layout="@layout/fragment_feeling_detail" >
+    </fragment>
+    <fragment
+        android:id="@+id/affirmationDetailFragment"
+        android:name="com.example.feather.ui.log.mylogs.details.AffirmationDetailFragment"
+        android:label="fragment_affirmation_details"
+        tools:layout="@layout/fragment_affirmation_detail" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/reflectionDetailFragment"
+        android:name="com.example.feather.ui.log.mylogs.details.ReflectionDetailFragment"
+        android:label="fragment_reflection_details"
+        tools:layout="@layout/fragment_reflection_detail" >
+    </fragment>
+
+
 
 
 </navigation>

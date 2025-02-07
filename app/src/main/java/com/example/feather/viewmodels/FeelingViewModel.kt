@@ -28,6 +28,9 @@ class FeelingViewModel @Inject constructor(private val feelingService: FeelingSe
     private val _userFeelings = MutableLiveData<List<FeelingModel>>()
     val userFeelings: LiveData<List<FeelingModel>> = _userFeelings
 
+    private val _deleteResult = MutableLiveData<Result<Unit>>()
+    val deleteResult: LiveData<Result<Unit>> = _deleteResult
+
 
     fun saveFeeling(feeling: FeelingModel) {
         viewModelScope.launch {
@@ -52,6 +55,12 @@ class FeelingViewModel @Inject constructor(private val feelingService: FeelingSe
         viewModelScope.launch {
             val feelings = feelingService.getUserFeelings()
             _userFeelings.value = feelings
+        }
+    }
+
+    fun deleteFeeling(feelingId: String) {
+        viewModelScope.launch {
+            _deleteResult.value = runCatching { feelingService.deleteFeeling(feelingId) }
         }
     }
 

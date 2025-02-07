@@ -1,10 +1,5 @@
 package com.example.feather.ui.adapter
 
-class AffirmationsAdapter {
-}
-
-package com.example.feather.ui.adapter
-
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,55 +10,48 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.example.feather.R
-import com.example.feather.models.DreamModel
+import com.example.feather.models.AffirmationModel
 import  com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
-import javax.sql.DataSource
 
-class DreamsAdapter(
-    var dreams: List<DreamModel>,
-    private val onItemClick: (DreamModel) -> Unit,          //to details
-    private val onItemLongClick: (DreamModel) -> Unit,      //delete dream
+class AffirmationsAdapter(
+    var affirmations: List<AffirmationModel>,
+    private val onItemClick: (AffirmationModel) -> Unit,          //to details
+    private val onItemLongClick: (AffirmationModel) -> Unit,      //delete
 
 ) :
-    RecyclerView.Adapter<DreamsAdapter.DreamViewHolder>() {
+    RecyclerView.Adapter<AffirmationsAdapter.AffirmationViewHolder>() {
 
-    class DreamViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val nameTextView: TextView = itemView.findViewById(R.id.dreamTitleTextView)
-        val categoryTextView: TextView = itemView.findViewById(R.id.dreamCategoryTextView)
-        val dateTextView: TextView = itemView.findViewById(R.id.dreamDateTextView)
+    class AffirmationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val nameTextView: TextView = itemView.findViewById(R.id.affirmationTextView)
+        val dateTextView: TextView = itemView.findViewById(R.id.affirmationDateTextView)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DreamViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AffirmationViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.dream_recyclerview_row, parent, false)
-        return DreamViewHolder(view)
+            .inflate(R.layout.affirmation_recyclerview_row, parent, false)
+        return AffirmationViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: DreamViewHolder, position: Int) {
-        val dream = dreams[position]
-
-        //Log.d("recipeslolol", recipes.toString())
-
-        //Log.d("recycler", recipe.toString())
+    override fun onBindViewHolder(holder: AffirmationViewHolder, position: Int) {
+        val affirmation = affirmations[position]
 
         // Set text fields
-        holder.nameTextView.text = dream.title
-        holder.categoryTextView.text = "Category: ${dream.category}"
-        holder.dateTextView.text = "Date:  ${formatTimestamp(dream.dateAdded)}"
+        holder.nameTextView.text = affirmation.text
+        holder.dateTextView.text = "Date:  ${formatTimestamp(affirmation.dateAdded)}"
 
         holder.itemView.setOnClickListener {
-            onItemClick(dream)
+            onItemClick(affirmation)
         }
         holder.itemView.setOnLongClickListener {
-            onItemLongClick(dream)  // Trigger the onItemLongClick callback when item is long-clicked
+            onItemLongClick(affirmation)  // Trigger the onItemLongClick callback when item is long-clicked
             true  // Return true to indicate the long-click event has been handled
         }
     }
 
-    fun updateDreams(newDreams: List<DreamModel>) {
-        dreams = newDreams
+    fun updateAffirmations(newAffirmations: List<AffirmationModel>) {
+        affirmations = newAffirmations
         notifyDataSetChanged() // Notify the adapter that the data has changed
     }
 
@@ -78,6 +66,6 @@ class DreamsAdapter(
     }
 
     override fun getItemCount(): Int {
-        return dreams.size
+        return affirmations.size
     }
 }

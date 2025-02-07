@@ -111,4 +111,50 @@ class FeelingRepository @Inject constructor() {
         }
     }
 
+    suspend fun deleteFeeling(feelingId: String): Result<Unit>{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("feelings")
+                    .document(feelingId)
+                    .delete()
+                    .await()
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("User not logged in"))
+            }
+        } catch (e: Exception) {
+            Log.e("FeelingRepo", "Error deleting feeling: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getFeelingById(feelingId: String): FeelingModel?{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val feelingDoc = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("feelings")
+                    .document(feelingId)
+                    .get()
+                    .await()
+
+                if (feelingDoc.exists()) {
+                    feelingDoc.toObject(FeelingModel::class.java)?.copy(id = feelingDoc.id)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("FeelingRepo", "Error fetching dream: ${e.message}")
+            null
+        }
+
+    }
+
 }

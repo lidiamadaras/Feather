@@ -58,7 +58,7 @@ class MyFeelingsFragment : Fragment() {
         adapter = FeelingsAdapter(
             listOf(),
             onItemClick = { feeling ->
-                navigateToDreamDetail(feeling.id)
+                navigateToFeelingDetail(feeling.id)
             },
             onItemLongClick = { feeling ->
                 showDeleteConfirmationDialog(feeling)
@@ -99,7 +99,7 @@ class MyFeelingsFragment : Fragment() {
             putString("feelingId", id) // Pass only the recipe ID
         }
         findNavController().navigate(
-            R.id.action_myDreamsFragment_to_feelingDetailFragment,
+            R.id.action_myFeelingsFragment_to_feelingDetailFragment,
             bundle
         )
     }
