@@ -53,7 +53,7 @@ class FeelingRepository @Inject constructor() {
                 val emotionRef = db.collection("users")
                     .document(currentUser.uid)
                     .collection("emotions")
-                    .document(emotion.name)
+                    .document()
 
                 // Perform the write operation
                 emotionRef.set(emotion).await()

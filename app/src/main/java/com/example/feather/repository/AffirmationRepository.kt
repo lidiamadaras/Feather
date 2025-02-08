@@ -87,4 +87,50 @@ class AffirmationRepository  @Inject constructor() {
         }
     }
 
+    suspend fun deleteAffirmation(affirmationId: String): Result<Unit>{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("affirmations")
+                    .document(affirmationId)
+                    .delete()
+                    .await()
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("User not logged in"))
+            }
+        } catch (e: Exception) {
+            Log.e("AffirmationRepo", "Error deleting affirmation: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getAffirmationById(affirmationId: String): AffirmationModel?{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val affirmationDoc = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("affirmations")
+                    .document(affirmationId)
+                    .get()
+                    .await()
+
+                if (affirmationDoc.exists()) {
+                    affirmationDoc.toObject(AffirmationModel::class.java)?.copy(id = affirmationDoc.id)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("AffirmationRepo", "Error fetching affirmation: ${e.message}")
+            null
+        }
+
+    }
+
 }

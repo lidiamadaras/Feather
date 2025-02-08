@@ -3,6 +3,7 @@ package com.example.feather.repository
 import android.util.Log
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.feather.models.DreamModel
 import com.example.feather.models.ReflectionModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
@@ -61,5 +62,51 @@ class ReflectionRepository @Inject constructor() {
             e.message?.let { Log.e("ReflectionRepo", it) }
             emptyList()
         }
+    }
+
+    suspend fun deleteReflection(reflectionId: String): Result<Unit>{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("reflections")
+                    .document(reflectionId)
+                    .delete()
+                    .await()
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("User not logged in"))
+            }
+        } catch (e: Exception) {
+            Log.e("ReflectionRepo", "Error deleting reflection: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getReflectionById(reflectionId: String): ReflectionModel?{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val reflectionDoc = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("reflections")
+                    .document(reflectionId)
+                    .get()
+                    .await()
+
+                if (reflectionDoc.exists()) {
+                    reflectionDoc.toObject(ReflectionModel::class.java)?.copy(id = reflectionDoc.id)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("ReflectionRepo", "Error fetching reflection: ${e.message}")
+            null
+        }
+
     }
 }
