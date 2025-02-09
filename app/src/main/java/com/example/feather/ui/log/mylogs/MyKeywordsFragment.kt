@@ -22,28 +22,28 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feather.R
-import com.example.feather.databinding.FragmentMyReflectionsBinding
-import com.example.feather.models.ReflectionModel
-import com.example.feather.ui.adapter.ReflectionsAdapter
-import com.example.feather.viewmodels.ReflectionViewModel
+import com.example.feather.databinding.FragmentMyKeywordsBinding
+import com.example.feather.models.KeywordModel
+import com.example.feather.ui.adapter.KeywordsAdapter
+import com.example.feather.viewmodels.DreamViewModel
 import com.google.firebase.Timestamp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MyReflectionsFragment : Fragment() {
+class MyKeywordsFragment : Fragment() {
 
-    private var _binding: FragmentMyReflectionsBinding? = null
+    private var _binding: FragmentMyKeywordsBinding? = null
     private val binding get() = _binding!!
 
-    private val reflectionViewModel : ReflectionViewModel by viewModels()
+    private val dreamViewModel : DreamViewModel by viewModels()
 
-    private lateinit var adapter: ReflectionsAdapter
+    private lateinit var adapter: KeywordsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMyReflectionsBinding.inflate(inflater, container, false)
+        _binding = FragmentMyKeywordsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -51,65 +51,65 @@ class MyReflectionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.HomeTitleTextView.text = "My reflections"
+        binding.HomeTitleTextView.text = "My keywords"
 
-        reflectionViewModel.getUserReflections()
+        dreamViewModel.getUserKeywords()
 
-        adapter = ReflectionsAdapter(
+        adapter = KeywordsAdapter(
             listOf(),
-            onItemClick = { reflection ->
-                navigateToReflectionDetail(reflection.id)
+            onItemClick = { keyword ->
+                navigateToKeywordDetail(keyword.name)
             },
-            onItemLongClick = { reflection ->
-                showDeleteConfirmationDialog(reflection)
+            onItemLongClick = { keyword ->
+                showDeleteConfirmationDialog(keyword)
             }
         )
 
         // Set up the RecyclerView
-        binding.reflectionsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.reflectionsRecyclerView.adapter = adapter
+        binding.keywordsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.keywordsRecyclerView.adapter = adapter
 
-        binding.reflectionsRecyclerView.addItemDecoration(
+        binding.keywordsRecyclerView.addItemDecoration(
             DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         )
 
 
-        reflectionViewModel.userReflections.observe(viewLifecycleOwner) { reflections ->
-            if (!reflections.isNullOrEmpty()) {
-                adapter.updateReflections(reflections)
+        dreamViewModel.userKeywords.observe(viewLifecycleOwner) { keywords ->
+            if (!keywords.isNullOrEmpty()) {
+                adapter.updateKeywords(keywords)
             } else {
-                Toast.makeText(context, "No reflections available", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "No keywords available", Toast.LENGTH_SHORT).show()
             }
         }
 
-        reflectionViewModel.deleteResult.observe(viewLifecycleOwner) { result ->
+        dreamViewModel.deleteKeywordResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
-                Toast.makeText(requireContext(), "Reflection deleted", Toast.LENGTH_SHORT).show()
-                reflectionViewModel.getUserReflections()              //immediately refresh list
+                Toast.makeText(requireContext(), "Keyword deleted", Toast.LENGTH_SHORT).show()
+                dreamViewModel.getUserKeywords()              //immediately refresh list
             }
             result.onFailure { exception ->
-                Toast.makeText(requireContext(), "Error deleting reflection: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error deleting keyword: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
         }
 
     }
 
-    private fun navigateToReflectionDetail(id: String) {
+    private fun navigateToKeywordDetail(id: String) {
         val bundle = Bundle().apply {
-            putString("reflectionId", id) // Pass only the recipe ID
+            putString("keywordId", id) // Pass only the recipe ID
         }
         findNavController().navigate(
-            R.id.action_myReflectionsFragment_to_reflectionDetailFragment,
+            R.id.action_myKeywordsFragment_to_keywordDetailFragment,
             bundle
         )
     }
 
-    private fun showDeleteConfirmationDialog(reflection: ReflectionModel) {
+    private fun showDeleteConfirmationDialog(keyword: KeywordModel) {
         val builder = AlertDialog.Builder(requireContext())
-            .setTitle("Delete Reflection")
+            .setTitle("Delete Keyword")
             .setMessage("Are you sure you want to proceed?")
             .setPositiveButton("Yes, delete") { dialog, _ ->
-                reflectionViewModel.deleteReflection(reflection.id)
+                dreamViewModel.deleteKeyword(keyword.name)
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -123,5 +123,3 @@ class MyReflectionsFragment : Fragment() {
         _binding = null // Clear binding to prevent memory leaks
     }
 }
-
-

@@ -95,6 +95,7 @@ class LogDreamFragment : Fragment() {
             showKeywordSelectionDialog()
         }
 
+
         saveDreamButton.setOnClickListener {
             saveDream()
         }
@@ -118,13 +119,13 @@ class LogDreamFragment : Fragment() {
         }
 
         dreamViewModel.saveKeywordResult.observe(viewLifecycleOwner) { result ->
-            Log.d("keyword", "started observe, state changed")
             result.onSuccess {
-                Log.d("keyword", "keyword saved")
                 Toast.makeText(requireContext(), "Keyword saved", Toast.LENGTH_SHORT).show()
+                //dreamViewModel.getUserKeywords()
+                showKeywordSelectionDialog()
+
             }
             result.onFailure { exception ->
-                Log.d("keyword", "keyword NOT saved")
                 Toast.makeText(requireContext(), "Error saving keyword: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
         }
@@ -142,6 +143,8 @@ class LogDreamFragment : Fragment() {
 
         val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_multiple_choice)
         keywordListView.adapter = adapter
+
+
 
         val alertDialog = AlertDialog.Builder(requireContext())
             .setTitle("Select Keywords")

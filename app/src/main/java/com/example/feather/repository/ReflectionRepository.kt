@@ -8,6 +8,7 @@ import com.example.feather.models.ReflectionModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -49,10 +50,12 @@ class ReflectionRepository @Inject constructor() {
                 val reflectionsRef = db.collection("users")
                     .document(currentUser.uid)
                     .collection("reflections")
+                    .orderBy("dateAdded", Query.Direction.DESCENDING)
 
                 val snapshot = reflectionsRef.get().await()
 
-                val reflections = snapshot.documents.mapNotNull { it.toObject(ReflectionModel::class.java) }
+                val reflections = snapshot.documents.mapNotNull { document ->
+                    document.toObject(ReflectionModel::class.java)?.copy(id = document.id) }
 
                 return reflections
             } else {

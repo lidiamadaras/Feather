@@ -22,28 +22,28 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feather.R
-import com.example.feather.databinding.FragmentMyReflectionsBinding
-import com.example.feather.models.ReflectionModel
-import com.example.feather.ui.adapter.ReflectionsAdapter
-import com.example.feather.viewmodels.ReflectionViewModel
+import com.example.feather.databinding.FragmentMyEmotionsBinding
+import com.example.feather.models.EmotionModel
+import com.example.feather.ui.adapter.EmotionsAdapter
+import com.example.feather.viewmodels.FeelingViewModel
 import com.google.firebase.Timestamp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MyReflectionsFragment : Fragment() {
+class MyEmotionsFragment : Fragment() {
 
-    private var _binding: FragmentMyReflectionsBinding? = null
+    private var _binding: FragmentMyEmotionsBinding? = null
     private val binding get() = _binding!!
 
-    private val reflectionViewModel : ReflectionViewModel by viewModels()
+    private val feelingViewModel : FeelingViewModel by viewModels()
 
-    private lateinit var adapter: ReflectionsAdapter
+    private lateinit var adapter: EmotionsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentMyReflectionsBinding.inflate(inflater, container, false)
+        _binding = FragmentMyEmotionsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -51,65 +51,65 @@ class MyReflectionsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.HomeTitleTextView.text = "My reflections"
+        binding.HomeTitleTextView.text = "My emotions"
 
-        reflectionViewModel.getUserReflections()
+        feelingViewModel.getUserEmotions()
 
-        adapter = ReflectionsAdapter(
+        adapter = EmotionsAdapter(
             listOf(),
-            onItemClick = { reflection ->
-                navigateToReflectionDetail(reflection.id)
+            onItemClick = { emotion ->
+                navigateToEmotionDetail(emotion.name)
             },
-            onItemLongClick = { reflection ->
-                showDeleteConfirmationDialog(reflection)
+            onItemLongClick = { emotion ->
+                showDeleteConfirmationDialog(emotion)
             }
         )
 
         // Set up the RecyclerView
-        binding.reflectionsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.reflectionsRecyclerView.adapter = adapter
+        binding.emotionsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.emotionsRecyclerView.adapter = adapter
 
-        binding.reflectionsRecyclerView.addItemDecoration(
+        binding.emotionsRecyclerView.addItemDecoration(
             DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         )
 
 
-        reflectionViewModel.userReflections.observe(viewLifecycleOwner) { reflections ->
-            if (!reflections.isNullOrEmpty()) {
-                adapter.updateReflections(reflections)
+        feelingViewModel.userEmotions.observe(viewLifecycleOwner) { emotions ->
+            if (!emotions.isNullOrEmpty()) {
+                adapter.updateEmotions(emotions)
             } else {
-                Toast.makeText(context, "No reflections available", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "No emotions available", Toast.LENGTH_SHORT).show()
             }
         }
 
-        reflectionViewModel.deleteResult.observe(viewLifecycleOwner) { result ->
+        feelingViewModel.deleteEmotionResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
-                Toast.makeText(requireContext(), "Reflection deleted", Toast.LENGTH_SHORT).show()
-                reflectionViewModel.getUserReflections()              //immediately refresh list
+                Toast.makeText(requireContext(), "Emotion deleted", Toast.LENGTH_SHORT).show()
+                feelingViewModel.getUserEmotions()              //immediately refresh list
             }
             result.onFailure { exception ->
-                Toast.makeText(requireContext(), "Error deleting reflection: ${exception.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Error deleting emotion: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
         }
 
     }
 
-    private fun navigateToReflectionDetail(id: String) {
+    private fun navigateToEmotionDetail(id: String) {
         val bundle = Bundle().apply {
-            putString("reflectionId", id) // Pass only the recipe ID
+            putString("emotionId", id) // Pass only the recipe ID
         }
         findNavController().navigate(
-            R.id.action_myReflectionsFragment_to_reflectionDetailFragment,
+            R.id.action_myEmotionsFragment_to_emotionDetailFragment,
             bundle
         )
     }
 
-    private fun showDeleteConfirmationDialog(reflection: ReflectionModel) {
+    private fun showDeleteConfirmationDialog(emotion: EmotionModel) {
         val builder = AlertDialog.Builder(requireContext())
-            .setTitle("Delete Reflection")
+            .setTitle("Delete Emotion")
             .setMessage("Are you sure you want to proceed?")
             .setPositiveButton("Yes, delete") { dialog, _ ->
-                reflectionViewModel.deleteReflection(reflection.id)
+                feelingViewModel.deleteEmotion(emotion.name)
                 dialog.dismiss()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
@@ -123,5 +123,3 @@ class MyReflectionsFragment : Fragment() {
         _binding = null // Clear binding to prevent memory leaks
     }
 }
-
-

@@ -38,7 +38,20 @@ class FeelingService @Inject constructor(private val feelingRepository: FeelingR
 
     suspend fun deleteFeeling(feelingId: String): Result<Unit>  {
         if (feelingId.isBlank()) return Result.failure(Exception("FeelingId is empty"))
+        Log.d("feelid", "not empty")
         return feelingRepository.deleteFeeling(feelingId)
+    }
+
+    //emotions
+
+    suspend fun getEmotionById(emotionId: String): EmotionModel? {
+        if (emotionId.isBlank()) return null
+        return feelingRepository.getEmotionById(emotionId)
+    }
+
+    suspend fun deleteEmotion(emotionId: String): Result<Unit>  {
+        if (emotionId.isBlank()) return Result.failure(Exception("EmotionId is empty"))
+        return feelingRepository.deleteEmotion(emotionId)
     }
 
 }

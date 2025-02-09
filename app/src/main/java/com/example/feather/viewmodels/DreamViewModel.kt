@@ -30,6 +30,9 @@ class DreamViewModel @Inject constructor(private val dreamService: DreamService)
     private val _deleteResult = MutableLiveData<Result<Unit>>()
     val deleteResult: LiveData<Result<Unit>> = _deleteResult
 
+    private val _deleteKeywordResult = MutableLiveData<Result<Unit>>()
+    val deleteKeywordResult: LiveData<Result<Unit>> = _deleteKeywordResult
+
 
     fun saveDream(dream: DreamModel) {
         viewModelScope.launch {
@@ -60,6 +63,12 @@ class DreamViewModel @Inject constructor(private val dreamService: DreamService)
     fun deleteDream(dreamId: String) {
         viewModelScope.launch {
             _deleteResult.value = runCatching { dreamService.deleteDream(dreamId) }
+        }
+    }
+
+    fun deleteKeyword(keywordId: String) {
+        viewModelScope.launch {
+            _deleteKeywordResult.value = runCatching { dreamService.deleteKeyword(keywordId) }
         }
     }
 

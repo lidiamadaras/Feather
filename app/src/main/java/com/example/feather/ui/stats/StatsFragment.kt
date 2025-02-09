@@ -45,6 +45,14 @@ class StatsFragment : Fragment() {
         binding.myReflectionsTextView.setOnClickListener {
             findNavController().navigate(R.id.myReflectionsFragment)
         }
+
+        binding.myKeywordsTextView.setOnClickListener {
+            findNavController().navigate(R.id.myKeywordsFragment)
+        }
+
+        binding.myEmotionsTextView.setOnClickListener {
+            findNavController().navigate(R.id.myEmotionsFragment)
+        }
     }
 
     override fun onDestroyView() {

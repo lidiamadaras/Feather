@@ -23,6 +23,9 @@ class AffirmationViewModel @Inject constructor(private val affirmationService: A
     private val _randomUserAffirmation = MutableLiveData<AffirmationModel?>()
     val randomUserAffirmation: LiveData<AffirmationModel?> = _randomUserAffirmation
 
+    private val _deleteResult = MutableLiveData<Result<Unit>>()
+    val deleteResult: LiveData<Result<Unit>> = _deleteResult
+
 
     fun saveAffirmation(affirmation: AffirmationModel) {
         viewModelScope.launch {
@@ -41,6 +44,12 @@ class AffirmationViewModel @Inject constructor(private val affirmationService: A
         viewModelScope.launch {
             val affirmation = affirmationService.getRandomUserAffirmation()
             _randomUserAffirmation.value = affirmation
+        }
+    }
+
+    fun deleteAffirmation(affirmationId: String) {
+        viewModelScope.launch {
+            _deleteResult.value = runCatching { affirmationService.deleteAffirmation(affirmationId) }
         }
     }
 

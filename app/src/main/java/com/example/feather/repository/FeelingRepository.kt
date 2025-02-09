@@ -9,6 +9,7 @@ import com.example.feather.models.FeelingModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -53,10 +54,16 @@ class FeelingRepository @Inject constructor() {
                 val emotionRef = db.collection("users")
                     .document(currentUser.uid)
                     .collection("emotions")
-                    .document()
+                    .document(emotion.name)
+
+                val snapshot = emotionRef.get().await()
+                if (snapshot.exists()) {
+                    return Result.failure(Exception("Emotion already exists!"))
+                }
 
                 // Perform the write operation
                 emotionRef.set(emotion).await()
+
                 Result.success(Unit)
             } else {
                 Result.failure(Exception("User not authenticated"))
@@ -74,6 +81,7 @@ class FeelingRepository @Inject constructor() {
                 val emotionsRef = db.collection("users")
                     .document(currentUser.uid)
                     .collection("emotions") // Global keyword list
+                    .orderBy("dateAdded", Query.Direction.DESCENDING)
 
                 val snapshot = emotionsRef.get().await()
 
@@ -96,12 +104,12 @@ class FeelingRepository @Inject constructor() {
                 val feelingsRef = db.collection("users")
                     .document(currentUser.uid)
                     .collection("feelings") // Global keyword list
+                    .orderBy("dateAdded", Query.Direction.DESCENDING)
 
                 val snapshot = feelingsRef.get().await()
 
-                val feelings = snapshot.documents.mapNotNull { it.toObject(FeelingModel::class.java) }
-
-                return feelings
+               snapshot.documents.mapNotNull { document ->
+                   document.toObject(FeelingModel::class.java)?.copy(id = document.id) }
             } else {
                 emptyList()
             }
@@ -156,5 +164,56 @@ class FeelingRepository @Inject constructor() {
         }
 
     }
+
+    //emotions
+
+
+    suspend fun deleteEmotion(emotionId: String): Result<Unit>{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("emotions")
+                    .document(emotionId)
+                    .delete()
+                    .await()
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("User not logged in"))
+            }
+        } catch (e: Exception) {
+            Log.e("FeelingRepo", "Error deleting emotion: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getEmotionById(emotionId: String): EmotionModel?{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val emotionDoc = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("emotions")
+                    .document(emotionId)
+                    .get()
+                    .await()
+
+                if (emotionDoc.exists()) {
+                    emotionDoc.toObject(EmotionModel::class.java)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("FeelingRepo", "Error fetching emotion: ${e.message}")
+            null
+        }
+
+    }
+
+
 
 }

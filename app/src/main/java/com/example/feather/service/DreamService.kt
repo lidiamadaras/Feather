@@ -42,4 +42,16 @@ class DreamService @Inject constructor(private val dreamRepository: DreamReposit
         return dreamRepository.deleteDream(dreamId)
     }
 
+    //keywords
+
+    suspend fun getKeywordById(keywordId: String): KeywordModel? {
+        if (keywordId.isBlank()) return null
+        return dreamRepository.getKeywordById(keywordId)
+    }
+
+    suspend fun deleteKeyword(keywordId: String): Result<Unit>  {
+        if (keywordId.isBlank()) return Result.failure(Exception("KeywordId is empty"))
+        return dreamRepository.deleteKeyword(keywordId)
+    }
+
 }

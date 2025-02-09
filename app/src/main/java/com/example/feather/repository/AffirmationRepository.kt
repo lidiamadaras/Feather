@@ -10,6 +10,7 @@ import com.example.feather.models.FeelingModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -51,10 +52,12 @@ class AffirmationRepository  @Inject constructor() {
                 val affirmationsRef = db.collection("users")
                     .document(currentUser.uid)
                     .collection("affirmations")
+                    .orderBy("dateAdded", Query.Direction.DESCENDING)
 
                 val snapshot = affirmationsRef.get().await()
 
-                val affirmations = snapshot.documents.mapNotNull { it.toObject(AffirmationModel::class.java) }
+                val affirmations = snapshot.documents.mapNotNull { document ->
+                    document.toObject(AffirmationModel::class.java)?.copy(id = document.id) }
 
                 return affirmations
             } else {

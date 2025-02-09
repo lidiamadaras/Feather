@@ -56,6 +56,12 @@
         <action
             android:id="@+id/action_statsFragment_to_myReflectionsFragment"
             app:destination="@id/myReflectionsFragment" />
+        <action
+            android:id="@+id/action_statsFragment_to_myKeywordsFragment"
+            app:destination="@id/myKeywordsFragment" />
+        <action
+            android:id="@+id/action_statsFragment_to_myEmotionsFragment"
+            app:destination="@id/myEmotionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -127,6 +133,24 @@
             android:id="@+id/action_myReflectionsFragment_to_reflectionDetailFragment"
             app:destination="@id/reflectionDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/myKeywordsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MyKeywordsFragment"
+        android:label="fragment_my_keywords"
+        tools:layout="@layout/fragment_my_keywords" >
+        <action
+            android:id="@+id/action_myKeywordsFragment_to_keywordDetailFragment"
+            app:destination="@id/keywordDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myEmotionsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MyEmotionsFragment"
+        android:label="fragment_my_emotions"
+        tools:layout="@layout/fragment_my_emotions" >
+        <action
+            android:id="@+id/action_myEmotionsFragment_to_emotionDetailFragment"
+            app:destination="@id/emotionDetailFragment" />
+    </fragment>
 
 
 
@@ -155,6 +179,20 @@
         android:name="com.example.feather.ui.log.mylogs.details.ReflectionDetailFragment"
         android:label="fragment_reflection_details"
         tools:layout="@layout/fragment_reflection_detail" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/keywordDetailFragment"
+        android:name="com.example.feather.ui.log.mylogs.details.KeywordDetailFragment"
+        android:label="fragment_keyword_details"
+        tools:layout="@layout/fragment_keyword_detail" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/emotionDetailFragment"
+        android:name="com.example.feather.ui.log.mylogs.details.EmotionDetailFragment"
+        android:label="fragment_reflection_details"
+        tools:layout="@layout/fragment_emotion_detail" >
     </fragment>
 
 

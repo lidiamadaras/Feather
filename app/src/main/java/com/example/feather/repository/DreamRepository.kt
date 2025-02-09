@@ -8,6 +8,7 @@ import com.example.feather.models.KeywordModel
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -48,7 +49,6 @@ class DreamRepository  @Inject constructor() {
     }
 
     suspend fun saveKeyword(keyword: KeywordModel): Result<Unit>{
-        Log.d("keyword", keyword.toString())
         return try {
             val currentUser = auth.currentUser
             if (currentUser != null) {
@@ -57,13 +57,14 @@ class DreamRepository  @Inject constructor() {
                     .collection("keywords") // Store keywords globally for the user
                     .document(keyword.name) // Use keyword name as the document ID to prevent duplicates
 
-                Log.d("keyword", "Attempting to save keyword: ${keyword.name}")
+                val snapshot = keywordRef.get().await()
+                if (snapshot.exists()) {
+                    return Result.failure(Exception("Keyword already exists!"))
+                }
 
                 // Perform the write operation
                 keywordRef.set(keyword).await()
 
-                // Log after successful save
-                Log.d("keyword added", "Keyword saved successfully: ${keyword.name}")
                 Result.success(Unit)
             } else {
                 Result.failure(Exception("User not authenticated"))
@@ -74,22 +75,18 @@ class DreamRepository  @Inject constructor() {
     }
 
     suspend fun getUserKeywords(): List<KeywordModel> {
-        Log.d("keyword", "entered getuserkeywords repo")
         return try {
             val currentUser = auth.currentUser
             if (currentUser != null) {
                 val keywordsRef = db.collection("users")
                     .document(currentUser.uid)
                     .collection("keywords") // Global keyword list
+                    .orderBy("dateAdded", Query.Direction.DESCENDING)
 
-                Log.d("keyword", currentUser.uid)
 
                 val snapshot = keywordsRef.get().await()
-                Log.d("keyword", "Snapshot size: ${snapshot.size()}")           //currently 0
 
-                //Log.d("keyword", snapshot.toString())             //ez mar nem irodik ki
                 val keywords = snapshot.documents.mapNotNull { it.toObject(KeywordModel::class.java) }
-                Log.d("keyword", keywords.toString())
                 return keywords
             } else {
                 Log.d("keyword", "there are no keywords when fetching from repo")
@@ -108,6 +105,7 @@ class DreamRepository  @Inject constructor() {
                 val dreamsRef = db.collection("users")
                     .document(currentUser.uid)
                     .collection("dreams") // Global keyword list
+                    .orderBy("dateAdded", Query.Direction.DESCENDING)
 
                 val snapshot = dreamsRef.get().await()
 
@@ -167,6 +165,54 @@ class DreamRepository  @Inject constructor() {
             null
         }
 
+    }
+
+    //keywords:
+
+    suspend fun getKeywordById(keywordId: String): KeywordModel?{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val keywordDoc = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("keywords")
+                    .document(keywordId)
+                    .get()
+                    .await()
+
+                if (keywordDoc.exists()) {
+                    keywordDoc.toObject(KeywordModel::class.java)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("DreamRepo", "Error fetching keyword: ${e.message}")
+            null
+        }
+
+    }
+
+    suspend fun deleteKeyword(keywordId: String): Result<Unit>{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .collection("keywords")
+                    .document(keywordId)
+                    .delete()
+                    .await()
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("User not logged in"))
+            }
+        } catch (e: Exception) {
+            Log.e("DreamRepo", "Error deleting keyword: ${e.message}")
+            Result.failure(e)
+        }
     }
 
 }

@@ -20,6 +20,10 @@ class ReflectionViewModel @Inject constructor(private val reflectionService: Ref
     private val _userReflections = MutableLiveData<List<ReflectionModel>>()
     val userReflections: LiveData<List<ReflectionModel>> = _userReflections
 
+    private val _deleteResult = MutableLiveData<Result<Unit>>()
+    val deleteResult: LiveData<Result<Unit>> = _deleteResult
+
+
     fun saveReflection(reflection: ReflectionModel) {
         viewModelScope.launch {
             _saveResult.value = runCatching { reflectionService.saveReflection(reflection) }
@@ -30,6 +34,12 @@ class ReflectionViewModel @Inject constructor(private val reflectionService: Ref
         viewModelScope.launch {
             val reflections = reflectionService.getUserReflections()
             _userReflections.value = reflections
+        }
+    }
+
+    fun deleteReflection(reflectionId: String) {
+        viewModelScope.launch {
+            _deleteResult.value = runCatching { reflectionService.deleteReflection(reflectionId) }
         }
     }
 }
