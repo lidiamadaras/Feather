@@ -1,10 +1,12 @@
 package com.example.feather.repository.auth
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -57,6 +59,45 @@ class AuthRepository @Inject constructor()  {
         return try {
             auth.sendPasswordResetEmail(email).await()
             Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun signInWithGoogle(googleSignInAccount: GoogleSignInAccount): Result<Unit> {
+        return try {
+            val credential = GoogleAuthProvider.getCredential(googleSignInAccount.idToken, null)
+            val result = auth.signInWithCredential(credential).await()
+
+            // Check if this Google user has a matching email with an existing account
+            val user = result.user
+            val existingUser = auth.currentUser
+
+            // If user exists and email matches, link the accounts
+            if (existingUser != null && existingUser.email == user?.email) {
+                // Accounts linked successfully, proceed to app
+                Result.success(Unit)
+            } else {
+                // Handle case where email doesn't match
+                // Maybe you prompt the user to login/register
+                Result.failure(Exception("Email does not match existing account"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun linkGoogleAccount(googleSignInAccount: GoogleSignInAccount): Result<FirebaseUser?> {
+        return try {
+            val credential = GoogleAuthProvider.getCredential(googleSignInAccount.idToken, null)
+            val currentUser = FirebaseAuth.getInstance().currentUser
+
+            if (currentUser != null) {
+                currentUser.linkWithCredential(credential).await()
+                Result.success(currentUser)
+            } else {
+                Result.failure(Exception("No user is signed in"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

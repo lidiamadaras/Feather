@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.feather.service.AffirmationService
 import com.example.feather.service.auth.AuthService
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,6 +18,9 @@ class AuthViewModel @Inject constructor(private val authService: AuthService) : 
     private val _loginResult = MutableLiveData<Result<Unit>>()
     val loginResult: LiveData<Result<Unit>> = _loginResult
 
+    private val _loginWithGoogleResult = MutableLiveData<Result<Unit>>()
+    val loginWithGoogleResult: LiveData<Result<Unit>> = _loginWithGoogleResult
+
     private val _registerResult = MutableLiveData<Result<Unit>>()
     val registerResult: LiveData<Result<Unit>> = _registerResult
 
@@ -27,6 +31,13 @@ class AuthViewModel @Inject constructor(private val authService: AuthService) : 
         viewModelScope.launch {
             val user = authService.login(email, password)
             _loginResult.postValue(user)
+        }
+    }
+
+    fun loginWithGoogle(googleSignInAccount: GoogleSignInAccount) {
+        viewModelScope.launch {
+            val userGoogle = authService.loginWithGoogle(googleSignInAccount)
+            _loginWithGoogleResult.postValue(userGoogle)
         }
     }
 

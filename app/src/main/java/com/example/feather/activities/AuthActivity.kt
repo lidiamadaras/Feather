@@ -22,6 +22,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.feather.R
 import com.example.feather.databinding.ActivityAuthBinding
 import com.example.feather.viewmodels.auth.AuthViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,6 +32,8 @@ class AuthActivity : AppCompatActivity()  {
 
     private lateinit var binding: ActivityAuthBinding
     private val authViewModel : AuthViewModel by viewModels()
+    private lateinit var googleSignInClient: GoogleSignInClient
+    private val RC_SIGN_IN = 9001
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +42,12 @@ class AuthActivity : AppCompatActivity()  {
         // Inflate the layout and set the content view
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id)) // Replace with your own client ID from Firebase Console
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
 
         val loginButton = binding.loginButton
         val emailEditText = binding.emailEditText
@@ -86,6 +97,11 @@ class AuthActivity : AppCompatActivity()  {
             // Navigate to RegisterActivity when user clicks "Register"
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+    }
+
+    private fun signInWithGoogle() {
+        val signInIntent = googleSignInClient.signInIntent
+        startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
     private fun showPasswordResetDialog() {
