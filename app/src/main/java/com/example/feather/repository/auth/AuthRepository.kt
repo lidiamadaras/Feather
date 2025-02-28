@@ -1,5 +1,10 @@
 package com.example.feather.repository.auth
 
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
@@ -14,6 +19,8 @@ import javax.inject.Inject
 class AuthRepository @Inject constructor()  {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
+
+
 
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
@@ -64,28 +71,6 @@ class AuthRepository @Inject constructor()  {
         }
     }
 
-    suspend fun signInWithGoogle(googleSignInAccount: GoogleSignInAccount): Result<Unit> {
-        return try {
-            val credential = GoogleAuthProvider.getCredential(googleSignInAccount.idToken, null)
-            val result = auth.signInWithCredential(credential).await()
-
-            // Check if this Google user has a matching email with an existing account
-            val user = result.user
-            val existingUser = auth.currentUser
-
-            // If user exists and email matches, link the accounts
-            if (existingUser != null && existingUser.email == user?.email) {
-                // Accounts linked successfully, proceed to app
-                Result.success(Unit)
-            } else {
-                // Handle case where email doesn't match
-                // Maybe you prompt the user to login/register
-                Result.failure(Exception("Email does not match existing account"))
-            }
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
 
     suspend fun linkGoogleAccount(googleSignInAccount: GoogleSignInAccount): Result<FirebaseUser?> {
         return try {

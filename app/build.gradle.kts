@@ -86,6 +86,10 @@ dependencies {
     //HILT dependency injection:
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    // Google Identity Services SDK
+    implementation (libs.play.services.auth)
+
 }
 
 kapt {
