@@ -34,12 +34,12 @@ class AuthViewModel @Inject constructor(private val authService: AuthService) : 
         }
     }
 
-    fun loginWithGoogle(googleSignInAccount: GoogleSignInAccount) {
-        viewModelScope.launch {
-            val userGoogle = authService.loginWithGoogle(googleSignInAccount)
-            _loginWithGoogleResult.postValue(userGoogle)
-        }
-    }
+//    fun loginWithGoogle(googleSignInAccount: GoogleSignInAccount) {
+//        viewModelScope.launch {
+//            val userGoogle = authService.loginWithGoogle(googleSignInAccount)
+//            _loginWithGoogleResult.postValue(userGoogle)
+//        }
+//    }
 
     fun register(firstName: String, lastName: String, dateOfBirth: String, email: String, password: String) {
         viewModelScope.launch {

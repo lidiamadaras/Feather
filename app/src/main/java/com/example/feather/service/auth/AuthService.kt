@@ -15,9 +15,9 @@ class AuthService @Inject constructor(private val authRepository: AuthRepository
         return authRepository.login(email, password)
     }
 
-    suspend fun loginWithGoogle(googleSignInAccount: GoogleSignInAccount): Result<Unit> {
-        return authRepository.signInWithGoogle(googleSignInAccount)
-    }
+//    suspend fun loginWithGoogle(googleSignInAccount: GoogleSignInAccount): Result<Unit> {
+//        return authRepository.signInWithGoogle(googleSignInAccount)
+//    }
 
     suspend fun register(firstName: String, lastName: String, dateOfBirth: String, email: String, password: String): Result<Unit> {
         return authRepository.register(firstName, lastName, dateOfBirth, email, password)
