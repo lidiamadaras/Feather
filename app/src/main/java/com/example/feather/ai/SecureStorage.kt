@@ -6,7 +6,6 @@ import androidx.security.crypto.MasterKeys
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
 class SecureStorage@Inject constructor(context: Context) {
 
     private val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)

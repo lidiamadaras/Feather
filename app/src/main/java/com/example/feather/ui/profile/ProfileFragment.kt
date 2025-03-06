@@ -53,6 +53,10 @@ class ProfileFragment : Fragment() {
 
         apiKeyViewModel.apiKey.observe(viewLifecycleOwner) { key ->
             binding.etApiKey.setText(key ?: "")
+
+            if (!key.isNullOrBlank()) {
+                Toast.makeText(requireContext(), "API Key saved successfully!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         apiKeyViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
