@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.feather.R
 import com.example.feather.databinding.FragmentSelectDreamBinding
 import com.example.feather.ui.adapter.AIDreamsAdapter
 import com.example.feather.viewmodels.DreamViewModel
+import com.example.feather.viewmodels.ai.AIViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,6 +24,8 @@ class SelectDreamFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val dreamViewModel : DreamViewModel by viewModels()
+
+    private val aiViewModel : AIViewModel by viewModels()
 
     private lateinit var adapter: AIDreamsAdapter
 
@@ -43,9 +48,11 @@ class SelectDreamFragment : Fragment() {
         adapter = AIDreamsAdapter(
             listOf(),
             onItemClick = { dream ->
-                //navigateToDreamDetail(dream.id)
+                aiViewModel.analyzeDream(dream)
             }
         )
+
+
 
         // Set up the RecyclerView
         binding.dreamsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -64,7 +71,33 @@ class SelectDreamFragment : Fragment() {
             }
         }
 
+        aiViewModel.analysisResult.observe(viewLifecycleOwner) { result ->
+            result?.let { analysis ->
+                navigateToAnalyzeDreamFragment(analysis)
+            }
+        }
+
+//        aiViewModel.analysisResult.observe(viewLifecycleOwner) { result ->
+//            result?.let { navigateToAnalyzeDreamFragment(it) }
+//        }
+
+//        val dream = arguments?.getParcelable<DreamModel>("selected_dream")
+//        dream?.let {
+//            viewModel.analyzeDream(it)
+//        }
+
     }
+
+//    private fun setupRecyclerView() {
+//        adapter = DreamAdapter { selectedDream ->
+//            viewModel.analyzeDream(selectedDream) // Start API request
+//        }
+//
+//        binding.recyclerViewDreams.apply {
+//            layoutManager = LinearLayoutManager(context)
+//            adapter = this@SelectDreamFragment.adapter
+//        }
+//    }
 
 //    private fun navigateToDreamDetail(id: String) {
 //        val bundle = Bundle().apply {
@@ -75,6 +108,16 @@ class SelectDreamFragment : Fragment() {
 //            bundle
 //        )
 //    }
+
+    private fun navigateToAnalyzeDreamFragment(analysisResult: String) {
+        val bundle = Bundle().apply {
+            putString("analysis_result", analysisResult)
+        }
+        findNavController().navigate(
+            R.id.action_selectDreamFragment_to_analyzeDreamFragment,
+            bundle
+        )
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

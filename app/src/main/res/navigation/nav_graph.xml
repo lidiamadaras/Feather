@@ -206,6 +206,16 @@
         android:name="com.example.feather.ui.ai.analyze_one_dream.SelectDreamFragment"
         android:label="fragment_select_dream"
         tools:layout="@layout/fragment_select_dream" >
+        <action
+            android:id="@+id/action_selectDreamFragment_to_analyzeDreamFragment"
+            app:destination="@id/analyzeDreamFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/analyzeDreamFragment"
+        android:name="com.example.feather.ui.ai.analyze_one_dream.AnalyzeDreamFragment"
+        android:label="fragment_analyze_dream"
+        tools:layout="@layout/fragment_analyze_dream" >
     </fragment>
 
 
