@@ -142,7 +142,7 @@ class LogDreamFragment : Fragment() {
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_select_keywords, null)
         val keywordListView = dialogView.findViewById<ListView>(R.id.keywordListView)
-        val addKeywordButton = dialogView.findViewById<Button>(R.id.addKeywordButton)
+        //val addKeywordButton = dialogView.findViewById<Button>(R.id.addKeywordButton)
 
         val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_multiple_choice)
         keywordListView.adapter = adapter
@@ -189,24 +189,24 @@ class LogDreamFragment : Fragment() {
         }
 
 
-        val dialogViewAddKeyword = layoutInflater.inflate(R.layout.dialog_add_keyword, null)
-        val keywordEditText = dialogViewAddKeyword.findViewById<EditText>(R.id.keywordEditText)
-        var newKeyword = KeywordModel()
-
-        addKeywordButton.setOnClickListener {
-            val keywordName = keywordEditText.text.toString().trim()
-            if (keywordName.isNotEmpty()) {
-                newKeyword = KeywordModel(name = keywordName, dateAdded = Timestamp.now())
-            }
-            if (!keywordList.contains(newKeyword)) {
-                dreamViewModel.saveKeyword(newKeyword)  // Save new keyword
-                // Ensure it appears immediately in the list
-                keywordList.add(newKeyword)
-                adapter.notifyDataSetChanged()
-            } else {
-                Toast.makeText(requireContext(), "Keyword already exists or is empty", Toast.LENGTH_SHORT).show()
-            }
-        }
+//        val dialogViewAddKeyword = layoutInflater.inflate(R.layout.dialog_add_keyword, null)
+//        val keywordEditText = dialogViewAddKeyword.findViewById<EditText>(R.id.keywordEditText)
+//        var newKeyword = KeywordModel()
+//
+//        addKeywordButton.setOnClickListener {
+//            val keywordName = keywordEditText.text.toString().trim()
+//            if (keywordName.isNotEmpty()) {
+//                newKeyword = KeywordModel(name = keywordName, dateAdded = Timestamp.now())
+//            }
+//            if (!keywordList.contains(newKeyword)) {
+//                dreamViewModel.saveKeyword(newKeyword)  // Save new keyword
+//                // Ensure it appears immediately in the list
+//                keywordList.add(newKeyword)
+//                adapter.notifyDataSetChanged()
+//            } else {
+//                Toast.makeText(requireContext(), "Keyword already exists or is empty", Toast.LENGTH_SHORT).show()
+//            }
+//        }
 
 //        addKeywordButton.setOnClickListener {
 //            //showAddKeywordDialog(alertDialog)
