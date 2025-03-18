@@ -108,16 +108,6 @@ class LogDreamFragment : Fragment() {
             dreamCategorySpinner.adapter = adapter
         }
 
-        dreamViewModel.saveResult.observe(viewLifecycleOwner) { result ->
-            result.onSuccess {
-                Toast.makeText(requireContext(), "Dream saved successfully!", Toast.LENGTH_SHORT).show()
-                findNavController().navigateUp() // Navigate back after saving
-            }
-            result.onFailure { exception ->
-                Toast.makeText(requireContext(), "Error saving dream: ${exception.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-
         dreamViewModel.saveKeywordResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
                 Toast.makeText(requireContext(), "Keyword saved", Toast.LENGTH_SHORT).show()
@@ -130,12 +120,25 @@ class LogDreamFragment : Fragment() {
             }
         }
 
+        dreamViewModel.saveResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(requireContext(), "Dream saved successfully!", Toast.LENGTH_SHORT).show()
+                findNavController().navigateUp() // Navigate back after saving
+            }
+            result.onFailure { exception ->
+                Toast.makeText(requireContext(), "Error saving dream: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+
+
 
     }
 
     private fun showKeywordSelectionDialog() {
         val keywordList = mutableListOf<KeywordModel>()
         //val selectedKeywordNames = mutableSetOf<String>()
+        val selectedKeywordNames = selectedKeywords.map { it.name }.toMutableSet() // Track selections by name
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_select_keywords, null)
         val keywordListView = dialogView.findViewById<ListView>(R.id.keywordListView)
@@ -145,56 +148,94 @@ class LogDreamFragment : Fragment() {
         keywordListView.adapter = adapter
 
 
+        dreamViewModel.getUserKeywords()
+
+        dreamViewModel.userKeywords.observe(viewLifecycleOwner) { keywords ->
+            //Log.d("keyword vm", keywords.toString())
+            keywordList.clear()
+            keywordList.addAll(keywords)
+
+            adapter.clear()
+            adapter.addAll(keywords.map { it.name })
+            adapter.notifyDataSetChanged()
+
+            // Restore checked state
+            for (i in keywordList.indices) {
+                if (selectedKeywordNames.contains(keywordList[i].name)) {
+                    keywordListView.setItemChecked(i, true)
+                }
+            }
+        }
+
 
         val alertDialog = AlertDialog.Builder(requireContext())
             .setTitle("Select Keywords")
             .setView(dialogView)
-            .setPositiveButton("Done") { _, _ ->
+            .setPositiveButton("Done", null) // Set null here to override later
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        alertDialog.setOnShowListener {
+            val doneButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            doneButton.setOnClickListener {
                 selectedKeywords.clear()
                 for (i in 0 until keywordListView.count) {
                     if (keywordListView.isItemChecked(i)) {
                         selectedKeywords.add(keywordList[i])
                     }
                 }
+                alertDialog.dismiss() // Ensure it closes immediately
             }
-            .setNegativeButton("Cancel", null)
-            .create()
-
-        dreamViewModel.getUserKeywords()
-
-        dreamViewModel.userKeywords.observe(viewLifecycleOwner) { keywords ->
-            Log.d("keyword vm", keywords.toString())
-            keywordList.clear()
-            keywordList.addAll(keywords)
-            adapter.clear()
-            adapter.addAll(keywords.map { it.name })
-            adapter.notifyDataSetChanged()
         }
+
+
+        val dialogViewAddKeyword = layoutInflater.inflate(R.layout.dialog_add_keyword, null)
+        val keywordEditText = dialogViewAddKeyword.findViewById<EditText>(R.id.keywordEditText)
+        var newKeyword = KeywordModel()
 
         addKeywordButton.setOnClickListener {
-            showAddKeywordDialog()
+            val keywordName = keywordEditText.text.toString().trim()
+            if (keywordName.isNotEmpty()) {
+                newKeyword = KeywordModel(name = keywordName, dateAdded = Timestamp.now())
+            }
+            if (!keywordList.contains(newKeyword)) {
+                dreamViewModel.saveKeyword(newKeyword)  // Save new keyword
+                // Ensure it appears immediately in the list
+                keywordList.add(newKeyword)
+                adapter.notifyDataSetChanged()
+            } else {
+                Toast.makeText(requireContext(), "Keyword already exists or is empty", Toast.LENGTH_SHORT).show()
+            }
         }
+
+//        addKeywordButton.setOnClickListener {
+//            //showAddKeywordDialog(alertDialog)
+//        }
 
         alertDialog.show()
     }
 
-    private fun showAddKeywordDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_add_keyword, null)
-        val keywordEditText = dialogView.findViewById<EditText>(R.id.keywordEditText)
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("Add New Keyword")
-            .setView(dialogView)
-            .setPositiveButton("Save") { _, _ ->
-                val keywordName = keywordEditText.text.toString().trim()
-                val newKeyword = KeywordModel(name = keywordName, dateAdded = Timestamp.now())
-                dreamViewModel.saveKeyword(newKeyword)
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-
+//    private fun showAddKeywordDialog(parentDialog: AlertDialog) {
+//        val dialogView = layoutInflater.inflate(R.layout.dialog_add_keyword, null)
+//        val keywordEditText = dialogView.findViewById<EditText>(R.id.keywordEditText)
+//
+//        AlertDialog.Builder(requireContext())
+//            .setTitle("Add New Keyword")
+//            .setView(dialogView)
+//            .setPositiveButton("Save") { _, _ ->
+//                val keywordName = keywordEditText.text.toString().trim()
+//                if (keywordName.isNotEmpty()) {
+//                    val newKeyword = KeywordModel(name = keywordName, dateAdded = Timestamp.now())
+//
+//                    // Save and refresh dialog
+//                    dreamViewModel.saveKeyword(newKeyword)
+//                    parentDialog.dismiss() // Close current dialog
+//                    showKeywordSelectionDialog() // Reopen with updated list
+//                }
+//            }
+//            .setNegativeButton("Cancel", null)
+//            .show()
+//    }
 
     private fun saveDream() {
         val dreamText = dreamInputEditText.text.toString().trim()
