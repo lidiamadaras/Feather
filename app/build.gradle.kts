@@ -99,6 +99,11 @@ dependencies {
 
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+
+    implementation (libs.openai.client)
+
+
+    implementation (libs.ktor.client.android)
 }
 
 kapt {
