@@ -9,50 +9,41 @@ import okhttp3.Request
 import javax.inject.Inject
 import okhttp3.RequestBody.Companion.toRequestBody
 //import com.google.firebase.vertexai.GenerativeModel
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.generationConfig
 
 
 class AIRepository @Inject constructor(
-    private val httpClient: OkHttpClient
 ) {
-
-
     suspend fun analyzeDream(apiKey: String, dream: DreamModel): Result<String> {
-//        val generativeModel = GenerativeModel(
-//            modelName = "gemini-1.5-flash",
-//            apiKey = apiKey
-//        )
-        return withContext(Dispatchers.IO) {  // Ensure it runs on a background thread
-            val prompt = """
-            Analyze this dream:
-            Title: ${dream.title}
-            Description: ${dream.description}
-            Keywords: ${dream.keywords.joinToString(", ")}
-            Category: ${dream.category}
-        """.trimIndent()
-
+        return withContext(Dispatchers.IO) {
             try {
-                val requestBody = """
-                {
-                    "model": "gemini-pro",
-                    "prompt": "$prompt",
-                    "max_tokens": 500
-                }
-            """.trimIndent()
+                val generativeModel = GenerativeModel(
+                    modelName = "gemini-1.5-flash",
+                    apiKey = apiKey,
+                    generationConfig = generationConfig {
+                        temperature = 1f
+                        topK = 64
+                        topP = 0.95f
+                        maxOutputTokens = 8000
+                        responseMimeType = "text/plain"
+                    }
+                )
 
-                val request = Request.Builder()
-                    //.url("https://api.gemini.google.com/v1/your-endpoint?key=$apiKey")
-                    //.url("https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=$apiKey")
-                    .url("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey")
-                    .post(requestBody.toRequestBody("application/json".toMediaType()))
-                    .build()
+                val prompt = """
+                    Analyze this dream:
+                    Title: ${dream.title}
+                    Description: ${dream.description}
+                    Keywords: ${dream.keywords.joinToString(", ")}
+                    Category: ${dream.category}
+                    Provide insights on symbolism and meaning.
+                """.trimIndent()
 
-                val response = httpClient.newCall(request).execute()
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string() ?: return@withContext Result.failure(Exception("Empty response"))
-                    Result.success(responseBody)
-                } else {
-                    Result.failure(Exception("API call failed: ${response.message}"))
-                }
+                val response = generativeModel.generateContent(prompt)
+
+                val text = response.text ?: "No response received"
+                Result.success(text)
+
             } catch (e: Exception) {
                 Result.failure(e)
             }
