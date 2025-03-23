@@ -14,6 +14,12 @@
         <action
             android:id="@+id/action_dreamAnalysisFragment_to_selectDreamFragment"
             app:destination="@id/selectDreamFragment" />
+        <action
+            android:id="@+id/action_dreamAnalysisFragment_to_analyzeWeeklyDreamsFragment"
+            app:destination="@id/analyzeWeeklyDreamsFragment" />
+        <action
+            android:id="@+id/action_dreamAnalysisFragment_to_analyzeMonthlyDreamsFragment"
+            app:destination="@id/analyzeMonthlyDreamsFragment" />
     </fragment>
     <fragment
         android:id="@+id/exploreFragment"
@@ -218,6 +224,19 @@
         tools:layout="@layout/fragment_analyze_dream" >
     </fragment>
 
+    <fragment
+        android:id="@+id/analyzeWeeklyDreamsFragment"
+        android:name="com.example.feather.ui.ai.weekly_analysis.AnalyzeWeeklyDreamsFragment"
+        android:label="fragment_analyze_weekly_dreams"
+        tools:layout="@layout/fragment_analyze_weekly_dreams" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/analyzeMonthlyDreamsFragment"
+        android:name="com.example.feather.ui.ai.monthly_analysis.AnalyzeMonthlyDreamsFragment"
+        android:label="fragment_analyze_monthly_dreams"
+        tools:layout="@layout/fragment_analyze_monthly_dreams" >
+    </fragment>
 
 
 

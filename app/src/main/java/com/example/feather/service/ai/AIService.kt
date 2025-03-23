@@ -13,4 +13,14 @@ class AIService @Inject constructor(
         val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing"))
         return repository.analyzeDream(apiKey, dream)
     }
+
+    suspend fun analyzeWeekly(): Result<String> {
+        val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing"))
+        return repository.weeklyAnalysis(apiKey)
+    }
+
+    suspend fun analyzeMonthly(): Result<String> {
+        val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing"))
+        return repository.monthlyAnalysis(apiKey)
+    }
 }
