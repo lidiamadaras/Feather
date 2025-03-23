@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.feather.models.AffirmationModel
 import com.example.feather.models.DreamModel
 import com.example.feather.service.ai.AIService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +16,9 @@ import javax.inject.Inject
 class AIViewModel @Inject constructor(
     private val aiService: AIService
 ) : ViewModel() {
+
+    private val _saveResult = MutableLiveData<Result<Unit>>()
+    val saveResult: LiveData<Result<Unit>> = _saveResult
 
     private val _analysisResult = MutableLiveData<String?>()
     val analysisResult: LiveData<String?> get() = _analysisResult
@@ -79,6 +83,12 @@ class AIViewModel @Inject constructor(
                 Log.e("AIViewModel", "Unexpected error", e)
                 _analysisResultMonthly.value = "Analysis failed: ${e.localizedMessage ?: "Unexpected error"}"
             }
+        }
+    }
+
+    fun saveAnalysis(analysisText: String, type: String) {
+        viewModelScope.launch {
+            _saveResult.value = runCatching { aiService.saveAnalysis(analysisText, type) }
         }
     }
 }

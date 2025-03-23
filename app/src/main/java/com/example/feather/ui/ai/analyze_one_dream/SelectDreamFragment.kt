@@ -113,6 +113,7 @@ class SelectDreamFragment : Fragment() {
         val bundle = Bundle().apply {
             putString("analysis_result", analysisResult)
         }
+        aiViewModel.saveAnalysis(analysisResult, "single_dream_interpretations")
         findNavController().navigate(
             R.id.action_selectDreamFragment_to_analyzeDreamFragment,
             bundle

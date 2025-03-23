@@ -11,6 +11,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 //import com.google.firebase.vertexai.GenerativeModel
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.generationConfig
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
@@ -125,4 +126,32 @@ class AIRepository @Inject constructor() {
             }
         }
     }
+
+    suspend fun saveInterpretation(analysisText: String, type: String): Result<Unit> {
+        val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not authenticated"))
+
+        if (type !in listOf("single_dream_interpretations", "weekly_interpretations", "monthly_interpretations")) {
+            return Result.failure(Exception("Invalid analysis type"))
+        }
+
+        val interpretationData = mapOf(
+            "analysisText" to analysisText,
+            "timeAdded" to com.google.firebase.Timestamp.now()
+        )
+
+        return withContext(Dispatchers.IO) {
+            try {
+                db.collection("users")
+                    .document(userId)
+                    .collection(type)
+                    .add(interpretationData)
+                    .await()
+
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
 }

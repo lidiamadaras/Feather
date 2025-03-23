@@ -65,6 +65,7 @@ class DreamAnalysisFragment : Fragment() {
         val bundle = Bundle().apply {
             putString("analysis_result", analysisResult)
         }
+        aiViewModel.saveAnalysis(analysisResult, "weekly_interpretations")
         findNavController().navigate(
             R.id.action_dreamAnalysisFragment_to_analyzeWeeklyDreamsFragment,
             bundle
@@ -75,6 +76,7 @@ class DreamAnalysisFragment : Fragment() {
         val bundle = Bundle().apply {
             putString("analysis_result", analysisResult)
         }
+        aiViewModel.saveAnalysis(analysisResult, "monthly_interpretations")
         findNavController().navigate(
             R.id.action_dreamAnalysisFragment_to_analyzeMonthlyDreamsFragment,
             bundle
