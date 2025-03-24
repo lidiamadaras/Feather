@@ -1,5 +1,7 @@
 package com.example.feather.repository.auth
 
+import android.util.Log
+import com.example.feather.models.UserData
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 
@@ -19,8 +21,6 @@ import javax.inject.Inject
 class AuthRepository @Inject constructor()  {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-
-
 
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
@@ -87,6 +87,47 @@ class AuthRepository @Inject constructor()  {
         } catch (e: Exception) {
             Result.failure(e)
         }
+    }
+
+    fun getUserData(onResult: (UserData?) -> Unit) {
+        val uid = auth.currentUser?.uid ?: return
+
+        db.collection("users").document(uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    val user = document.toObject(UserData::class.java)
+                    onResult(user)
+                } else {
+                    onResult(null)
+                }
+            }
+            .addOnFailureListener {
+                onResult(null)
+            }
+    }
+
+    fun updateUserData(userData: UserData, onResult: (Boolean) -> Unit) {
+        Log.d("UserData", "entered update function in AuthRepo")
+        val uid = auth.currentUser?.uid ?: return
+
+        Log.d("UserData", userData.toString())
+
+        db.collection("users").document(uid)
+            .update(
+                "firstName", userData.firstName,
+                "lastName", userData.lastName,
+                "dateOfBirth", userData.dateOfBirth,
+                "email", userData.email
+            )
+            .addOnSuccessListener {
+                Log.d("UserData", "success")
+                onResult(true)
+            }
+            .addOnFailureListener {
+                Log.d("UserData", "failure")
+                onResult(false)
+            }
     }
 
     suspend fun linkGoogleAccount(googleSignInAccount: GoogleSignInAccount): Result<FirebaseUser?> {

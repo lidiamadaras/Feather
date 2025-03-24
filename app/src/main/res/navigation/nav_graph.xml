@@ -77,6 +77,12 @@
         android:name="com.example.feather.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_profileDataFragment"
+            app:destination="@id/profileDataFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
 
@@ -236,6 +242,22 @@
         android:name="com.example.feather.ui.ai.monthly_analysis.AnalyzeMonthlyDreamsFragment"
         android:label="fragment_analyze_monthly_dreams"
         tools:layout="@layout/fragment_analyze_monthly_dreams" >
+    </fragment>
+
+
+
+    <fragment
+        android:id="@+id/profileDataFragment"
+        android:name="com.example.feather.ui.profile.ProfileDataFragment"
+        android:label="fragment_profile_data"
+        tools:layout="@layout/fragment_profile_data" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.feather.ui.profile.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" >
     </fragment>
 
 

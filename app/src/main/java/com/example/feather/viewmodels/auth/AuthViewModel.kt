@@ -1,9 +1,11 @@
 package com.example.feather.viewmodels.auth
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.feather.models.UserData
 import com.example.feather.service.AffirmationService
 import com.example.feather.service.auth.AuthService
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -30,6 +32,16 @@ class AuthViewModel @Inject constructor(private val authService: AuthService) : 
     private val _deleteAccountStatus = MutableLiveData<Result<Unit>>()
     val deleteAccountStatus: LiveData<Result<Unit>> get() = _deleteAccountStatus
 
+    //user data: get and update
+
+    private val _userData = MutableLiveData<UserData?>()
+    val userData: LiveData<UserData?> get() = _userData
+
+    private val _updateStatus = MutableLiveData<Boolean>()
+    val updateStatus: LiveData<Boolean> get() = _updateStatus
+
+
+
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
@@ -52,6 +64,19 @@ class AuthViewModel @Inject constructor(private val authService: AuthService) : 
             val result = authService.deleteAccount()
             _deleteAccountStatus.value = result
             _loading.value = false
+        }
+    }
+
+    fun getUserData() {
+        authService.getUserData { data ->
+            _userData.postValue(data)
+        }
+    }
+
+    fun updateUserData(userData: UserData) {
+        authService.updateUserData(userData) { success ->
+            Log.d("VM", "success")
+            _updateStatus.postValue(success)
         }
     }
 

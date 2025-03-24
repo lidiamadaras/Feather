@@ -3,6 +3,16 @@ package com.example.feather.models
 import com.google.firebase.Timestamp
 import java.util.Date
 
+data class UserData(
+    val firstName: String = "",
+    val lastName: String = "",
+    val dateOfBirth: String = "",
+    val email: String = ""
+) {
+    constructor() : this("", "", "", "")
+}
+
+
 data class DreamModel(
     val id: String = "",
     val dateAdded: Timestamp? = null,
