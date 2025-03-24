@@ -25,6 +25,32 @@
                 android:textStyle="bold"
                 android:layout_marginBottom="10dp"/>
 
+            <TextView
+                android:id="@+id/profileDataTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profile Data"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/purple_500"
+                android:gravity="left"
+                android:padding="12dp"
+                android:layout_marginBottom="10dp"/>
+
+
+            <TextView
+                android:id="@+id/settingsTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/purple_500"
+                android:gravity="left"
+                android:padding="12dp"
+                android:layout_marginBottom="10dp"/>
+
+
             <Button
                 android:id="@+id/signOutButton"
                 android:layout_width="match_parent"
@@ -49,6 +75,12 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter your Gemini API key"
                 android:inputType="textPassword"/>
+
+            <Button
+                android:id="@+id/btnEditApiKey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit API Key"/>
 
             <Button
                 android:id="@+id/btnSaveApiKey"

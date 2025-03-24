@@ -76,38 +76,9 @@ class SelectDreamFragment : Fragment() {
                 navigateToAnalyzeDreamFragment(analysis)
             }
         }
-
-//        aiViewModel.analysisResult.observe(viewLifecycleOwner) { result ->
-//            result?.let { navigateToAnalyzeDreamFragment(it) }
-//        }
-
-//        val dream = arguments?.getParcelable<DreamModel>("selected_dream")
-//        dream?.let {
-//            viewModel.analyzeDream(it)
-//        }
-
     }
 
-//    private fun setupRecyclerView() {
-//        adapter = DreamAdapter { selectedDream ->
-//            viewModel.analyzeDream(selectedDream) // Start API request
-//        }
-//
-//        binding.recyclerViewDreams.apply {
-//            layoutManager = LinearLayoutManager(context)
-//            adapter = this@SelectDreamFragment.adapter
-//        }
-//    }
 
-//    private fun navigateToDreamDetail(id: String) {
-//        val bundle = Bundle().apply {
-//            putString("dreamId", id) // Pass only the recipe ID
-//        }
-//        findNavController().navigate(
-//            R.id.action_myDreamsFragment_to_dreamDetailFragment,
-//            bundle
-//        )
-//    }
 
     private fun navigateToAnalyzeDreamFragment(analysisResult: String) {
         val bundle = Bundle().apply {

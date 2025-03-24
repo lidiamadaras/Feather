@@ -23,6 +23,7 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private val apiKeyViewModel: ApiKeyViewModel by viewModels()
+    private var isEditing = false   //for changing api key
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +44,8 @@ class ProfileFragment : Fragment() {
 
         binding.HomeTitleTextView.text = "Profile"
 
+        binding.etApiKey.isEnabled = false
+
         val deleteAccountButton = binding.deleteAccountButton
         deleteAccountButton.setOnClickListener {
             //deleteUserAccount()
@@ -54,9 +57,9 @@ class ProfileFragment : Fragment() {
         apiKeyViewModel.apiKey.observe(viewLifecycleOwner) { key ->
             binding.etApiKey.setText(key ?: "")
 
-            if (!key.isNullOrBlank()) {
-                Toast.makeText(requireContext(), "API Key saved successfully!", Toast.LENGTH_SHORT).show()
-            }
+//            if (!key.isNullOrBlank()) {
+//                Toast.makeText(requireContext(), "API Key saved successfully!", Toast.LENGTH_SHORT).show()
+//            }
         }
 
         apiKeyViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
@@ -65,14 +68,28 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        binding.btnSaveApiKey.setOnClickListener {
-            val apiKey = binding.etApiKey.text.toString().trim()
-            apiKeyViewModel.saveApiKey(apiKey)
+        binding.btnEditApiKey.setOnClickListener {
+            isEditing = true
+            binding.etApiKey.isEnabled = true
+            binding.etApiKey.requestFocus()
+            binding.etApiKey.selectAll()
         }
+
+        // Save API Key Button - Saves Key Only If Edited
+        binding.btnSaveApiKey.setOnClickListener {
+            if (isEditing) {
+                val apiKey = binding.etApiKey.text.toString().trim()
+                apiKeyViewModel.saveApiKey(apiKey)
+                Toast.makeText(requireContext(), "API Key saved successfully!", Toast.LENGTH_SHORT).show()
+                binding.etApiKey.isEnabled = false  // Disable after saving
+                isEditing = false
+            }
+        }
+
         apiKeyViewModel.loadApiKey()
 
-        val apiKey = apiKeyViewModel.apiKey.value
-        Log.d("apikey", "Current API Key: $apiKey")
+//        val apiKey = apiKeyViewModel.apiKey.value
+//        Log.d("apikey", "Current API Key: $apiKey")
     }
 
     private fun signOut() {
