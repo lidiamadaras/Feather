@@ -27,10 +27,31 @@ class AuthViewModel @Inject constructor(private val authService: AuthService) : 
     private val _resetPasswordResult = MutableLiveData<Result<Unit>>()
     val resetPasswordResult: LiveData<Result<Unit>> = _resetPasswordResult
 
+    private val _deleteAccountStatus = MutableLiveData<Result<Unit>>()
+    val deleteAccountStatus: LiveData<Result<Unit>> get() = _deleteAccountStatus
+
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean> = _loading
+
     fun login(email: String, password: String) {
         viewModelScope.launch {
             val user = authService.login(email, password)
             _loginResult.postValue(user)
+        }
+    }
+
+    fun signOut() {
+        _loading.value = true
+        authService.signOut()
+        _loading.value = false
+    }
+
+    fun deleteAccount() {
+        viewModelScope.launch {
+            _loading.value = true
+            val result = authService.deleteAccount()
+            _deleteAccountStatus.value = result
+            _loading.value = false
         }
     }
 

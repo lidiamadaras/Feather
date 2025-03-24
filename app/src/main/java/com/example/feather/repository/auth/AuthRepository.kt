@@ -71,6 +71,23 @@ class AuthRepository @Inject constructor()  {
         }
     }
 
+    fun signOut() {
+        auth.signOut()
+    }
+
+    suspend fun deleteAccount(): Result<Unit> {
+        return try {
+            val user = auth.currentUser ?: return Result.failure(Exception("No user signed in"))
+
+            db.collection("users").document(user.uid).delete().await()
+
+            user.delete().await()
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 
     suspend fun linkGoogleAccount(googleSignInAccount: GoogleSignInAccount): Result<FirebaseUser?> {
         return try {

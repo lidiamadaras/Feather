@@ -15,6 +15,14 @@ class AuthService @Inject constructor(private val authRepository: AuthRepository
         return authRepository.login(email, password)
     }
 
+    fun signOut() {
+        authRepository.signOut()
+    }
+
+    suspend fun deleteAccount(): Result<Unit>{
+        return authRepository.deleteAccount()
+    }
+
 //    suspend fun loginWithGoogle(googleSignInAccount: GoogleSignInAccount): Result<Unit> {
 //        return authRepository.signInWithGoogle(googleSignInAccount)
 //    }
