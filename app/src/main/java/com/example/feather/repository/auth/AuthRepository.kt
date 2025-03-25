@@ -117,8 +117,7 @@ class AuthRepository @Inject constructor()  {
             .update(
                 "firstName", userData.firstName,
                 "lastName", userData.lastName,
-                "dateOfBirth", userData.dateOfBirth,
-                "email", userData.email
+                "dateOfBirth", userData.dateOfBirth
             )
             .addOnSuccessListener {
                 Log.d("UserData", "success")

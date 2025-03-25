@@ -49,14 +49,6 @@
                 android:enabled="false"
                 android:inputType="date"/>
 
-            <EditText
-                android:id="@+id/emailEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Email"
-                android:enabled="false"
-                android:inputType="textEmailAddress"/>
-
             <Button
                 android:id="@+id/editAccountButton"
                 android:layout_width="match_parent"

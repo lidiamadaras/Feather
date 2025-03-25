@@ -29,25 +29,11 @@
                 android:id="@+id/profileDataTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Profile Data"
+                android:text="Gemini AI Settings"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
-                android:padding="12dp"
-                android:layout_marginBottom="10dp"/>
-
-
-            <TextView
-                android:id="@+id/settingsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/purple_500"
-                android:gravity="left"
-                android:padding="12dp"
+                android:padding="7dp"
                 android:layout_marginBottom="10dp"/>
 
             <ProgressBar
@@ -58,25 +44,6 @@
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_gravity="center"/>
 
-
-            <Button
-                android:id="@+id/signOutButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Sign Out"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="@color/purple_500"
-                android:textColor="@android:color/white" />
-
-            <Button
-                android:id="@+id/deleteAccountButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Delete Account"
-                android:textColor="@color/white"
-                android:layout_marginTop="16dp"
-                android:layout_gravity="center"/>
-
             <EditText
                 android:id="@+id/etApiKey"
                 android:layout_width="match_parent"
@@ -84,17 +51,24 @@
                 android:hint="Enter your Gemini API key"
                 android:inputType="textPassword"/>
 
-            <Button
-                android:id="@+id/btnEditApiKey"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Edit API Key"/>
+                android:orientation="horizontal"
+                android:gravity="center">
 
-            <Button
-                android:id="@+id/btnSaveApiKey"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Save API Key"/>
+                <Button
+                    android:id="@+id/btnEditApiKey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit API Key"/>
+
+                <Button
+                    android:id="@+id/btnSaveApiKey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"/>
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

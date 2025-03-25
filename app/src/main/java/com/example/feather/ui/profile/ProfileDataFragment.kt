@@ -74,7 +74,6 @@ class ProfileDataFragment : Fragment() {
                 binding.firstNameEditText.setText(user.firstName)
                 binding.lastNameEditText.setText(user.lastName)
                 binding.dobEditText.setText(user.dateOfBirth)
-                binding.emailEditText.setText(user.email)
             }
         }
 
@@ -99,7 +98,6 @@ class ProfileDataFragment : Fragment() {
         binding.firstNameEditText.isEnabled = isEditing
         binding.lastNameEditText.isEnabled = isEditing
         binding.dobEditText.isEnabled = isEditing
-        binding.emailEditText.isEnabled = isEditing
 
         // Update the button text
         if (isEditing) {
@@ -112,8 +110,7 @@ class ProfileDataFragment : Fragment() {
             val updatedUserData = UserData(
                 firstName = binding.firstNameEditText.text.toString(),
                 lastName = binding.lastNameEditText.text.toString(),
-                dateOfBirth = binding.dobEditText.text.toString(),
-                email = binding.emailEditText.text.toString()
+                dateOfBirth = binding.dobEditText.text.toString()
             )
             authViewModel.updateUserData(updatedUserData)
         }
