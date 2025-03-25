@@ -62,6 +62,12 @@ class SelectDreamFragment : Fragment() {
             DividerItemDecoration(requireContext(), LinearLayoutManager.VERTICAL)
         )
 
+        aiViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.dreamsRecyclerView.isEnabled = !isLoading
+            binding.dreamsRecyclerView.alpha = if (isLoading) 0.5f else 1.0f // Dim when loading
+        }
+
 
         dreamViewModel.userDreams.observe(viewLifecycleOwner) { dreams ->
             if (!dreams.isNullOrEmpty()) {

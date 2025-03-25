@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.feather.databinding.FragmentSettingsBinding
+import com.example.feather.models.UserData
 import com.example.feather.viewmodels.ai.ApiKeyViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -60,17 +61,32 @@ class SettingsFragment : Fragment() {
         }
 
         // Save API Key Button - Saves Key Only If Edited
-        binding.btnSaveApiKey.setOnClickListener {
-            if (isEditing) {
-                val apiKey = binding.etApiKey.text.toString().trim()
-                apiKeyViewModel.saveApiKey(apiKey)
-                Toast.makeText(requireContext(), "API Key saved successfully!", Toast.LENGTH_SHORT).show()
-                binding.etApiKey.isEnabled = false  // Disable after saving
-                isEditing = false
-            }
+        binding.btnEditApiKey.setOnClickListener {
+            toggleEditing()
         }
 
         apiKeyViewModel.loadApiKey()
+    }
+
+    private fun toggleEditing() {
+        isEditing = !isEditing
+        // Enable or disable the EditTexts based on isEditing
+        binding.etApiKey.isEnabled = isEditing
+
+        // Update the button text
+        if (isEditing) {
+            binding.btnEditApiKey.text = "Save"
+        } else {
+            binding.btnEditApiKey.text = "Edit Account Data"
+        }
+
+        if (!isEditing) {
+            val apiKey = binding.etApiKey.text.toString().trim()
+            apiKeyViewModel.saveApiKey(apiKey)
+            Toast.makeText(requireContext(), "API Key saved successfully!", Toast.LENGTH_SHORT).show()
+            binding.etApiKey.isEnabled = false  // Disable after saving
+            isEditing = false
+        }
     }
 
     override fun onDestroyView() {

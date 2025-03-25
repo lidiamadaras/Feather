@@ -36,6 +36,14 @@ class DreamAnalysisFragment : Fragment() {
 
         binding.HomeTitleTextView.text = "Dream analysis with Gemini AI"
 
+        aiViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+
+            binding.weeklyAnalysisTextView.isEnabled = !isLoading
+            binding.monthlyAnalysisTextView.isEnabled = !isLoading
+            binding.analyzeOneDreamTextView.isEnabled = !isLoading
+        }
+
         binding.analyzeOneDreamTextView.setOnClickListener {
             findNavController().navigate(R.id.action_dreamAnalysisFragment_to_selectDreamFragment)
         }

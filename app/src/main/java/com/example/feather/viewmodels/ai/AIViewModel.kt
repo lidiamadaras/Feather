@@ -29,7 +29,11 @@ class AIViewModel @Inject constructor(
     private val _analysisResultMonthly = MutableLiveData<String?>()
     val analysisResultMonthly: LiveData<String?> get() = _analysisResultMonthly
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
     fun analyzeDream(dream: DreamModel) {
+        _isLoading.value = true
         viewModelScope.launch {
             try {
                 val result = aiService.analyzeDream(dream)
@@ -45,10 +49,12 @@ class AIViewModel @Inject constructor(
                 Log.e("AIViewModel", "Unexpected error", e)
                 _analysisResult.value = "Analysis failed: ${e.localizedMessage ?: "Unexpected error"}"
             }
+            _isLoading.postValue(false)
         }
     }
 
     fun analyzeWeeklyDreams() {
+        _isLoading.value = true
         viewModelScope.launch {
             try {
                 val result = aiService.analyzeWeekly()
@@ -64,10 +70,12 @@ class AIViewModel @Inject constructor(
                 Log.e("AIViewModel", "Unexpected error", e)
                 _analysisResultWeekly.value = "Analysis failed: ${e.localizedMessage ?: "Unexpected error"}"
             }
+            _isLoading.postValue(false)
         }
     }
 
     fun analyzeMonthlyDreams() {
+        _isLoading.value = true
         viewModelScope.launch {
             try {
                 val result = aiService.analyzeMonthly()
@@ -83,6 +91,7 @@ class AIViewModel @Inject constructor(
                 Log.e("AIViewModel", "Unexpected error", e)
                 _analysisResultMonthly.value = "Analysis failed: ${e.localizedMessage ?: "Unexpected error"}"
             }
+            _isLoading.postValue(false)
         }
     }
 

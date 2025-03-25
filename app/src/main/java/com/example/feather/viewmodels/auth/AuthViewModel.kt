@@ -40,10 +40,9 @@ class AuthViewModel @Inject constructor(private val authService: AuthService) : 
     private val _updateStatus = MutableLiveData<Boolean>()
     val updateStatus: LiveData<Boolean> get() = _updateStatus
 
-
-
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
+
 
     fun login(email: String, password: String) {
         viewModelScope.launch {
