@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.feather.R
 import com.example.feather.databinding.FragmentExploreBinding
 
 class ExploreFragment : Fragment() {
@@ -27,6 +29,10 @@ class ExploreFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.HomeTitleTextView.text = "Explore"
+
+        binding.symbolsTextView.setOnClickListener{
+            findNavController().navigate(R.id.action_exploreFragment_to_symbolsFragment)
+        }
     }
 
     override fun onDestroyView() {

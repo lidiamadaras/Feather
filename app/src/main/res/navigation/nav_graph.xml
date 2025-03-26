@@ -26,6 +26,9 @@
         android:name="com.example.feather.ui.explore.ExploreFragment"
         android:label="fragment_explore"
         tools:layout="@layout/fragment_explore" >
+        <action
+            android:id="@+id/action_exploreFragment_to_symbolsFragment"
+            app:destination="@id/symbolsFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"
@@ -258,6 +261,14 @@
         android:name="com.example.feather.ui.profile.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" >
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/symbolsFragment"
+        android:name="com.example.feather.ui.explore.SymbolsFragment"
+        android:label="fragment_symbols"
+        tools:layout="@layout/fragment_symbols" >
     </fragment>
 
 

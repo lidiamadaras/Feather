@@ -1,7 +1,6 @@
 package com.example.feather.models
 
 import com.google.firebase.Timestamp
-import java.util.Date
 
 data class UserData(
     val firstName: String = "",
@@ -55,4 +54,12 @@ data class EmotionModel(
     val name: String = "",
     val dateAdded: Timestamp? = null,
     val description: String? = null
+)
+
+data class SymbolModel(
+    val id: String = "",
+    val name: String = "",
+    val description: String = "",
+    val searchCount: Int = 0,
+    val tag : String = ""
 )
