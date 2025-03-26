@@ -22,17 +22,38 @@ class ExploreViewModel @Inject constructor(private val exploreService: ExploreSe
     fun getSymbols() {
         viewModelScope.launch {
             val temp = exploreService.getSymbols()
-            allSymbols = temp 
+            allSymbols = temp
             _symbols.value = temp
         }
     }
+
+//    fun filterSymbols(query: String) {
+//        val filteredList = if (query.isEmpty()) {
+//            allSymbols
+//        } else {
+//            allSymbols.filter { it.name.contains(query, ignoreCase = true) }
+//        }
+//
+//        _symbols.value = if (filteredList.isEmpty()) {
+//            listOf(SymbolModel("no_match", "No match found for this symbol: try asking *Gemini*"))
+//        } else {
+//            filteredList
+//        }
+//    }
 
     fun filterSymbols(query: String) {
         val filteredList = if (query.isEmpty()) {
             allSymbols
         } else {
-            allSymbols.filter { it.name.contains(query, ignoreCase = true) }
+            val matches = allSymbols.filter { it.name.contains(query, ignoreCase = true) }
+
+            matches.ifEmpty {
+                // Add the "no match" symbol if no matches are found
+                listOf(SymbolModel(id = "no_match", name = ""))
+            }
         }
+
         _symbols.value = filteredList
     }
+
 }

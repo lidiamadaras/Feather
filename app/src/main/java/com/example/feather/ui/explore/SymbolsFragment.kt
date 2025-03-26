@@ -60,6 +60,10 @@ class SymbolsFragment : Fragment() {
             listOf(),
             onItemClick = { symbol ->
                 navigateToSymbolDetail(symbol.id)
+            },
+            onGeminiClick = {
+                //findNavController().navigate(R.id.action_symbolsFragment_to_geminiFragment)
+
             }
         )
 
