@@ -42,9 +42,7 @@ class ExploreRepository  @Inject constructor() {
         return try {
             val currentUser = auth.currentUser
             if (currentUser != null) {
-                val affirmationDoc = db.collection("users")
-                    .document(currentUser.uid)
-                    .collection("symbols")
+                val affirmationDoc = db.collection("symbols")
                     .document(symbolId)
                     .get()
                     .await()

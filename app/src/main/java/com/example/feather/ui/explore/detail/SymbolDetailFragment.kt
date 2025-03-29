@@ -57,7 +57,7 @@ class SymbolDetailFragment : Fragment() {
                 if (selectedSymbol != null) {
                     displayDreamDetails(selectedSymbol)
                 } else {
-                    Log.d("Error", "Symbol not found for ID: $symbolId")
+                    Log.d("Symbol", "Symbol not found for ID: $symbolId")
                     Toast.makeText(context, "Symbol not found", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -71,7 +71,7 @@ class SymbolDetailFragment : Fragment() {
         binding.HomeTitleTextView.text = selectedSymbol.name
 
         binding.interpretationTextView.text = selectedSymbol.description
-        binding.tagTextView.text = selectedSymbol.tag
+        //binding.tagTextView.text = selectedSymbol.tag
     }
 
     override fun onDestroyView() {

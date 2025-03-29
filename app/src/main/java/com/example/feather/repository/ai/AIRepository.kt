@@ -27,12 +27,39 @@ import java.net.URL
 import com.google.ai.client.generativeai.type.Content
 import kotlin.reflect.full.memberProperties
 
+import com.google.ai.client.generativeai.type.GenerationConfig
+
+
+//import com.google.genai.GenerativeModel
+//import com.google.genai.types.GenerateContentConfig
+
 
 class AIRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    suspend fun generateImageOfDream(apiKey: String, dream: DreamModel): Bitmap? {
+    suspend fun generateImageOfDream(apiKey: String, dream: DreamModel){
+        val generativeModel = GenerativeModel(
+            modelName = "gemini-2.0-flash-exp-image-generation",
+            apiKey = apiKey
+        )
+
+//        val prompt = Content(
+//            parts = listOf(Content.Part(text = "Create a 3D rendered image of a futuristic city with flying cars and greenery."))
+//        )
+//
+//        // Configure response to include both text & image
+//        val config = GenerationConfig(
+//            responseModalities = listOf("Text", "Image")
+//        )
+
+    }
+
+
+
+
+
+    suspend fun generateImageOfDreamNo(apiKey: String, dream: DreamModel): Bitmap? {
         return withContext(Dispatchers.IO) {
             try {
                 val generativeModel = GenerativeModel(

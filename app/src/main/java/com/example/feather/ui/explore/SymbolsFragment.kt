@@ -48,19 +48,31 @@ class SymbolsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentSymbolsBinding.inflate(inflater, container, false)
+
+        exploreViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+            binding.symbolsRecyclerView.isEnabled = !isLoading
+            binding.symbolsRecyclerView.alpha = if (isLoading) 0.5f else 1.0f // Dim when loading
+        }
+
+
         return binding.root
+
+
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        exploreViewModel.getSymbols()
+
         binding.HomeTitleTextView.text = "Symbols"
 
         //only had to run ONE time, database is filled:
         //exploreViewModel.loadCSVSymbols(requireContext())
 
-        exploreViewModel.getSymbols()
+
 
 
         adapter = SymbolsAdapter(

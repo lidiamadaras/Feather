@@ -110,6 +110,10 @@ dependencies {
     implementation (libs.opencsv.opencsv)
 
     implementation(libs.kotlin.reflect)
+
+    implementation(libs.generativeai.v012)
+
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 }
 
 kapt {

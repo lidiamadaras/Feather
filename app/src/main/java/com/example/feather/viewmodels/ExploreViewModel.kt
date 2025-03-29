@@ -24,6 +24,9 @@ class ExploreViewModel @Inject constructor(private val exploreService: ExploreSe
     private val _symbol = MutableLiveData<SymbolModel?>()
     val symbol: LiveData<SymbolModel?> = _symbol
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
 
     fun getSymbolById(id: String) {
         viewModelScope.launch {
@@ -32,11 +35,13 @@ class ExploreViewModel @Inject constructor(private val exploreService: ExploreSe
     }
 
     fun getSymbols() {
+        _isLoading.value = true
         viewModelScope.launch {
             val temp = exploreService.getSymbols()
             allSymbols = temp
             _symbols.value = temp
         }
+        _isLoading.value = false
     }
 
     fun filterSymbols(query: String) {

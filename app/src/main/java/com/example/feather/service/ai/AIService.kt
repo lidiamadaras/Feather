@@ -30,9 +30,9 @@ class AIService @Inject constructor(
         return repository.saveInterpretation(analysisText, type)
     }
 
-    suspend fun generateImage(dream: DreamModel): Bitmap? {
-        val apiKey = safeStorage.getApiKey() ?: return null
-        return repository.generateImageOfDream(apiKey, dream)
-    }
+//    suspend fun generateImage(dream: DreamModel): Bitmap? {
+//        val apiKey = safeStorage.getApiKey() ?: return null
+//        return repository.generateImageOfDream(apiKey, dream)
+//    }
 
 }

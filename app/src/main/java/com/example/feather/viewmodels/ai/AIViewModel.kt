@@ -40,8 +40,8 @@ class AIViewModel @Inject constructor(
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val result = aiService.generateImage(dream)
-                _imageResult.value = result
+                //val result = aiService.generateImage(dream)
+                //_imageResult.value = result
 //                result.onSuccess { imageUrl ->
 //                    _imageResult.value = imageUrl // Now we have a URL, not raw image bytes
 //                }

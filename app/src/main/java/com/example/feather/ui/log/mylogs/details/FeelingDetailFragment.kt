@@ -77,8 +77,6 @@ class FeelingDetailFragment : Fragment() {
 
     private fun displayFeelingDetails(selectedFeeling: FeelingModel) {
         feelingIntensityTextView = binding.feelingIntensityTextView
-        timeStartedTextView = binding.timeStartedTextView
-        timeEndedTextView = binding.timeEndedTextView
         emotionTextView = binding.emotionTextView
 
         emotionTextView.text = selectedFeeling.emotion
