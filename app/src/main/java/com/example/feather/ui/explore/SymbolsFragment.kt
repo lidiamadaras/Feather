@@ -57,11 +57,11 @@ class SymbolsFragment : Fragment() {
 
         binding.HomeTitleTextView.text = "Symbols"
 
-//        exploreViewModel.getSymbols()
+        //only had to run ONE time, database is filled:
+        //exploreViewModel.loadCSVSymbols(requireContext())
 
-        lifecycleScope.launch {
-            exploreViewModel.loadCSVSymbols(requireContext())
-        }
+        exploreViewModel.getSymbols()
+
 
         adapter = SymbolsAdapter(
             listOf(),
@@ -92,19 +92,19 @@ class SymbolsFragment : Fragment() {
 
 
         exploreViewModel.symbols.observe(viewLifecycleOwner) { symbols ->
-//            if (!symbols.isNullOrEmpty()) {
-//                adapter.updateSymbols(symbols)
-//            } else {
-//                Toast.makeText(context, "No symbols available", Toast.LENGTH_SHORT).show()
-//            }
-            adapter.updateSymbols(symbols) // Always update adapter, even if empty
+            if (!symbols.isNullOrEmpty()) {
+                adapter.updateSymbols(symbols)
+            } else {
+                Toast.makeText(context, "No symbols available", Toast.LENGTH_SHORT).show()
+            }
+            //adapter.updateSymbols(symbols) // Always update adapter, even if empty
 
             if (symbols.isEmpty() && binding.etSearchSymbols.text.isEmpty()) {
                 Toast.makeText(context, "No symbols available", Toast.LENGTH_SHORT).show()
             }
         }
 
-        exploreViewModel.getSymbols()
+
     }
 
     private fun navigateToSymbolDetail(id: String) {
@@ -112,7 +112,7 @@ class SymbolsFragment : Fragment() {
             putString("symbolId", id) // Pass only the recipe ID
         }
         findNavController().navigate(
-            //R.id.action_myAffirmationsFragment_to_affirmationDetailFrgment,
+            R.id.action_symbolsFragment_to_symbolDetailFragment,
             bundle
         )
     }

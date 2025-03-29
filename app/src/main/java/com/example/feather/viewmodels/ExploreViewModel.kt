@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.feather.models.AffirmationModel
 import com.example.feather.models.SymbolModel
 import com.example.feather.service.ExploreService
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +20,16 @@ class ExploreViewModel @Inject constructor(private val exploreService: ExploreSe
     val symbols: LiveData<List<SymbolModel>> = _symbols
 
     private var allSymbols = listOf<SymbolModel>()
+
+    private val _symbol = MutableLiveData<SymbolModel?>()
+    val symbol: LiveData<SymbolModel?> = _symbol
+
+
+    fun getSymbolById(id: String) {
+        viewModelScope.launch {
+            _symbol.value = exploreService.getSymbolById(id)
+        }
+    }
 
     fun getSymbols() {
         viewModelScope.launch {
@@ -43,10 +54,9 @@ class ExploreViewModel @Inject constructor(private val exploreService: ExploreSe
         _symbols.value = filteredList
     }
 
-    fun loadCSVSymbols(context: Context) {
-        Log.d("Firestore", "entered VM function")
-            exploreService.loadCSVSymbols(context)
-
-    }
+//    fun loadCSVSymbols(context: Context) {
+//        Log.d("Firestore", "entered VM function")
+//        exploreService.loadCSVSymbols(context)
+//    }
 
 }

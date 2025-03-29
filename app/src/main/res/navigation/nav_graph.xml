@@ -288,6 +288,15 @@
         android:name="com.example.feather.ui.explore.SymbolsFragment"
         android:label="fragment_symbols"
         tools:layout="@layout/fragment_symbols" >
+        <action
+            android:id="@+id/action_symbolsFragment_to_symbolDetailFragment"
+            app:destination="@id/symbolDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/symbolDetailFragment"
+        android:name="com.example.feather.ui.explore.detail.SymbolDetailFragment"
+        android:label="fragment_symbol_detail"
+        tools:layout="@layout/fragment_symbol_detail" >
     </fragment>
 
 
