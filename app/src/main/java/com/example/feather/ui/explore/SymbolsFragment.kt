@@ -20,6 +20,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +30,8 @@ import com.example.feather.ui.adapter.SymbolsAdapter
 import com.example.feather.viewmodels.ExploreViewModel
 import com.google.firebase.Timestamp
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 @AndroidEntryPoint
 class SymbolsFragment : Fragment() {
@@ -55,6 +58,10 @@ class SymbolsFragment : Fragment() {
         binding.HomeTitleTextView.text = "Symbols"
 
 //        exploreViewModel.getSymbols()
+
+        lifecycleScope.launch {
+            exploreViewModel.loadCSVSymbols(requireContext())
+        }
 
         adapter = SymbolsAdapter(
             listOf(),
@@ -109,6 +116,7 @@ class SymbolsFragment : Fragment() {
             bundle
         )
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Clear binding to prevent memory leaks

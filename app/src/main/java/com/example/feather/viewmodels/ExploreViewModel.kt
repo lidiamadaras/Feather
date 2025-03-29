@@ -1,5 +1,6 @@
 package com.example.feather.viewmodels
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,20 +28,6 @@ class ExploreViewModel @Inject constructor(private val exploreService: ExploreSe
         }
     }
 
-//    fun filterSymbols(query: String) {
-//        val filteredList = if (query.isEmpty()) {
-//            allSymbols
-//        } else {
-//            allSymbols.filter { it.name.contains(query, ignoreCase = true) }
-//        }
-//
-//        _symbols.value = if (filteredList.isEmpty()) {
-//            listOf(SymbolModel("no_match", "No match found for this symbol: try asking *Gemini*"))
-//        } else {
-//            filteredList
-//        }
-//    }
-
     fun filterSymbols(query: String) {
         val filteredList = if (query.isEmpty()) {
             allSymbols
@@ -54,6 +41,12 @@ class ExploreViewModel @Inject constructor(private val exploreService: ExploreSe
         }
 
         _symbols.value = filteredList
+    }
+
+    fun loadCSVSymbols(context: Context) {
+        Log.d("Firestore", "entered VM function")
+            exploreService.loadCSVSymbols(context)
+
     }
 
 }

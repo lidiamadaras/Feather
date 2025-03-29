@@ -105,6 +105,9 @@ dependencies {
 
 
     implementation (libs.ktor.client.android)
+
+    //for csv:
+    implementation (libs.opencsv.opencsv)
 }
 
 kapt {

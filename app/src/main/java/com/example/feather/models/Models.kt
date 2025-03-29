@@ -61,5 +61,5 @@ data class SymbolModel(
     val name: String = "",
     val description: String = "",
     val searchCount: Int = 0,
-    val tag : String = ""
+    val tag : String = "General"
 )

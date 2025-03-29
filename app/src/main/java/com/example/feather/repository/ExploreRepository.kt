@@ -1,5 +1,6 @@
 package com.example.feather.repository
 
+import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
@@ -9,6 +10,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
+import java.io.InputStream
+import com.opencsv.CSVReader
+import java.io.InputStreamReader
 import javax.inject.Inject
 
 class ExploreRepository  @Inject constructor() {
@@ -58,4 +62,55 @@ class ExploreRepository  @Inject constructor() {
 //        }
 //
 //    }
+
+    //handling the csv file with the symbols:
+
+    private fun parseCsvToSymbols(inputStream: InputStream): List<SymbolModel> {
+        val reader = CSVReader(InputStreamReader(inputStream))
+        val symbols = mutableListOf<SymbolModel>()
+
+        reader.readNext()
+
+        var line: Array<String>?
+        while (reader.readNext().also { line = it } != null) {
+            val name = line?.get(0) ?: ""
+            val description = line?.get(1) ?: ""
+
+            val symbol = SymbolModel(name = name, description = description)
+            symbols.add(symbol)
+        }
+        return symbols
+    }
+
+    private fun uploadSymbolsFromCSV(symbols: List<SymbolModel>) {
+        val symbolsCollection = db.collection("symbols")
+
+        symbols.forEach { symbol ->
+            val symbolMap = hashMapOf(
+                "name" to symbol.name,
+                "description" to symbol.description,
+                "searchCount" to symbol.searchCount,
+                "tag" to symbol.tag
+            )
+
+            symbolsCollection.add(symbolMap)
+                .addOnSuccessListener { documentReference ->
+                    Log.d("Firestore", "Document added with ID: ${documentReference.id}")
+                }
+                .addOnFailureListener { e ->
+                    Log.w("Firestore", "Error adding document", e)
+                }
+        }
+    }
+
+    fun loadCsvAndUploadToDatabase(context: Context) {
+        Log.d("Firestore", "entered repo context function")
+        val inputStream = context.assets.open("symbols.csv")
+
+        Log.d("Firestore", inputStream.toString())
+        val symbols = parseCsvToSymbols(inputStream)
+        uploadSymbolsFromCSV(symbols)
+    }
+
+
 }

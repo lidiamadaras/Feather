@@ -1,5 +1,6 @@
 package com.example.feather.service
 
+import android.content.Context
 import android.util.Log
 import com.example.feather.models.SymbolModel
 import com.example.feather.repository.ExploreRepository
@@ -9,6 +10,11 @@ class ExploreService @Inject constructor(private val exploreRepository: ExploreR
 
     suspend fun getSymbols(): List<SymbolModel> {
         return exploreRepository.getSymbols()
+    }
+
+    fun loadCSVSymbols(context: Context){
+        Log.d("Firestore", "entered service function")
+        exploreRepository.loadCsvAndUploadToDatabase(context)
     }
 
 

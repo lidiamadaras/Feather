@@ -24,6 +24,7 @@ firebaseFirestoreKtx = "25.1.1"
 navigationFragmentKtx = "2.8.5"
 okhttp = "4.10.0"
 openaiClient = "3.0.0"
+opencsvVersion = "5.7.1"
 playServicesAuth = "21.3.0"
 retrofit = "2.9.0"
 securityCrypto = "1.1.0-alpha06"
@@ -65,6 +66,7 @@ material = { module = "com.google.android.material:material", version.ref = "mat
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 openai-client = { module = "com.aallam.openai:openai-client", version.ref = "openaiClient" }
+opencsv-opencsv = { module = "com.opencsv:opencsv", version.ref = "opencsvVersion" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
