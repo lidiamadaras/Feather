@@ -27,7 +27,7 @@ class AIRepository @Inject constructor() {
         return withContext(Dispatchers.IO) {
             try {
                 val generativeModel = GenerativeModel(
-                    modelName = "gemini-1.5-flash",
+                    modelName = "gemini-2.5-pro-exp-03-25",
                     apiKey = apiKey,
                     generationConfig = generationConfig {
                         temperature = 1f
