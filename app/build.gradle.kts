@@ -108,6 +108,8 @@ dependencies {
 
     //for csv:
     implementation (libs.opencsv.opencsv)
+
+    implementation(libs.kotlin.reflect)
 }
 
 kapt {

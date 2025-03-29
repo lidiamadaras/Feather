@@ -1,5 +1,6 @@
 package com.example.feather.service.ai
 
+import android.graphics.Bitmap
 import com.example.feather.ai.SecureStorage
 import com.example.feather.models.AffirmationModel
 import com.example.feather.models.DreamModel
@@ -27,6 +28,11 @@ class AIService @Inject constructor(
 
     suspend fun saveAnalysis(analysisText: String, type: String): Result<Unit> {
         return repository.saveInterpretation(analysisText, type)
+    }
+
+    suspend fun generateImage(dream: DreamModel): Bitmap? {
+        val apiKey = safeStorage.getApiKey() ?: return null
+        return repository.generateImageOfDream(apiKey, dream)
     }
 
 }

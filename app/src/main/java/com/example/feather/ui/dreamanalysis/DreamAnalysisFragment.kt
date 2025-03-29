@@ -48,6 +48,10 @@ class DreamAnalysisFragment : Fragment() {
             findNavController().navigate(R.id.action_dreamAnalysisFragment_to_selectDreamFragment)
         }
 
+        binding.generateImageTextView.setOnClickListener {
+            findNavController().navigate(R.id.action_dreamAnalysisFragment_to_selectDreamImageGenerationFragment)
+        }
+
         aiViewModel.analysisResultWeekly.observe(viewLifecycleOwner) { result ->
             result?.let { analysis ->
                 navigateToWeeklyAnalysisFragment(analysis)
