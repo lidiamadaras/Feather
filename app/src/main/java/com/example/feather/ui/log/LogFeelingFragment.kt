@@ -180,88 +180,8 @@ class LogFeelingFragment : Fragment() {
         alertDialog.show()
     }
 
-//    private fun showEmotionSelectionDialog() {
-//        val emotionList = mutableListOf<EmotionModel>()
-//
-//        val dialogView = layoutInflater.inflate(R.layout.dialog_select_emotion, null)
-//        val emotionListView = dialogView.findViewById<ListView>(R.id.emotionListView)
-//
-//
-//        val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_multiple_choice)
-//        emotionListView.adapter = adapter
-//
-//        val alertDialog = AlertDialog.Builder(requireContext())
-//            .setTitle("Select Emotion")
-//            .setView(dialogView)
-//            .setPositiveButton("Done") { _, _ ->
-//                selectedEmotion.clear()
-//                for (i in 0 until emotionListView.count) {
-//                    if (emotionListView.isItemChecked(i)) {
-//                        selectedEmotion.add(emotionList[i])
-//                    }
-//                }
-//            }
-//            .setNegativeButton("Cancel", null)
-//            .create()
-//
-//
-//        feelingViewModel.getUserEmotions()
-//
-//        feelingViewModel.userEmotions.observe(viewLifecycleOwner) { emotions ->
-//            emotionList.clear()
-//            emotionList.addAll(emotions)
-//            adapter.clear()
-//            adapter.addAll(emotions.map { it.name })
-//            adapter.notifyDataSetChanged()
-//        }
-//
-//        feelingViewModel.saveEmotionResult.observe(viewLifecycleOwner) { result ->
-//            if( result.isSuccess){
-//                feelingViewModel.userEmotions.observe(viewLifecycleOwner) { emotions ->
-//                    emotionList.clear()
-//                    emotionList.addAll(emotions)
-//                    adapter.clear()
-//                    adapter.addAll(emotions.map { it.name })
-//                    adapter.notifyDataSetChanged()
-//                }
-//            }
-//        }
-//
-//
-//
-//        //feelingViewModel.getUserEmotions()
-//
-////        addEmotionButton.setOnClickListener {
-////            showAddEmotionDialog()
-////        }
-//
-//        alertDialog.show()
-//    }
-
-//    private fun showAddEmotionDialog() {
-//        val dialogView = layoutInflater.inflate(R.layout.dialog_add_emotion, null)
-//        val emotionEditText = dialogView.findViewById<EditText>(R.id.emotionEditText)
-//        val emotionDescEditText = dialogView.findViewById<EditText>(R.id.emotionDescEditText)
-//
-//        AlertDialog.Builder(requireContext())
-//            .setTitle("Add New Emotion")
-//            .setView(dialogView)
-//            .setPositiveButton("Save") { _, _ ->
-//                val emotionName = emotionEditText.text.toString().trim()
-//                val emotionDescription = emotionDescEditText.text.toString().trim()
-//                val newEmotion = EmotionModel(name = emotionName, dateAdded = Timestamp.now(), description = emotionDescription)
-//                feelingViewModel.saveEmotion(newEmotion)
-//            }
-//            .setNegativeButton("Cancel", null)
-//            .show()
-//    }
-
-
-
     private fun saveFeeling() {
         val intensity = intensitySpinner.selectedItem.toString()
-
-
 
         if (selectedEmotion.isNotEmpty()) {
             firstEmotion = selectedEmotion.first()
@@ -277,7 +197,6 @@ class LogFeelingFragment : Fragment() {
             intensity = intensity,
             emotion = firstEmotion.name
         )
-
 
         feelingViewModel.saveFeeling(feeling)
     }

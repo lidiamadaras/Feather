@@ -188,54 +188,8 @@ class LogDreamFragment : Fragment() {
             }
         }
 
-
-//        val dialogViewAddKeyword = layoutInflater.inflate(R.layout.dialog_add_keyword, null)
-//        val keywordEditText = dialogViewAddKeyword.findViewById<EditText>(R.id.keywordEditText)
-//        var newKeyword = KeywordModel()
-//
-//        addKeywordButton.setOnClickListener {
-//            val keywordName = keywordEditText.text.toString().trim()
-//            if (keywordName.isNotEmpty()) {
-//                newKeyword = KeywordModel(name = keywordName, dateAdded = Timestamp.now())
-//            }
-//            if (!keywordList.contains(newKeyword)) {
-//                dreamViewModel.saveKeyword(newKeyword)  // Save new keyword
-//                // Ensure it appears immediately in the list
-//                keywordList.add(newKeyword)
-//                adapter.notifyDataSetChanged()
-//            } else {
-//                Toast.makeText(requireContext(), "Keyword already exists or is empty", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
-//        addKeywordButton.setOnClickListener {
-//            //showAddKeywordDialog(alertDialog)
-//        }
-
         alertDialog.show()
     }
-
-//    private fun showAddKeywordDialog(parentDialog: AlertDialog) {
-//        val dialogView = layoutInflater.inflate(R.layout.dialog_add_keyword, null)
-//        val keywordEditText = dialogView.findViewById<EditText>(R.id.keywordEditText)
-//
-//        AlertDialog.Builder(requireContext())
-//            .setTitle("Add New Keyword")
-//            .setView(dialogView)
-//            .setPositiveButton("Save") { _, _ ->
-//                val keywordName = keywordEditText.text.toString().trim()
-//                if (keywordName.isNotEmpty()) {
-//                    val newKeyword = KeywordModel(name = keywordName, dateAdded = Timestamp.now())
-//
-//                    // Save and refresh dialog
-//                    dreamViewModel.saveKeyword(newKeyword)
-//                    parentDialog.dismiss() // Close current dialog
-//                    showKeywordSelectionDialog() // Reopen with updated list
-//                }
-//            }
-//            .setNegativeButton("Cancel", null)
-//            .show()
-//    }
 
     private fun saveDream() {
         val dreamText = dreamInputEditText.text.toString().trim()

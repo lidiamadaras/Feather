@@ -47,6 +47,13 @@ class FeelingViewModel @Inject constructor(private val feelingService: FeelingSe
         }
     }
 
+    fun checkIfEmotionExists(name: String, callback: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val exists = feelingService.doesEmotionExist(name)
+            callback(exists)
+        }
+    }
+
     fun getUserEmotions() {
         viewModelScope.launch {
             val emotions = feelingService.getUserEmotions()

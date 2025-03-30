@@ -74,6 +74,18 @@ class FeelingRepository @Inject constructor() {
         }
     }
 
+    suspend fun doesEmotionExist(name: String): Boolean {
+        Log.d("FeelingRepo", "checking if emotion with name $name exists")
+        return try {
+            val doc = db.collection("emotions").document(name).get().await()
+            doc.exists()
+        } catch (e: Exception) {
+            Log.d("FeelingRepo", "error checking if exists: $e ")
+            false
+        }
+    }
+
+
     suspend fun getUserEmotions(): List<EmotionModel> {
         return try {
             val currentUser = auth.currentUser

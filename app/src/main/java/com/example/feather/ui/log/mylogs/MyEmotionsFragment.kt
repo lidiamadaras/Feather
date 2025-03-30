@@ -58,12 +58,16 @@ class MyEmotionsFragment : Fragment() {
         adapter = EmotionsAdapter(
             listOf(),
             onItemClick = { emotion ->
-                navigateToEmotionDetail(emotion.name)
+                //navigateToEmotionDetail(emotion.name)
             },
             onItemLongClick = { emotion ->
                 showDeleteConfirmationDialog(emotion)
             }
         )
+
+        binding.fabAddEmotion.setOnClickListener{
+            addEmotion()
+        }
 
         // Set up the RecyclerView
         binding.emotionsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -92,17 +96,73 @@ class MyEmotionsFragment : Fragment() {
             }
         }
 
+        feelingViewModel.saveEmotionResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(requireContext(), "Emotion saved", Toast.LENGTH_SHORT).show()
+                feelingViewModel.getUserEmotions()
+                //adapter.notifyDataSetChanged()
+            }
+            result.onFailure { exception ->
+                Toast.makeText(requireContext(), "Error saving emotion: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
-    private fun navigateToEmotionDetail(id: String) {
-        val bundle = Bundle().apply {
-            putString("emotionId", id) // Pass only the recipe ID
+//    private fun navigateToEmotionDetail(id: String) {
+//        val bundle = Bundle().apply {
+//            putString("emotionId", id) // Pass only the recipe ID
+//        }
+//        findNavController().navigate(
+//            R.id.action_myEmotionsFragment_to_emotionDetailFragment,
+//            bundle
+//        )
+//    }
+
+    private fun addEmotion() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_add_emotion, null)
+        val emotionNameEditText = dialogView.findViewById<EditText>(R.id.emotionEditText)
+        val emotionDescriptionEditText = dialogView.findViewById<EditText>(R.id.emotionDescEditText)
+
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Add New Emotion")
+            .setView(dialogView)
+            .setPositiveButton("Save Emotion", null) // Overriding later
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        alertDialog.setOnShowListener {
+            val saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            saveButton.setOnClickListener {
+                val name = emotionNameEditText.text.toString().trim()
+                val description = emotionDescriptionEditText.text.toString().trim()
+
+                if (name.isEmpty()) {
+                    emotionNameEditText.error = "Emotion name cannot be empty"
+                    return@setOnClickListener
+                }
+
+                // Check if the emotion already exists before saving
+                feelingViewModel.checkIfEmotionExists(name) { exists ->
+                    if (exists) {
+                        emotionNameEditText.error = "Emotion already exists!"
+                    } else {
+                        val newEmotion = EmotionModel(
+                            name = name,
+                            dateAdded = Timestamp.now(),
+                            description = description.ifEmpty { null }
+                        )
+
+                        feelingViewModel.saveEmotion(newEmotion)
+                        alertDialog.dismiss()
+                    }
+                }
+            }
         }
-        findNavController().navigate(
-            R.id.action_myEmotionsFragment_to_emotionDetailFragment,
-            bundle
-        )
+
+        alertDialog.show()
     }
+
 
     private fun showDeleteConfirmationDialog(emotion: EmotionModel) {
         val builder = AlertDialog.Builder(requireContext())

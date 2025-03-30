@@ -23,6 +23,10 @@ class FeelingService @Inject constructor(private val feelingRepository: FeelingR
         return feelingRepository.saveEmotion(emotion)
     }
 
+    suspend fun doesEmotionExist(name: String): Boolean{
+        return feelingRepository.doesEmotionExist(name)
+    }
+
     suspend fun getUserEmotions(): List<EmotionModel> {
         return feelingRepository.getUserEmotions()
     }
