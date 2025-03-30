@@ -108,17 +108,17 @@ class LogDreamFragment : Fragment() {
             dreamCategorySpinner.adapter = adapter
         }
 
-        dreamViewModel.saveKeywordResult.observe(viewLifecycleOwner) { result ->
-            result.onSuccess {
-                Toast.makeText(requireContext(), "Keyword saved", Toast.LENGTH_SHORT).show()
-                //dreamViewModel.getUserKeywords()
-                showKeywordSelectionDialog()
-
-            }
-            result.onFailure { exception ->
-                Toast.makeText(requireContext(), "Error saving keyword: ${exception.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
+//        dreamViewModel.saveKeywordResult.observe(viewLifecycleOwner) { result ->
+//            result.onSuccess {
+//                Toast.makeText(requireContext(), "Keyword saved", Toast.LENGTH_SHORT).show()
+//                //dreamViewModel.getUserKeywords()
+//                showKeywordSelectionDialog()
+//
+//            }
+//            result.onFailure { exception ->
+//                Toast.makeText(requireContext(), "Error saving keyword: ${exception.message}", Toast.LENGTH_SHORT).show()
+//            }
+//        }
 
         dreamViewModel.saveResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
