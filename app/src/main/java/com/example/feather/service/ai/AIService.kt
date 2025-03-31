@@ -30,6 +30,14 @@ class AIService @Inject constructor(
         return repository.saveInterpretation(analysisText, type)
     }
 
+    suspend fun savePreferredPersona(persona: String) {
+        return repository.savePreferredPersona(persona)
+    }
+
+    suspend fun loadPreferredPersona(): String? {
+        return repository.loadPreferredPersona()
+    }
+
 //    suspend fun generateImage(dream: DreamModel): Bitmap? {
 //        val apiKey = safeStorage.getApiKey() ?: return null
 //        return repository.generateImageOfDream(apiKey, dream)

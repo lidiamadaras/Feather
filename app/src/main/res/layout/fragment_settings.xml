@@ -57,7 +57,109 @@
                     android:layout_height="wrap_content"
                     android:text="Edit API Key"/>
 
+            <TextView
+                android:id="@+id/personasTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="AI Personas"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="left"
+                android:padding="7dp"
+                android:layout_marginBottom="7dp"/>
 
+            <RadioGroup
+                android:id="@+id/radioGroupPersonas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:enabled="false">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:gravity="center_vertical">
+
+                    <RadioButton
+                        android:id="@+id/radioPersona1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:minHeight="64dp"
+                        android:text="Psychological AI" />
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:src="@drawable/logo"
+                        android:contentDescription="Psychological AI Icon"
+                        android:layout_marginStart="5dp"/>
+                </LinearLayout>
+
+
+                <!-- Christian AI -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:gravity="center_vertical">
+
+                    <RadioButton
+                        android:id="@+id/radioPersona2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:minHeight="64dp"
+                        android:text="Christian AI" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="An AI with a faith-based approach, inspired by Christian teachings and values."
+                        android:textSize="14sp"
+                        android:paddingStart="40dp"
+                        android:paddingBottom="8dp"/>
+
+                    <ImageView
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:src="@drawable/logo"
+                        android:contentDescription="Christian AI Icon"
+                        android:layout_marginStart="5dp"/>
+                </LinearLayout>
+
+                <!-- Creative AI -->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical"-->
+<!--                    android:padding="8dp">-->
+
+<!--                    <RadioButton-->
+<!--                        android:id="@+id/radioPersona3"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:minHeight="64dp"-->
+<!--                        android:text="Creative AI" />-->
+
+<!--                    <TextView-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="A highly imaginative AI, ideal for generating creative ideas and artistic content."-->
+<!--                        android:textSize="14sp"-->
+<!--                        android:paddingStart="40dp"-->
+<!--                        android:paddingBottom="8dp"/>-->
+<!--                </LinearLayout>-->
+
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/btnEditPersona"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit preference" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

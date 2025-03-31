@@ -36,6 +36,31 @@ class AIViewModel @Inject constructor(
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _preferredPersona = MutableLiveData<Result<String?>>()
+    val preferredPersona: LiveData<Result<String?>> = _preferredPersona
+
+    fun savePreferredPersona(persona: String) {
+        viewModelScope.launch {
+            try {
+                aiService.savePreferredPersona(persona)
+                _preferredPersona.value = Result.success(persona)
+            } catch (e: Exception) {
+                _preferredPersona.value = Result.failure(e)
+            }
+        }
+    }
+
+    fun loadPreferredPersona() {
+        viewModelScope.launch {
+            try {
+                val persona = aiService.loadPreferredPersona()
+                _preferredPersona.postValue(Result.success(persona))
+            } catch (e: Exception) {
+                _preferredPersona.postValue(Result.failure(e))
+            }
+        }
+    }
+
     fun generateImage(dream: DreamModel) {
         _isLoading.value = true
         viewModelScope.launch {

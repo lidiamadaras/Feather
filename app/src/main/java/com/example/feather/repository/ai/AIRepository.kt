@@ -18,6 +18,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import java.util.*
 import android.util.Log
+import com.example.feather.models.AIPersonaModel
 import com.google.ai.client.generativeai.type.TextPart
 import com.google.ai.client.generativeai.type.Part
 import com.google.ai.client.generativeai.type.ImagePart
@@ -55,9 +56,44 @@ class AIRepository @Inject constructor() {
 
     }
 
+    suspend fun savePreferredPersona(persona: String) {
+        val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
 
+        db.collection("users")
+            .document(userId)
+            .update("preferredPersona", persona)
+            .await()
+    }
 
+    suspend fun loadPreferredPersona(): String? {
+        val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
 
+        val document = db.collection("users")
+            .document(userId)
+            .get()
+            .await()
+
+        return document.getString("preferredPersona")
+    }
+
+    suspend fun getPersonaByName(personaName: String): AIPersonaModel?{
+        return try {
+                val personaDoc = db.collection("personasGemini")
+                    .document(personaName)
+                    .get()
+                    .await()
+
+                if (personaDoc.exists()) {
+                    personaDoc.toObject(AIPersonaModel::class.java)?.copy(name = personaDoc.id)
+                } else {
+                    null
+                }
+
+        } catch (e: Exception) {
+            Log.e("AIRepo", "Error fetching persona: ${e.message}")
+            null
+        }
+    }
 
     suspend fun generateImageOfDreamNo(apiKey: String, dream: DreamModel): Bitmap? {
         return withContext(Dispatchers.IO) {

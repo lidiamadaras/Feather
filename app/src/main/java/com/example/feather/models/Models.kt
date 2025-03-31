@@ -6,7 +6,8 @@ data class UserData(
     val firstName: String = "",
     val lastName: String = "",
     val dateOfBirth: String = "",
-    val email: String = ""
+    val email: String = "",
+    val preferredPersona: String = ""
 ) {
     constructor() : this("", "", "", "")
 }
@@ -62,4 +63,10 @@ data class SymbolModel(
     val description: String = "",
     val searchCount: Int = 0,
     val tag : String = "General"
+)
+
+data class AIPersonaModel(
+    val name: String = "Psychological",
+    val dateAdded: Timestamp? = null,
+    val description: String? = null
 )
