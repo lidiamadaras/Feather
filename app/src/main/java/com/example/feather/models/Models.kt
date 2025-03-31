@@ -68,5 +68,6 @@ data class SymbolModel(
 data class AIPersonaModel(
     val name: String = "Psychological",
     val dateAdded: Timestamp? = null,
-    val description: String? = null
+    val description: String? = null,
+    val prompt: String? = null
 )

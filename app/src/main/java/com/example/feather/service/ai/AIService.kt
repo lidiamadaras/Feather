@@ -38,6 +38,7 @@ class AIService @Inject constructor(
         return repository.loadPreferredPersona()
     }
 
+
 //    suspend fun generateImage(dream: DreamModel): Bitmap? {
 //        val apiKey = safeStorage.getApiKey() ?: return null
 //        return repository.generateImageOfDream(apiKey, dream)

@@ -20,41 +20,69 @@ import java.util.*
 import android.util.Log
 import com.example.feather.models.AIPersonaModel
 import com.google.ai.client.generativeai.type.TextPart
-import com.google.ai.client.generativeai.type.Part
 import com.google.ai.client.generativeai.type.ImagePart
 import java.io.InputStream
 import java.net.URL
 
-import com.google.ai.client.generativeai.type.Content
-import kotlin.reflect.full.memberProperties
-
-import com.google.ai.client.generativeai.type.GenerationConfig
-
-
-//import com.google.genai.GenerativeModel
-//import com.google.genai.types.GenerateContentConfig
+import android.util.Base64
+import com.example.feather.models.Content
+import com.example.feather.models.GeminiRequest
+import com.example.feather.models.GeminiResponse
+import com.example.feather.models.GenerationConfig
+import com.example.feather.models.Part
+import com.example.feather.service.ai.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
 
 
 class AIRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-    suspend fun generateImageOfDream(apiKey: String, dream: DreamModel){
-        val generativeModel = GenerativeModel(
-            modelName = "gemini-2.0-flash-exp-image-generation",
-            apiKey = apiKey
-        )
-
-//        val prompt = Content(
-//            parts = listOf(Content.Part(text = "Create a 3D rendered image of a futuristic city with flying cars and greenery."))
+//    fun generateImage(apiKey: String) {
+//
+//        val requestBody = GeminiRequest(
+//            contents = listOf(
+//                Content(parts = listOf(Part(text = "Hi, can you create a 3D rendered image of a cockatoo with wings and a top hat flying over a happy futuristic sci-fi city with lots of greenery?")))
+//            ),
+//            generationConfig = GenerationConfig(responseModalities = listOf("IMAGE"))
 //        )
 //
-//        // Configure response to include both text & image
-//        val config = GenerationConfig(
-//            responseModalities = listOf("Text", "Image")
-//        )
-
-    }
+//        RetrofitClient.instance.generateImage(apiKey, requestBody).enqueue(object : Callback<GeminiResponse> {
+//            override fun onResponse(call: Call<GeminiResponse>, response: Response<GeminiResponse>) {
+//                if (response.isSuccessful) {
+//                    val imageData = response.body()?.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.inlineData?.data
+//                    if (imageData != null) {
+//                        saveImage(imageData)
+//                    } else {
+//                        Log.e("GeminiAPI", "No image data found")
+//                    }
+//                } else {
+//                    Log.e("GeminiAPI", "API request failed: ${response.errorBody()?.string()}")
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<GeminiResponse>, t: Throwable) {
+//                Log.e("GeminiAPI", "Request failed", t)
+//            }
+//        })
+//    }
+//
+//    fun saveImage(base64String: String) {
+//        try {
+//            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+//            val file = File("/sdcard/Download/generated_image_YAY.png") // Adjust path as needed
+//            val fos = FileOutputStream(file)
+//            fos.write(decodedBytes)
+//            fos.close()
+//            Log.d("GeminiAPI", "Image saved successfully at: ${file.absolutePath}")
+//        } catch (e: Exception) {
+//            Log.e("GeminiAPI", "Error saving image", e)
+//        }
+//    }
 
     suspend fun savePreferredPersona(persona: String) {
         val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
@@ -91,145 +119,6 @@ class AIRepository @Inject constructor() {
 
         } catch (e: Exception) {
             Log.e("AIRepo", "Error fetching persona: ${e.message}")
-            null
-        }
-    }
-
-    suspend fun generateImageOfDreamNo(apiKey: String, dream: DreamModel): Bitmap? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val generativeModel = GenerativeModel(
-                    modelName = "gemini-2.0-flash-exp-image-generation",
-                    apiKey = apiKey
-                )
-
-                //Analyze this dream and based on the description and the analysis, the themes and symbols found in the dream, create a prompt for image generation, then use this prompt to generate a realistic, deep image that describes this dream.
-
-                val prompt = """
-                    Generate a deep, surreal, and symbolic image based on the following dream description.
-                Ensure it captures the themes, symbols, and emotions of the dream in a visually realistic way.
-                    Title: ${dream.title}
-                    Description: ${dream.description}
-                    Keywords: ${dream.keywords.joinToString(", ")}
-                    Category: ${dream.category}
-                """.trimIndent()
-
-                val response = generativeModel.generateContent(prompt)
-                Log.d("ImageGenerator candidates", response.candidates.toString())
-
-                for (part in response.candidates[0].content.parts){
-                    Log.d("ImageGenerator part", part.toString())
-                }
-
-                if (response.candidates.isNotEmpty()) {
-                    for (part: Part in response.candidates[0].content.parts) {
-
-                        Log.d("ImageGenerator", "--- Processing Part ---")
-                        Log.d("ImageGenerator", "Part Actual Class: ${part::class.java.simpleName}")
-
-                        // --- Reflection Start ---
-                        Log.d("ImageGenerator", "Reflecting on Part properties:")
-                        try {
-                            // Get all member properties using Kotlin reflection
-                            val properties = part::class.memberProperties
-                            if (properties.isEmpty()) {
-                                Log.d("ImageGenerator", "  >> No member properties found via Kotlin reflection.")
-                                // Fallback: Try Java reflection (might show private fields)
-                                Log.d("ImageGenerator", "  >> Trying Java reflection for fields:")
-                                part::class.java.declaredFields.forEach { field ->
-                                    Log.d("ImageGenerator", "    Java Field: ${field.name} (Type: ${field.type.simpleName})")
-                                }
-                            } else {
-                                properties.forEach { prop ->
-                                    Log.d("ImageGenerator", "  Property: ${prop.name} (Type: ${prop.returnType})")
-                                    // Attempt to get the value (might fail if not accessible)
-                                    try {
-                                        // NOTE: Getting value via reflection can be slow and might fail
-                                        // val value = prop.getter.call(part)
-                                        // Log.d("ImageGenerator", "    Value: $value") // Careful logging value, could be large (like image data)
-                                    } catch (e: Exception) {
-                                        Log.w("ImageGenerator", "    Could not get value for ${prop.name}: ${e.message}")
-                                    }
-                                }
-                            }
-                        } catch (e: Exception) {
-                            Log.e("ImageGenerator", "Reflection failed: ${e.message}")
-                        }
-                        // --- Reflection End ---
-
-
-                        // Keep the 'when' block for structure, but rely on reflection results for now
-                        when (part) {
-                            is TextPart -> {
-                                Log.d("ImageGenerator", "Confirmed TextPart. Text: ${part.text}")
-                            }
-                            is ImagePart -> {
-                                Log.d("ImageGenerator", "Confirmed ImagePart. Now check reflected properties for data.")
-                                // PREVIOUSLY FAILED CODE: if (part.inlineData != null) { ... }
-                                // NOW: Look at the reflection log output above to find the correct property name
-                                // e.g., if reflection showed a property named 'imageDataBytes', you'd try accessing that.
-
-                                // --- !!! Placeholder: Adapt based on Reflection Output !!! ---
-                                // Example: If reflection showed a property 'imageData' of type ByteArray
-                                /*
-                                try {
-                                   // Use Java reflection to access if needed, replace 'imageData' with actual name
-                                   val field = part::class.java.getDeclaredField("imageData") // Replace "imageData"
-                                   field.isAccessible = true // Allow access to private/internal fields
-                                   val imageData = field.get(part) as? ByteArray // Cast to expected type
-
-                                   if (imageData != null) {
-                                       Log.d("ImageGenerator", "Successfully accessed data via reflection!")
-                                       val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-                                       if (bitmap != null) {
-                                           Log.d("ImageGenerator", "Bitmap decoded successfully!")
-                                           return@withContext bitmap
-                                       } else {
-                                           Log.e("ImageGenerator", "Failed to decode Bitmap from reflected data")
-                                           return@withContext null
-                                       }
-                                   } else {
-                                       Log.w("ImageGenerator", "Reflected data was null or wrong type.")
-                                       return@withContext null
-                                   }
-                                } catch (e: NoSuchFieldException) {
-                                     Log.e("ImageGenerator", "Reflection: Field not found - check property name!")
-                                     return@withContext null
-                                } catch (e: Exception) {
-                                     Log.e("ImageGenerator", "Reflection access error: ${e.message}", e)
-                                     return@withContext null
-                                }
-                                */
-                                // --- !!! End Placeholder !!! ---
-
-                            }
-                            else -> {
-                                Log.w("ImageGenerator", "Unknown/Unhandled Part type: ${part::class.java.simpleName}")
-                            }
-                        }
-                        Log.d("ImageGenerator", "--- Finished Processing Part ---")
-                    }
-                    Log.w("ImageGenerator", "Loop finished, no suitable image part processed successfully.")
-                    return@withContext null
-
-                } else {
-                    Log.w("ImageGenerator", "Response candidates is empty!")
-                    return@withContext null
-                }
-
-            } catch (e: Exception) {
-                Log.e("ImageGenerator error e", "Error generating image: ${e.message}")
-                return@withContext null
-            }
-        }
-    }
-
-    private fun loadImageFromUrl(imageUrl: String): Bitmap? {
-        return try {
-            val inputStream: InputStream = URL(imageUrl).openStream()
-            BitmapFactory.decodeStream(inputStream)
-        } catch (e: Exception) {
-            Log.e("ImageGenerator error loading from url", "Error loading image from URL: ${e.message}")
             null
         }
     }

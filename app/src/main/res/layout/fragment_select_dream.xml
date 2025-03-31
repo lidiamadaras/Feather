@@ -34,6 +34,15 @@ android:padding="16dp">
             style="?android:attr/progressBarStyleLarge"
             android:layout_gravity="center"/>
 
+        <ImageView
+            android:id="@+id/generatedImageView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:contentDescription="Generated Image"
+            android:visibility="gone" /> <!-- Hidden by default -->
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dreamsRecyclerView"
             android:layout_width="match_parent"

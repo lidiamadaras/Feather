@@ -114,6 +114,9 @@ dependencies {
     implementation(libs.generativeai.v012)
 
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }
 
 kapt {

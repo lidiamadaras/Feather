@@ -88,8 +88,8 @@ class SettingsFragment : Fragment() {
         aiViewModel.preferredPersona.observe(viewLifecycleOwner) { result ->
             result.onSuccess { persona ->
                 when (persona) {
-                    "Christian" -> binding.radioPersona1.isChecked = true
-                    "Psychological" -> binding.radioPersona2.isChecked = true
+                    "Psychological" -> binding.radioPersona1.isChecked = true
+                    "Christian" -> binding.radioPersona2.isChecked = true
                     //"Creative AI" -> binding.radioPersona3.isChecked = true
                 }
             }
@@ -98,8 +98,8 @@ class SettingsFragment : Fragment() {
 
     private fun savePreferredPersona() {
         val selectedPersona = when (binding.radioGroupPersonas.checkedRadioButtonId) {
-            R.id.radioPersona1 -> "Philosophical AI"
-            R.id.radioPersona2 -> "Scientific AI"
+            R.id.radioPersona1 -> "Psychological"
+            R.id.radioPersona2 -> "Christian"
             //R.id.radioPersona3 -> "Creative AI"
             else -> null
         }
