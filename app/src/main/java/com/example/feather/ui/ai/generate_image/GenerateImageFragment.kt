@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.feather.R
 import com.example.feather.databinding.FragmentAnalyzeDreamBinding
 import com.example.feather.databinding.FragmentGenerateImageBinding
+import com.example.feather.viewmodels.ai.AIViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,6 +24,8 @@ class GenerateImageFragment : Fragment() {
 
     private var _binding: FragmentGenerateImageBinding? = null
     private val binding get() = _binding!!
+
+    private val aiViewModel : AIViewModel by viewModels()
 
 
     override fun onCreateView(
@@ -37,22 +40,34 @@ class GenerateImageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val prompt = arguments?.getString("prompt") ?: return
 
-        val base64Image = arguments?.getString("generated_image")
-        if (base64Image != null) {
-            val bitmap = decodeBase64ToBitmap(base64Image)
-            binding.generatedImageView.setImageBitmap(bitmap) // Display image
-        }
+        //aiViewModel.generateImage(prompt = prompt)
+
+//        aiViewModel.imageResult.observe(viewLifecycleOwner) { imagePath ->
+//            if (imagePath != null) {
+//                val bitmap = BitmapFactory.decodeFile(imagePath)
+//                binding.imageView.setImageBitmap(bitmap)
+//            } else {
+//                Toast.makeText(requireContext(), "Failed to generate image", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+
+//        val base64Image = arguments?.getString("generated_image")
+//        if (base64Image != null) {
+//            val bitmap = decodeBase64ToBitmap(base64Image)
+//            binding.generatedImageView.setImageBitmap(bitmap) // Display image
+//        }
     }
 
-    private fun decodeBase64ToBitmap(base64Image: String): Bitmap? {
-        return try {
-            val decodedBytes = Base64.decode(base64Image, Base64.DEFAULT)
-            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-        } catch (e: Exception) {
-            null
-        }
-    }
+//    private fun decodeBase64ToBitmap(base64Image: String): Bitmap? {
+//        return try {
+//            val decodedBytes = Base64.decode(base64Image, Base64.DEFAULT)
+//            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+//        } catch (e: Exception) {
+//            null
+//        }
+//    }
 
 
     override fun onDestroyView() {

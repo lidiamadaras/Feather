@@ -18,10 +18,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.feather"
+        applicationId = "com.dream.feather"
         minSdk = 24
-        targetSdk = 33
-        versionCode = 1
+        //noinspection EditedTargetSdkVersion
+        targetSdk = 34
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

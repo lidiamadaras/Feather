@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:790502916636:android:f8bfccc347be5febc195d9",
         "android_client_info": {
-          "package_name": "com.example.feather"
+          "package_name": "com.dream.feather"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "790502916636-fu4vhut1dq1b5k4936eqp5i37uqibirf.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.feather",
+            "package_name": "com.dream.feather",
             "certificate_hash": "0ba7894284731a287d1dfb4d97689efd837c9ea5"
           }
         },

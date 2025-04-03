@@ -1,8 +1,6 @@
 package com.example.feather.service.ai
 
-import android.graphics.Bitmap
 import com.example.feather.ai.SecureStorage
-import com.example.feather.models.AffirmationModel
 import com.example.feather.models.DreamModel
 import com.example.feather.repository.ai.AIRepository
 import javax.inject.Inject
@@ -36,6 +34,20 @@ class AIService @Inject constructor(
 
     suspend fun loadPreferredPersona(): String? {
         return repository.loadPreferredPersona()
+    }
+
+//    suspend fun generateImage(prompt: String): String?{
+//        val apiKey = safeStorage.getApiKey() ?: return null
+//        return repository.generateImage(apiKey, prompt)
+//    }
+
+    fun generateImage(prompt: String): Unit? {
+        val apiKey = safeStorage.getApiKey()
+        return apiKey?.let { repository.generateImage(it, prompt) }
+    }
+
+    fun saveImage(imageData: String): String? {
+        return repository.saveImage(imageData)
     }
 
 

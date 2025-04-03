@@ -25,9 +25,6 @@ class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-    private val apiKeyViewModel: ApiKeyViewModel by viewModels()
-    private val authViewModel: AuthViewModel by viewModels()
-    private var isEditing = false   //for changing api key
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,10 +39,6 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.HomeTitleTextView.text = "Profile"
-
-//        authViewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-//            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-//        }
 
         binding.profileDataTextView.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_profileDataFragment)

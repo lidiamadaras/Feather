@@ -22,6 +22,7 @@ import java.io.ByteArrayOutputStream
 import android.util.Base64
 import android.util.Log
 import com.example.feather.models.Content
+import com.example.feather.models.DreamModel
 import com.example.feather.models.GeminiRequest
 import com.example.feather.models.GeminiResponse
 import com.example.feather.models.GenerationConfig
@@ -64,7 +65,10 @@ class SelectDreamFragment : Fragment() {
         adapter = AIDreamsAdapter(
             listOf(),
             onItemClick = { dream ->
-                aiViewModel.generateImage(dream)
+                val prompt = createPromptFromDream(dream)
+                //aiViewModel.generateImage(prompt)
+                Log.d("GeminiAPI", prompt)
+                generateImage(apiKey = "AIzaSyD8RNvwZ0uWWVRDLRMGUx1KpUA1AsqrMsU",prompt = prompt)
             }
         )
 
@@ -93,38 +97,24 @@ class SelectDreamFragment : Fragment() {
             }
         }
 
-        aiViewModel.imageResult.observe(viewLifecycleOwner) { bitmap ->
-            if (bitmap != null) {
-                //imageView.setImageBitmap(bitmap)
-                //navigateToGenerateImageFragment(bitmap)
-            } else {
-                Toast.makeText(requireContext(), "Image generation failed", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        ////////////////////////////trying retrofit:
-
-        generateImage(apiKey = "")
-
-        val file = File(requireContext().filesDir, "generated_image.png")
-        if (file.exists()) {
-            val bitmap = BitmapFactory.decodeFile(file.absolutePath)
-            binding.generatedImageView.setImageBitmap(bitmap)
-        }
+//        aiViewModel.imageResult.observe(viewLifecycleOwner) { bitmap ->
+//            if (bitmap != null) {
+////                imageView.setImageBitmap(bitmap)
+////                navigateToGenerateImageFragment(bitmap)
+//            } else {
+//                Toast.makeText(requireContext(), "Image generation failed", Toast.LENGTH_SHORT).show()
+//            }
+//        }
     }
 
-    private fun generateImage(apiKey: String) {
-
-        Log.d("generate", "started")
-
+    private fun generateImage(apiKey: String, prompt: String) {
         val requestBody = GeminiRequest(
             model = "gemini-2.0-flash-exp-image-generation",
             contents = listOf(
-                Content(parts = listOf(Part(text = "Hi, can you create a 3D rendered image of a cockatoo with wings and a top hat flying over a happy futuristic sci-fi city with lots of greenery?")))
+                Content(parts = listOf(Part(text = prompt)))
             ),
             generationConfig = GenerationConfig(responseModalities = listOf("TEXT","IMAGE"))
         )
-
         RetrofitClient.instance.generateImage(apiKey, requestBody).enqueue(object :
             Callback<GeminiResponse> {
             override fun onResponse(call: Call<GeminiResponse>, response: Response<GeminiResponse>) {
@@ -139,7 +129,6 @@ class SelectDreamFragment : Fragment() {
                     Log.e("GeminiAPI", "API request failed: ${response.errorBody()?.string()}")
                 }
             }
-
             override fun onFailure(call: Call<GeminiResponse>, t: Throwable) {
                 Log.e("GeminiAPI", "Request failed", t)
             }
@@ -149,7 +138,7 @@ class SelectDreamFragment : Fragment() {
     fun saveImage(base64String: String) {
         try {
             val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-            val file = File("/data/data/com.example.feather/files/generated_image_YAY.png") // Adjust path as needed
+            val file = File("/data/data/com.example.feather/files/generated_image_YAY2.png") // Adjust path as needed
             val fos = FileOutputStream(file)
             fos.write(decodedBytes)
             fos.close()
@@ -157,6 +146,18 @@ class SelectDreamFragment : Fragment() {
         } catch (e: Exception) {
             Log.e("GeminiAPI", "Error saving image", e)
         }
+    }
+
+    private fun createPromptFromDream(dream: DreamModel): String{
+        return """
+            Based on the following dream description, generate a realistic and vivid dream scenario. 
+            Consider possible meanings, psychological themes, and symbolic elements. 
+            Expand upon the details, adding depth to the dream's setting, emotions, and any hidden messages it may convey. 
+            
+            Dream description: "${dream.description}"
+            
+            Provide an immersive and thought-provoking interpretation.
+        """.trimIndent()
     }
 
     private fun navigateToGenerateImageFragment(bitmap: Bitmap) {

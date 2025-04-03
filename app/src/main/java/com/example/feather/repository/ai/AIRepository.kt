@@ -1,28 +1,17 @@
 package com.example.feather.repository.ai
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.example.feather.models.DreamModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import javax.inject.Inject
-import okhttp3.RequestBody.Companion.toRequestBody
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.generationConfig
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import java.util.*
 import android.util.Log
 import com.example.feather.models.AIPersonaModel
-import com.google.ai.client.generativeai.type.TextPart
-import com.google.ai.client.generativeai.type.ImagePart
-import java.io.InputStream
-import java.net.URL
 
 import android.util.Base64
 import com.example.feather.models.Content
@@ -42,39 +31,83 @@ class AIRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
 
-//    fun generateImage(apiKey: String) {
+//    suspend fun generateImage(apiKey: String, prompt: String): String? {
+//        return withContext(Dispatchers.IO) {
+//            try {
+//                val requestBody = GeminiRequest(
+//                    model = "gemini-2.0-flash-exp-image-generation",
+//                    contents = listOf(
+//                        Content(parts = listOf(Part(text = prompt)))
+//                    ),
+//                    generationConfig = GenerationConfig(responseModalities = listOf("TEXT", "IMAGE"))
+//                )
 //
-//        val requestBody = GeminiRequest(
-//            contents = listOf(
-//                Content(parts = listOf(Part(text = "Hi, can you create a 3D rendered image of a cockatoo with wings and a top hat flying over a happy futuristic sci-fi city with lots of greenery?")))
-//            ),
-//            generationConfig = GenerationConfig(responseModalities = listOf("IMAGE"))
-//        )
+//                val response = RetrofitClient.instance.generateImage(apiKey, requestBody).execute()
 //
-//        RetrofitClient.instance.generateImage(apiKey, requestBody).enqueue(object : Callback<GeminiResponse> {
-//            override fun onResponse(call: Call<GeminiResponse>, response: Response<GeminiResponse>) {
 //                if (response.isSuccessful) {
-//                    val imageData = response.body()?.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.inlineData?.data
-//                    if (imageData != null) {
-//                        saveImage(imageData)
-//                    } else {
-//                        Log.e("GeminiAPI", "No image data found")
-//                    }
+//                    response.body()?.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.inlineData?.data
 //                } else {
 //                    Log.e("GeminiAPI", "API request failed: ${response.errorBody()?.string()}")
+//                    null
 //                }
+//            } catch (e: Exception) {
+//                Log.e("GeminiAPI", "Request failed", e)
+//                null
 //            }
-//
-//            override fun onFailure(call: Call<GeminiResponse>, t: Throwable) {
-//                Log.e("GeminiAPI", "Request failed", t)
-//            }
-//        })
+//        }
 //    }
-//
-//    fun saveImage(base64String: String) {
+
+     fun generateImage(apiKey: String, prompt: String) {
+        val requestBody = GeminiRequest(
+            model = "gemini-2.0-flash-exp-image-generation",
+            contents = listOf(
+                Content(parts = listOf(Part(text = "Hi, can you create a 3D rendered image of a cockatoo with wings and a top hat flying over a happy futuristic sci-fi city with lots of greenery?")))
+            ),
+            generationConfig = GenerationConfig(responseModalities = listOf("TEXT","IMAGE"))
+        )
+        RetrofitClient.instance.generateImage(apiKey, requestBody).enqueue(object :
+            Callback<GeminiResponse> {
+            override fun onResponse(call: Call<GeminiResponse>, response: Response<GeminiResponse>) {
+                if (response.isSuccessful) {
+                    val imageData = response.body()?.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.inlineData?.data
+                    if (imageData != null) {
+                        saveImage(imageData)
+                    } else {
+                        Log.e("GeminiAPI", "No image data found")
+                    }
+                } else {
+                    Log.e("GeminiAPI", "API request failed: ${response.errorBody()?.string()}")
+                }
+            }
+            override fun onFailure(call: Call<GeminiResponse>, t: Throwable) {
+                Log.e("GeminiAPI", "Request failed", t)
+            }
+        })
+    }
+
+    fun saveImage(base64String: String): String? {
+        return try {
+            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
+            val file = File("/data/data/com.example.feather/files/generated_image_YAY2.png") // Adjust path as needed
+
+            FileOutputStream(file).use { fos ->
+                fos.write(decodedBytes)
+            }
+
+            Log.d("GeminiAPI", "Image saved successfully at: ${file.absolutePath}")
+            file.absolutePath // Return the saved file path
+        } catch (e: Exception) {
+            Log.e("GeminiAPI", "Error saving image", e)
+            null // Return null in case of failure
+        }
+    }
+
+
+
+//    fun saveImage(base64String: String): String? {
 //        try {
 //            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-//            val file = File("/sdcard/Download/generated_image_YAY.png") // Adjust path as needed
+//            val file = File("/data/data/com.example.feather/files/generated_image_YAY2.png") // Adjust path as needed
 //            val fos = FileOutputStream(file)
 //            fos.write(decodedBytes)
 //            fos.close()

@@ -30,14 +30,44 @@ class AIViewModel @Inject constructor(
     private val _analysisResultMonthly = MutableLiveData<String?>()
     val analysisResultMonthly: LiveData<String?> get() = _analysisResultMonthly
 
-    private val _imageResult = MutableLiveData<Bitmap?>()
-    val imageResult: LiveData<Bitmap?> get() = _imageResult
-
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val _preferredPersona = MutableLiveData<Result<String?>>()
     val preferredPersona: LiveData<Result<String?>> = _preferredPersona
+
+    private val _imageResult = MutableLiveData<String?>()
+    val imageResult: LiveData<String?> get() = _imageResult
+
+//    fun generateImage(prompt: String) {
+//        _isLoading.value = true
+//        viewModelScope.launch {
+//            try {
+//                val imageData = aiService.generateImage(prompt)
+//                val savedPath = imageData?.let { aiService.saveImage(it) }
+//                _imageResult.value = savedPath
+//            } catch (e: Exception) {
+//                Log.e("AIViewModel", "Image generation failed", e)
+//                _imageResult.value = null
+//            }
+//            _isLoading.postValue(false)
+//        }
+//    }
+
+//    fun generateImage(prompt: String) {
+//        _isLoading.value = true
+//        viewModelScope.launch {
+//            try {
+//                val imageData = aiService.generateImage(prompt)
+//                val savedPath = imageData?.let { aiService.saveImage(it) }
+//                _imageResult.value = savedPath
+//            } catch (e: Exception) {
+//                Log.e("AIViewModel", "Image generation failed", e)
+//                _imageResult.value = null
+//            }
+//            _isLoading.postValue(false)
+//        }
+//    }
 
     fun savePreferredPersona(persona: String) {
         viewModelScope.launch {
@@ -58,27 +88,6 @@ class AIViewModel @Inject constructor(
             } catch (e: Exception) {
                 _preferredPersona.postValue(Result.failure(e))
             }
-        }
-    }
-
-    fun generateImage(dream: DreamModel) {
-        _isLoading.value = true
-        viewModelScope.launch {
-            try {
-                //val result = aiService.generateImage(dream)
-                //_imageResult.value = result
-//                result.onSuccess { imageUrl ->
-//                    _imageResult.value = imageUrl // Now we have a URL, not raw image bytes
-//                }
-//                result.onFailure { error ->
-//                    Log.e("AIViewModel", "Dream image generation failed: ${error.localizedMessage}", error)
-//                    _imageResult.value = null
-//                }
-            } catch (e: Exception) {
-                Log.e("AIViewModel", "Unexpected error", e)
-                _imageResult.value = null
-            }
-            _isLoading.postValue(false)
         }
     }
 
