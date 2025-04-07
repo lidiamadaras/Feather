@@ -58,6 +58,7 @@ class AuthRepository @Inject constructor()  {
         } catch (e: FirebaseAuthUserCollisionException) {
             Result.failure(Exception("Email is already in use."))
         } catch (e: Exception) {
+            Log.d("Register", "Failed: $e")
             Result.failure(e)
         }
     }

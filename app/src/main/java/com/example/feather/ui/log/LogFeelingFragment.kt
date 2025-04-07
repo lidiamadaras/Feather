@@ -116,31 +116,29 @@ class LogFeelingFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error saving feeling: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
         }
-
-//        feelingViewModel.saveEmotionResult.observe(viewLifecycleOwner) { result ->
-//            result.onSuccess {
-//                Toast.makeText(requireContext(), "Emotion saved", Toast.LENGTH_SHORT).show()
-//            }
-//            result.onFailure { exception ->
-//                Toast.makeText(requireContext(), "Error saving emotion: ${exception.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
-
     }
 
     private fun showEmotionSelectionDialog() {
         val emotionList = mutableListOf<EmotionModel>()
         var selectedEmotionName: String? = selectedEmotion.firstOrNull()?.name // Track selected emotion by name
 
+
         val dialogView = layoutInflater.inflate(R.layout.dialog_select_emotion, null)
         val emotionListView = dialogView.findViewById<ListView>(R.id.emotionListView)
+        val emptyEmotionTextView = dialogView.findViewById<TextView>(R.id.emptyEmotionTextView)
 
         val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_single_choice)
         emotionListView.adapter = adapter
         emotionListView.choiceMode = ListView.CHOICE_MODE_SINGLE // Ensure only one selection
 
         feelingViewModel.getUserEmotions()
+
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Select Emotion")
+            .setView(dialogView)
+            .setPositiveButton("Done", null) // Override later
+            .setNegativeButton("Cancel", null)
+            .create()
 
         feelingViewModel.userEmotions.observe(viewLifecycleOwner) { emotions ->
             emotionList.clear()
@@ -150,19 +148,23 @@ class LogFeelingFragment : Fragment() {
             adapter.addAll(emotions.map { it.name })
             adapter.notifyDataSetChanged()
 
+            if (emotions.isEmpty()) {
+                emotionListView.visibility = View.GONE
+                emptyEmotionTextView.visibility = View.VISIBLE
+
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.visibility = View.GONE
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.text = "OK"
+            } else {
+                emotionListView.visibility = View.VISIBLE
+                emptyEmotionTextView.visibility = View.GONE
+            }
+
             // Restore checked state if an emotion was previously selected
             val selectedIndex = emotionList.indexOfFirst { it.name == selectedEmotionName }
             if (selectedIndex != -1) {
                 emotionListView.setItemChecked(selectedIndex, true)
             }
         }
-
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Select Emotion")
-            .setView(dialogView)
-            .setPositiveButton("Done", null) // Override later
-            .setNegativeButton("Cancel", null)
-            .create()
 
         alertDialog.setOnShowListener {
             val doneButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -175,6 +177,12 @@ class LogFeelingFragment : Fragment() {
                 }
                 alertDialog.dismiss()
             }
+        }
+
+        emptyEmotionTextView.setOnClickListener {
+            alertDialog.dismiss()
+            // Navigate to add keyword screen
+            findNavController().navigate(R.id.action_logFeelingFragment_to_myEmotionsFragment)
         }
 
         alertDialog.show()

@@ -65,6 +65,10 @@ class MyKeywordsFragment : Fragment() {
             }
         )
 
+        binding.fabAddKeyword.setOnClickListener{
+            addKeyword()
+        }
+
         // Set up the RecyclerView
         binding.keywordsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.keywordsRecyclerView.adapter = adapter
@@ -92,7 +96,51 @@ class MyKeywordsFragment : Fragment() {
             }
         }
 
+        dreamViewModel.saveKeywordResult.observe(viewLifecycleOwner) { result ->
+            result.onSuccess {
+                Toast.makeText(requireContext(), "Keyword saved", Toast.LENGTH_SHORT).show()
+                dreamViewModel.getUserKeywords()
+                //adapter.notifyDataSetChanged()
+            }
+            result.onFailure { exception ->
+                Toast.makeText(requireContext(), "Error saving keyword: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
+
+    private fun addKeyword() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_add_keyword, null)
+        val keywordEditText = dialogView.findViewById<EditText>(R.id.keywordEditText)
+
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Add New Keyword")
+            .setView(dialogView)
+            .setPositiveButton("Save Keyword", null) // Will override this later
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        alertDialog.setOnShowListener {
+            val saveButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            saveButton.setOnClickListener {
+                val name = keywordEditText.text.toString().trim()
+
+                if (name.isEmpty()) {
+                    keywordEditText.error = "Keyword name cannot be empty"
+                    return@setOnClickListener
+                }
+
+                val newKeyword = KeywordModel(
+                    name = name,
+                    dateAdded = Timestamp.now()
+                )
+                dreamViewModel.saveKeyword(newKeyword)
+                alertDialog.dismiss()
+            }
+        }
+        alertDialog.show()
+    }
+
 
     private fun navigateToKeywordDetail(id: String) {
         val bundle = Bundle().apply {

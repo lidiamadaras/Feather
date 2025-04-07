@@ -142,13 +142,20 @@ class LogDreamFragment : Fragment() {
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_select_keywords, null)
         val keywordListView = dialogView.findViewById<ListView>(R.id.keywordListView)
-        //val addKeywordButton = dialogView.findViewById<Button>(R.id.addKeywordButton)
+        val emptyKeywordTextView = dialogView.findViewById<TextView>(R.id.emptyKeywordTextView)
 
         val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_multiple_choice)
         keywordListView.adapter = adapter
 
 
         dreamViewModel.getUserKeywords()
+
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Select Keywords")
+            .setView(dialogView)
+            .setPositiveButton("Done", null) // Set null here to override later
+            .setNegativeButton("Cancel", null)
+            .create()
 
         dreamViewModel.userKeywords.observe(viewLifecycleOwner) { keywords ->
             //Log.d("keyword vm", keywords.toString())
@@ -159,21 +166,23 @@ class LogDreamFragment : Fragment() {
             adapter.addAll(keywords.map { it.name })
             adapter.notifyDataSetChanged()
 
-            // Restore checked state
+            if (keywords.isEmpty()) {
+                keywordListView.visibility = View.GONE
+                emptyKeywordTextView.visibility = View.VISIBLE
+
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.visibility = View.GONE
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.text = "OK"
+            } else {
+                keywordListView.visibility = View.VISIBLE
+                emptyKeywordTextView.visibility = View.GONE
+            }
+
             for (i in keywordList.indices) {
                 if (selectedKeywordNames.contains(keywordList[i].name)) {
                     keywordListView.setItemChecked(i, true)
                 }
             }
         }
-
-
-        val alertDialog = AlertDialog.Builder(requireContext())
-            .setTitle("Select Keywords")
-            .setView(dialogView)
-            .setPositiveButton("Done", null) // Set null here to override later
-            .setNegativeButton("Cancel", null)
-            .create()
 
         alertDialog.setOnShowListener {
             val doneButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
@@ -186,6 +195,12 @@ class LogDreamFragment : Fragment() {
                 }
                 alertDialog.dismiss() // Ensure it closes immediately
             }
+        }
+
+        emptyKeywordTextView.setOnClickListener {
+            alertDialog.dismiss()
+            // Navigate to add keyword screen
+            findNavController().navigate(R.id.action_logDreamFragment_to_myKeywordsFragment)
         }
 
         alertDialog.show()

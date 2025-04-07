@@ -64,6 +64,14 @@
         android:textSize="16sp"
         android:layout_marginTop="12dp"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Must contain uppercase, lowercase, number, and special character"
+        android:textSize="12sp"
+        android:textColor="#666666"
+        android:layout_marginTop="4dp"/>
+
     <Button
         android:id="@+id/registerButton"
         android:layout_width="match_parent"

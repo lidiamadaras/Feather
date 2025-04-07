@@ -4,6 +4,18 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:id="@+id/emptyEmotionTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No emotions saved. Click here to add!"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:clickable="true"
+        android:textColor="@android:color/holo_blue_dark"
+        android:focusable="true" />
     <ListView
         android:id="@+id/emotionListView"
         android:layout_width="match_parent"

@@ -4,9 +4,22 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:id="@+id/emptyKeywordTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No keywords saved. Click here to add!"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:padding="10dp"
+        android:clickable="true"
+        android:textColor="@android:color/holo_blue_dark"
+        android:focusable="true" />
+
     <ListView
         android:id="@+id/keywordListView"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         android:choiceMode="multipleChoice"/>
 </LinearLayout>

@@ -97,12 +97,18 @@
         android:name="com.example.feather.ui.log.LogDreamFragment"
         android:label="fragment_log_dream"
         tools:layout="@layout/fragment_log_dream" >
+        <action
+            android:id="@+id/action_logDreamFragment_to_myKeywordsFragment"
+            app:destination="@id/myKeywordsFragment" />
     </fragment>
     <fragment
         android:id="@+id/logFeelingFragment"
         android:name="com.example.feather.ui.log.LogFeelingFragment"
         android:label="fragment_log_feeling"
         tools:layout="@layout/fragment_log_feeling" >
+        <action
+            android:id="@+id/action_logFeelingFragment_to_myEmotionsFragment"
+            app:destination="@id/myEmotionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/reflectionFragment"
