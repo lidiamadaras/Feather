@@ -93,11 +93,11 @@ class AIViewModel @Inject constructor(
         }
     }
 
-    fun analyzeDream(dream: DreamModel) {
+    fun analyzeDream(dream: DreamModel, prompt: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val result = aiService.analyzeDream(dream)
+                val result = aiService.analyzeDream(dream, prompt)
                 result.onSuccess { response ->
                     _analysisResult.value = response
                 }
@@ -114,11 +114,11 @@ class AIViewModel @Inject constructor(
         }
     }
 
-    fun analyzeWeeklyDreams() {
+    fun analyzeWeeklyDreams(prompt: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val result = aiService.analyzeWeekly()
+                val result = aiService.analyzeWeekly(prompt)
                 result.onSuccess { response ->
                     _analysisResultWeekly.value = response
                 }
@@ -135,11 +135,11 @@ class AIViewModel @Inject constructor(
         }
     }
 
-    fun analyzeMonthlyDreams() {
+    fun analyzeMonthlyDreams(prompt: String) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val result = aiService.analyzeMonthly()
+                val result = aiService.analyzeMonthly(prompt)
                 result.onSuccess { response ->
                     _analysisResultMonthly.value = response
                 }
@@ -156,9 +156,9 @@ class AIViewModel @Inject constructor(
         }
     }
 
-    fun saveAnalysis(analysisText: String, type: String) {
+    fun saveAnalysis(analysisText: String, type: String, persona: String) {
         viewModelScope.launch {
-            _saveResult.value = runCatching { aiService.saveAnalysis(analysisText, type) }
+            _saveResult.value = runCatching { aiService.saveAnalysis(analysisText, type, persona) }
         }
     }
 }

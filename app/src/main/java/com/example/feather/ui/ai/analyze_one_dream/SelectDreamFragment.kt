@@ -1,6 +1,7 @@
 package com.example.feather.ui.ai.analyze_one_dream
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ class SelectDreamFragment : Fragment() {
     private val aiViewModel : AIViewModel by viewModels()
 
     private lateinit var adapter: AIDreamsAdapter
+    private var personaGemini: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,13 +47,31 @@ class SelectDreamFragment : Fragment() {
 
         dreamViewModel.getUserDreams()
 
+        val prompt = arguments?.getString("prompt")
+
         adapter = AIDreamsAdapter(
             listOf(),
             onItemClick = { dream ->
-                aiViewModel.analyzeDream(dream)
+                if (prompt != null) {
+                    aiViewModel.analyzeDream(dream, prompt)
+                }
             }
         )
 
+
+        aiViewModel.loadPreferredPersona()
+
+        aiViewModel.preferredPersona.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { persona ->
+                if (persona != null) {
+                    personaGemini = persona
+                }
+            }
+
+            result.onFailure {
+                personaGemini = ""
+            }
+        }
 
 
         // Set up the RecyclerView
@@ -79,18 +99,18 @@ class SelectDreamFragment : Fragment() {
 
         aiViewModel.analysisResult.observe(viewLifecycleOwner) { result ->
             result?.let { analysis ->
-                navigateToAnalyzeDreamFragment(analysis)
+                navigateToAnalyzeDreamFragment(analysis, personaGemini)
             }
         }
     }
 
 
 
-    private fun navigateToAnalyzeDreamFragment(analysisResult: String) {
+    private fun navigateToAnalyzeDreamFragment(analysisResult: String, persona: String) {
         val bundle = Bundle().apply {
             putString("analysis_result", analysisResult)
         }
-        aiViewModel.saveAnalysis(analysisResult, "single_dream_interpretations")
+        aiViewModel.saveAnalysis(analysisResult, "single_dream_interpretations", persona)
         findNavController().navigate(
             R.id.action_selectDreamFragment_to_analyzeDreamFragment,
             bundle

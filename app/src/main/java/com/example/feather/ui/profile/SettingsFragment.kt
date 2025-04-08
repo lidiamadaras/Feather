@@ -49,7 +49,8 @@ class SettingsFragment : Fragment() {
         binding.radioGroupPersonas.isEnabled = false
         binding.radioPersona1.isEnabled = false
         binding.radioPersona2.isEnabled = false
-        //binding.radioPersona3.isEnabled = false
+        binding.radioPersona3.isEnabled = false
+        binding.radioPersona4.isEnabled = false
 
         //api key:
 
@@ -79,7 +80,8 @@ class SettingsFragment : Fragment() {
 
         // Personas:
 
-        Log.d("Persona F", "calling loadpersona in fragment")
+
+
         aiViewModel.loadPreferredPersona()
 
         binding.btnEditPersona.setOnClickListener {
@@ -89,10 +91,11 @@ class SettingsFragment : Fragment() {
         aiViewModel.preferredPersona.observe(viewLifecycleOwner) { result ->
             result.onSuccess { persona ->
                 when (persona) {
-                    "Psychological" -> binding.radioPersona1.isChecked = true
-                    "Christian" -> binding.radioPersona2.isChecked = true
+                    "Psychological AI" -> binding.radioPersona1.isChecked = true
+                    "Christian AI" -> binding.radioPersona2.isChecked = true
+                    "Comforting AI" -> binding.radioPersona3.isChecked = false
+                    "Jungian AI" -> binding.radioPersona4.isChecked = false
                     else -> binding.radioPersona1.isChecked = true
-                    //"Creative AI" -> binding.radioPersona3.isChecked = true
                 }
             }
         }
@@ -102,25 +105,28 @@ class SettingsFragment : Fragment() {
         val selectedPersona = when (binding.radioGroupPersonas.checkedRadioButtonId) {
             R.id.radioPersona1 -> "Psychological AI"
             R.id.radioPersona2 -> "Christian AI"
-            //R.id.radioPersona3 -> "Creative AI"
+            R.id.radioPersona3 -> "Comforting AI"
+            R.id.radioPersona4 -> "Jungian AI"
             else -> "Psychological AI"
         }
 
-        val checkedId = binding.radioGroupPersonas.checkedRadioButtonId
-        Log.d("Persona", "Checked ID: $checkedId")
-
-        Log.d("Persona", "selected person in fragment: $selectedPersona")
-        
         aiViewModel.savePreferredPersona(selectedPersona)
-        Toast.makeText(requireContext(), "AI Persona preference saved!", Toast.LENGTH_SHORT).show()
 
+        when (selectedPersona) {
+            "Psychological AI" -> binding.radioPersona1.isChecked = true
+            "Christian AI" -> binding.radioPersona2.isChecked = true
+            "Comforting AI" -> binding.radioPersona3.isChecked = true
+            "Jungian AI" -> binding.radioPersona4.isChecked = true
+        }
+        Toast.makeText(requireContext(), "AI Persona preference saved!", Toast.LENGTH_SHORT).show()
     }
 
     private fun togglePersonaEditing() {
         isEditingPersona = !isEditingPersona
         binding.radioPersona1.isEnabled = isEditingPersona
         binding.radioPersona2.isEnabled = isEditingPersona
-        //binding.radioPersona3.isEnabled = isEditingPersona
+        binding.radioPersona3.isEnabled = isEditingPersona
+        binding.radioPersona4.isEnabled = isEditingPersona
 
 
         if (isEditingPersona) {

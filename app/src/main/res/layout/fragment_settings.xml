@@ -90,7 +90,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Provides insight based on theories on dream interpretation used in Psychology, prefers a scientific point of view"
+                        android:text="Provides insight based on Freudian dream interpretation, who believed that dreams are a expression of the unconscious mind."
                         android:textSize="14sp"
                         android:paddingStart="40dp"
                         android:paddingTop="4dp"/>
@@ -121,7 +121,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Provides insight based on Christianity and symbols from the Bible"
+                        android:text="Provides insight based on Christianity and symbols, values from the Bible"
                         android:textSize="14sp"
                         android:paddingStart="40dp"
                         android:paddingTop="4dp"/>
@@ -131,6 +131,66 @@
                         android:layout_height="64dp"
                         android:src="@drawable/priest_persona"
                         android:contentDescription="Christian AI Icon"
+                        android:paddingStart="8dp"/>
+                </LinearLayout>
+
+                <RadioButton
+                    android:id="@+id/radioPersona3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Comforting AI" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="The most supportive and comforting of the personas"
+                        android:textSize="14sp"
+                        android:paddingStart="40dp"
+                        android:paddingTop="4dp"/>
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/priest_persona"
+                        android:contentDescription="Comforting AI Icon"
+                        android:paddingStart="8dp"/>
+                </LinearLayout>
+
+                <RadioButton
+                    android:id="@+id/radioPersona4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Jungian AI" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Analyzes based on the theories of psychologist Carl Jung. It looks at symbols, emotions, and recurring themes to help you understand what your unconscious mind might be trying to tell you."
+                        android:textSize="14sp"
+                        android:paddingStart="40dp"
+                        android:paddingTop="4dp"/>
+
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:src="@drawable/priest_persona"
+                        android:contentDescription="Jungian AI Icon"
                         android:paddingStart="8dp"/>
                 </LinearLayout>
 

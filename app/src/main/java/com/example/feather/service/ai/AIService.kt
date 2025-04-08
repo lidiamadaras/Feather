@@ -9,23 +9,23 @@ class AIService @Inject constructor(
     private val repository: AIRepository,
     private val safeStorage: SecureStorage
 ) {
-    suspend fun analyzeDream(dream: DreamModel): Result<String> {
+    suspend fun analyzeDream(dream: DreamModel, prompt: String): Result<String> {
         val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing"))
-        return repository.analyzeDream(apiKey, dream)
+        return repository.analyzeDream(apiKey, dream, prompt)
     }
 
-    suspend fun analyzeWeekly(): Result<String> {
+    suspend fun analyzeWeekly(prompt: String): Result<String> {
         val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing"))
-        return repository.weeklyAnalysis(apiKey)
+        return repository.weeklyAnalysis(apiKey, prompt)
     }
 
-    suspend fun analyzeMonthly(): Result<String> {
+    suspend fun analyzeMonthly(prompt: String): Result<String> {
         val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing"))
-        return repository.monthlyAnalysis(apiKey)
+        return repository.monthlyAnalysis(apiKey, prompt)
     }
 
-    suspend fun saveAnalysis(analysisText: String, type: String): Result<Unit> {
-        return repository.saveInterpretation(analysisText, type)
+    suspend fun saveAnalysis(analysisText: String, type: String, persona: String): Result<Unit> {
+        return repository.saveInterpretation(analysisText, type, persona)
     }
 
     suspend fun savePreferredPersona(persona: String) {

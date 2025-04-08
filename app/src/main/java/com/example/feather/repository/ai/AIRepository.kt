@@ -144,7 +144,7 @@ class AIRepository @Inject constructor() {
         }
     }
 
-    suspend fun analyzeDream(apiKey: String, dream: DreamModel): Result<String> {
+    suspend fun analyzeDream(apiKey: String, dream: DreamModel, personaPrompt: String): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val generativeModel = GenerativeModel(
@@ -166,6 +166,9 @@ class AIRepository @Inject constructor() {
                     Keywords: ${dream.keywords.joinToString(", ")}
                     Category: ${dream.category}
                     Provide insights on symbolism and meaning.
+                    
+                    $personaPrompt
+                    
                 """.trimIndent()
 
                 val response = generativeModel.generateContent(prompt)
@@ -180,15 +183,15 @@ class AIRepository @Inject constructor() {
     }
 
 
-    suspend fun weeklyAnalysis(apiKey: String): Result<String> {
-        return analyzeDreamsForPeriod(apiKey, daysBack = 7, periodName = "Weekly")
+    suspend fun weeklyAnalysis(apiKey: String, prompt: String): Result<String> {
+        return analyzeDreamsForPeriod(apiKey, daysBack = 7, periodName = "Weekly", prompt)
     }
 
-    suspend fun monthlyAnalysis(apiKey: String): Result<String> {
-        return analyzeDreamsForPeriod(apiKey, daysBack = 30, periodName = "Monthly")
+    suspend fun monthlyAnalysis(apiKey: String, prompt: String): Result<String> {
+        return analyzeDreamsForPeriod(apiKey, daysBack = 30, periodName = "Monthly", prompt)
     }
 
-    private suspend fun analyzeDreamsForPeriod(apiKey: String, daysBack: Int, periodName: String): Result<String> {
+    private suspend fun analyzeDreamsForPeriod(apiKey: String, daysBack: Int, periodName: String, personaPrompt: String): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
                 val userId = auth.currentUser?.uid
@@ -231,13 +234,19 @@ class AIRepository @Inject constructor() {
                     """.trimIndent()
                 }
 
+                Log.d("Persona", "prompt in repo: $personaPrompt")
+
                 val prompt = """
+                   
                     $periodName Dream Analysis:
                     Below are the dreams recorded in the past $daysBack days.
                     
                     $dreamsText
                     
                     Provide insights into recurring themes, symbols, emotions, and potential meanings.
+                    
+                    $personaPrompt
+                    
                 """.trimIndent()
 
                 val response = generativeModel.generateContent(prompt)
@@ -249,7 +258,7 @@ class AIRepository @Inject constructor() {
         }
     }
 
-    suspend fun saveInterpretation(analysisText: String, type: String): Result<Unit> {
+    suspend fun saveInterpretation(analysisText: String, type: String, persona: String): Result<Unit> {
         val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not authenticated"))
 
         if (type !in listOf("single_dream_interpretations", "weekly_interpretations", "monthly_interpretations")) {
@@ -258,7 +267,8 @@ class AIRepository @Inject constructor() {
 
         val interpretationData = mapOf(
             "analysisText" to analysisText,
-            "timeAdded" to com.google.firebase.Timestamp.now()
+            "timeAdded" to com.google.firebase.Timestamp.now(),
+            "personaGemini" to persona
         )
 
         return withContext(Dispatchers.IO) {

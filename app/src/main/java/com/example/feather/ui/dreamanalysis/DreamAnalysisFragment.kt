@@ -21,7 +21,8 @@ class DreamAnalysisFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val aiViewModel : AIViewModel by viewModels()
-    private var personaGemini: String? = null
+    private var personaGemini: String = ""
+    private var prompt: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,13 +42,17 @@ class DreamAnalysisFragment : Fragment() {
 
         aiViewModel.preferredPersona.observe(viewLifecycleOwner) { result ->
             result.onSuccess { persona ->
-                personaGemini = persona
+                if (persona != null) {
+                    personaGemini = persona
+                }
                 Log.d("Persona", "Loaded preferred persona: $personaGemini")
+
+                prompt = getPromptFromPersona(personaGemini)
             }
 
             result.onFailure {
                 Log.e("Persona", "Failed to load preferred persona: ${it.message}")
-                personaGemini = null
+                personaGemini = ""
             }
         }
 
@@ -61,7 +66,10 @@ class DreamAnalysisFragment : Fragment() {
         }
 
         binding.analyzeOneDreamTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_dreamAnalysisFragment_to_selectDreamFragment)
+            val bundle = Bundle().apply {
+                putString("prompt", prompt)
+            }
+            findNavController().navigate(R.id.action_dreamAnalysisFragment_to_selectDreamFragment, bundle)
         }
 
         binding.generateImageTextView.setOnClickListener {
@@ -70,22 +78,22 @@ class DreamAnalysisFragment : Fragment() {
 
         aiViewModel.analysisResultWeekly.observe(viewLifecycleOwner) { result ->
             result?.let { analysis ->
-                navigateToWeeklyAnalysisFragment(analysis)
+                navigateToWeeklyAnalysisFragment(analysis, personaGemini)
             }
         }
 
         aiViewModel.analysisResultMonthly.observe(viewLifecycleOwner) { result ->
             result?.let { analysis ->
-                navigateToMonthlyAnalysisFragment(analysis)
+                navigateToMonthlyAnalysisFragment(analysis, personaGemini)
             }
         }
 
         binding.weeklyAnalysisTextView.setOnClickListener {
-            aiViewModel.analyzeWeeklyDreams()
+            aiViewModel.analyzeWeeklyDreams(prompt)
         }
 
         binding.monthlyAnalysisTextView.setOnClickListener {
-            aiViewModel.analyzeMonthlyDreams()
+            aiViewModel.analyzeMonthlyDreams(prompt)
         }
     }
 
@@ -99,26 +107,37 @@ class DreamAnalysisFragment : Fragment() {
             Imagine you are a trained Freudian psychologist. Analyze the following dream using psychological principles and dream symbolism. Focus on unconscious desires, archetypes, emotions, and personal experiences. Use therapeutic language to guide the user toward deeper self-awareness and understanding.
         """.trimIndent()
 
+            "Comforting AI" -> """
+            Imagine you are a deeply supportive and comforting AI friend. You speak in a soft, casual, and warm tone — like a caring best friend who’s always there to listen without judgment. Your words feel like a cozy blanket: full of empathy, kindness, and reassurance.
+        Respond gently and supportively, focusing on how they might be feeling. Avoid being scientific or analytical. Instead, speak from the heart — like you're offering a hug. Your goal is not to “solve” or “analyze” things, but to be there for the person — to comfort, uplift, and remind them they’re not alone.
+        """.trimIndent()
+
+            "Jungian AI" -> """
+            You are a dream analyst who interprets dreams through the lens of Carl Jung’s analytical psychology. Your insights are symbolic, intuitive, and rooted in Jungian concepts such as the collective unconscious, archetypes, shadow, anima/animus, and the process of individuation.
+            When interpreting a dream, explore the deeper meanings hidden beneath the surface. Consider what archetypes may be present, what symbols might represent aspects of the self or unconscious, and how the dream may be inviting the dreamer toward greater self-awareness and integration.
+            Your tone is thoughtful, reflective, and gently philosophical — like a wise guide helping someone understand their inner world through metaphor and myth. You ask occasional reflective questions to help the dreamer engage in their own inner exploration. Avoid being overly literal or scientific; favor symbolism, introspection, and soulful interpretation.
+        """.trimIndent()
+
             else -> ""
         }
     }
 
-    private fun navigateToWeeklyAnalysisFragment(analysisResult: String) {
+    private fun navigateToWeeklyAnalysisFragment(analysisResult: String, persona: String) {
         val bundle = Bundle().apply {
             putString("analysis_result", analysisResult)
         }
-        aiViewModel.saveAnalysis(analysisResult, "weekly_interpretations")
+        aiViewModel.saveAnalysis(analysisResult, "weekly_interpretations", persona)
         findNavController().navigate(
             R.id.action_dreamAnalysisFragment_to_analyzeWeeklyDreamsFragment,
             bundle
         )
     }
 
-    private fun navigateToMonthlyAnalysisFragment(analysisResult: String) {
+    private fun navigateToMonthlyAnalysisFragment(analysisResult: String, persona: String) {
         val bundle = Bundle().apply {
             putString("analysis_result", analysisResult)
         }
-        aiViewModel.saveAnalysis(analysisResult, "monthly_interpretations")
+        aiViewModel.saveAnalysis(analysisResult, "monthly_interpretations", persona)
         findNavController().navigate(
             R.id.action_dreamAnalysisFragment_to_analyzeMonthlyDreamsFragment,
             bundle
