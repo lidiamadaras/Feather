@@ -9,7 +9,7 @@ data class UserData(
     val email: String = "",
     val preferredPersona: String = ""
 ) {
-    constructor() : this("", "", "", "")
+    constructor() : this("", "", "", "", "")
 }
 
 

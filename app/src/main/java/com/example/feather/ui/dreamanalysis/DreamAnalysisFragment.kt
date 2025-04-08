@@ -21,6 +21,7 @@ class DreamAnalysisFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val aiViewModel : AIViewModel by viewModels()
+    private var personaGemini: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +36,21 @@ class DreamAnalysisFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.HomeTitleTextView.text = "Dream analysis with Gemini AI"
+
+        aiViewModel.loadPreferredPersona()
+
+        aiViewModel.preferredPersona.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { persona ->
+                personaGemini = persona
+                Log.d("Persona", "Loaded preferred persona: $personaGemini")
+            }
+
+            result.onFailure {
+                Log.e("Persona", "Failed to load preferred persona: ${it.message}")
+                personaGemini = null
+            }
+        }
+
 
         aiViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
@@ -70,6 +86,20 @@ class DreamAnalysisFragment : Fragment() {
 
         binding.monthlyAnalysisTextView.setOnClickListener {
             aiViewModel.analyzeMonthlyDreams()
+        }
+    }
+
+    fun getPromptFromPersona(persona: String): String {
+        return when (persona) {
+            "Christian AI" -> """
+            Imagine you are a compassionate Christian priest or counselor. Analyze the following dream using only Christian faith-based principles, biblical symbolism, and spiritual insights. Reference scripture when appropriate. Offer a gentle, faith-centered interpretation that encourages spiritual growth, reflection, and hope. Avoid psychological or secular interpretations.
+        """.trimIndent()
+
+            "Psychological AI" -> """
+            Imagine you are a trained Freudian psychologist. Analyze the following dream using psychological principles and dream symbolism. Focus on unconscious desires, archetypes, emotions, and personal experiences. Use therapeutic language to guide the user toward deeper self-awareness and understanding.
+        """.trimIndent()
+
+            else -> ""
         }
     }
 

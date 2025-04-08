@@ -79,6 +79,7 @@ class SettingsFragment : Fragment() {
 
         // Personas:
 
+        Log.d("Persona F", "calling loadpersona in fragment")
         aiViewModel.loadPreferredPersona()
 
         binding.btnEditPersona.setOnClickListener {
@@ -90,29 +91,33 @@ class SettingsFragment : Fragment() {
                 when (persona) {
                     "Psychological" -> binding.radioPersona1.isChecked = true
                     "Christian" -> binding.radioPersona2.isChecked = true
+                    else -> binding.radioPersona1.isChecked = true
                     //"Creative AI" -> binding.radioPersona3.isChecked = true
                 }
             }
         }
     }
 
-    private fun savePreferredPersona() {
+    private fun savePersona() {
         val selectedPersona = when (binding.radioGroupPersonas.checkedRadioButtonId) {
-            R.id.radioPersona1 -> "Psychological"
-            R.id.radioPersona2 -> "Christian"
+            R.id.radioPersona1 -> "Psychological AI"
+            R.id.radioPersona2 -> "Christian AI"
             //R.id.radioPersona3 -> "Creative AI"
-            else -> null
+            else -> "Psychological AI"
         }
 
-        selectedPersona?.let {
-            aiViewModel.savePreferredPersona(it)
-            Toast.makeText(requireContext(), "AI Persona preference saved!", Toast.LENGTH_SHORT).show()
-        }
+        val checkedId = binding.radioGroupPersonas.checkedRadioButtonId
+        Log.d("Persona", "Checked ID: $checkedId")
+
+        Log.d("Persona", "selected person in fragment: $selectedPersona")
+        
+        aiViewModel.savePreferredPersona(selectedPersona)
+        Toast.makeText(requireContext(), "AI Persona preference saved!", Toast.LENGTH_SHORT).show()
+
     }
 
     private fun togglePersonaEditing() {
         isEditingPersona = !isEditingPersona
-        binding.radioGroupPersonas.isEnabled = isEditingPersona
         binding.radioPersona1.isEnabled = isEditingPersona
         binding.radioPersona2.isEnabled = isEditingPersona
         //binding.radioPersona3.isEnabled = isEditingPersona
@@ -121,8 +126,8 @@ class SettingsFragment : Fragment() {
         if (isEditingPersona) {
             binding.btnEditPersona.text = "Save preference"
         } else {
+            savePersona()
             binding.btnEditPersona.text = "Edit preference"
-            savePreferredPersona()
         }
     }
 

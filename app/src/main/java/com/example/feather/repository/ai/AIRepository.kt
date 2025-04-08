@@ -102,23 +102,11 @@ class AIRepository @Inject constructor() {
         }
     }
 
-
-
-//    fun saveImage(base64String: String): String? {
-//        try {
-//            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-//            val file = File("/data/data/com.example.feather/files/generated_image_YAY2.png") // Adjust path as needed
-//            val fos = FileOutputStream(file)
-//            fos.write(decodedBytes)
-//            fos.close()
-//            Log.d("GeminiAPI", "Image saved successfully at: ${file.absolutePath}")
-//        } catch (e: Exception) {
-//            Log.e("GeminiAPI", "Error saving image", e)
-//        }
-//    }
-
     suspend fun savePreferredPersona(persona: String) {
+        Log.d("Persona", "persona passed string to repo save: $persona")
         val userId = auth.currentUser?.uid ?: throw Exception("User not logged in")
+
+        Log.d("Persona", "entered savepersona in repo")
 
         db.collection("users")
             .document(userId)

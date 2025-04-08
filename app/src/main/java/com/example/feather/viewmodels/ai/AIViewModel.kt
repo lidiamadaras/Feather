@@ -70,9 +70,11 @@ class AIViewModel @Inject constructor(
 //    }
 
     fun savePreferredPersona(persona: String) {
+        Log.d("Persona VM", "entered savepersona in vm")
         viewModelScope.launch {
             try {
                 aiService.savePreferredPersona(persona)
+                Log.d("Persona VM", persona)
                 _preferredPersona.value = Result.success(persona)
             } catch (e: Exception) {
                 _preferredPersona.value = Result.failure(e)

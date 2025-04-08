@@ -73,6 +73,12 @@
                 android:enabled="false">
 
                 <!-- Psychological AI -->
+                <RadioButton
+                    android:id="@+id/radioPersona1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Psychological AI" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,38 +86,30 @@
                     android:gravity="center_vertical"
                     android:padding="8dp">
 
-                    <!-- Text Column -->
-                    <LinearLayout
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="Provides insight based on theories on dream interpretation used in Psychology, prefers a scientific point of view"
+                        android:textSize="14sp"
+                        android:paddingStart="40dp"
+                        android:paddingTop="4dp"/>
 
-                        <RadioButton
-                            android:id="@+id/radioPersona1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Psychological AI" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Provides insight based on theories on dream interpretation used in Psychology, prefers a scientific point of view"
-                            android:textSize="14sp"
-                            android:paddingStart="40dp"
-                            android:paddingTop="4dp"/>
-                    </LinearLayout>
-
-                    <!-- Image -->
                     <ImageView
                         android:layout_width="64dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="64dp"
                         android:src="@drawable/psychological_persona"
                         android:contentDescription="Psychological AI Icon"
                         android:paddingStart="8dp"/>
                 </LinearLayout>
 
                 <!-- Christian AI -->
+                <RadioButton
+                    android:id="@+id/radioPersona2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Christian AI" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -119,38 +117,25 @@
                     android:gravity="center_vertical"
                     android:padding="8dp">
 
-                    <!-- Text Column -->
-                    <LinearLayout
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:text="Provides insight based on Christianity and symbols from the Bible"
+                        android:textSize="14sp"
+                        android:paddingStart="40dp"
+                        android:paddingTop="4dp"/>
 
-                        <RadioButton
-                            android:id="@+id/radioPersona2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Christian AI" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Provides insight based on Christianity and symbols from the Bible"
-                            android:textSize="14sp"
-                            android:paddingStart="40dp"
-                            android:paddingTop="4dp"/>
-                    </LinearLayout>
-
-                    <!-- Image -->
                     <ImageView
                         android:layout_width="64dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="64dp"
                         android:src="@drawable/priest_persona"
                         android:contentDescription="Christian AI Icon"
                         android:paddingStart="8dp"/>
                 </LinearLayout>
 
             </RadioGroup>
+
 
             <Button
                 android:id="@+id/btnEditPersona"
