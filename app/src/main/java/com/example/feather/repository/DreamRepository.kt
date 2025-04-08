@@ -3,6 +3,7 @@ package com.example.feather.repository
 import android.util.Log
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.feather.models.CalendarDay
 import com.example.feather.models.DreamModel
 import com.example.feather.models.KeywordModel
 import com.google.firebase.Timestamp
@@ -10,6 +11,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 //for handling all firestore operations: repo layer
@@ -213,6 +217,80 @@ class DreamRepository  @Inject constructor() {
             Log.e("DreamRepo", "Error deleting keyword: ${e.message}")
             Result.failure(e)
         }
+    }
+
+    fun fetchDataFromFirestore(): Map<String, CalendarDay> {
+        val logMap = mutableMapOf<String, CalendarDay>()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val currentUser = auth.currentUser
+
+        fun put(dateKey: String, update: (CalendarDay) -> CalendarDay) {
+            val old = logMap[dateKey] ?: CalendarDay()
+            logMap[dateKey] = update(old)
+        }
+
+        val collections = listOf("dreams", "feelings", "reflections", "affirmations")
+
+        collections.forEach { collection ->
+            if (currentUser != null) {
+                db.collection("users").document(currentUser.uid).collection(collection)
+                    .get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            val timestamp = document.getTimestamp("dateAdded")
+                            if (timestamp != null) {
+                                val dateKey = timestamp.toDate().let { dateFormat.format(it) }
+
+                                // Check the collection type and add to the appropriate log map
+                                when (collection) {
+                                    "dreams" -> put(dateKey) { it.copy(hasDream = true) }
+                                    "feelings" -> put(dateKey) { it.copy(hasFeeling = true) }
+                                    "reflections" -> put(dateKey) { it.copy(hasReflection = true) }
+                                    "affirmations" -> put(dateKey) { it.copy(hasAffirmation = true) }
+                                }
+                            }
+                        }
+                    }
+            }
+        }
+
+        return logMap
+    }
+
+    fun generateCalendarDays(): List<CalendarDay> {
+
+        val calendar = Calendar.getInstance()
+        val currentMonth = calendar.get(Calendar.MONTH)
+        val currentYear = calendar.get(Calendar.YEAR)
+
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
+        val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+        val firstDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1
+
+        val totalCells = 42  // A 6-week calendar
+        val dayList = mutableListOf<CalendarDay>()
+
+        val logMap = fetchDataFromFirestore()
+
+        repeat(firstDayOfWeek) {
+            dayList.add(CalendarDay())
+        }
+
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        for (day in 1..daysInMonth) {
+            calendar.set(Calendar.DAY_OF_MONTH, day)
+            val dateKey = dateFormat.format(calendar.time)
+
+            val base = logMap[dateKey] ?: CalendarDay()
+            val enriched = base.copy(dayNumber = day)
+            dayList.add(enriched)
+        }
+
+        while (dayList.size < totalCells) {
+            dayList.add(CalendarDay())
+        }
+
+        return dayList
     }
 
 }

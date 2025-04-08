@@ -159,7 +159,7 @@
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/priest_persona"
+                        android:src="@drawable/teddybear_persona"
                         android:contentDescription="Comforting AI Icon"
                         android:paddingStart="8dp"/>
                 </LinearLayout>
@@ -189,7 +189,7 @@
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/priest_persona"
+                        android:src="@drawable/jung_persona"
                         android:contentDescription="Jungian AI Icon"
                         android:paddingStart="8dp"/>
                 </LinearLayout>

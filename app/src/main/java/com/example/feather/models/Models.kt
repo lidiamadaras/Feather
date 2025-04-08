@@ -71,3 +71,12 @@ data class AIPersonaModel(
     val description: String? = null,
     val prompt: String? = null
 )
+
+data class CalendarDay(
+    val dayNumber: Int? = null,
+    val hasDream: Boolean = false,
+    val hasFeeling: Boolean = false,
+    val hasReflection: Boolean = false,
+    val hasAffirmation: Boolean = false
+)
+

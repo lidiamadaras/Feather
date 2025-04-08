@@ -14,10 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.feather.R
 import com.example.feather.activities.AuthActivity
 import com.example.feather.databinding.FragmentProfileBinding
-import com.example.feather.viewmodels.ai.ApiKeyViewModel
-import com.example.feather.viewmodels.auth.AuthViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,6 +42,10 @@ class ProfileFragment : Fragment() {
 
         binding.settingsTextView.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_settingsFragment)
+        }
+
+        binding.statisticsTextView.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_statisticsFragment)
         }
 
 
