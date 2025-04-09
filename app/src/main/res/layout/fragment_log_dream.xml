@@ -118,6 +118,13 @@
                 android:scrollbars="vertical"
                 android:padding="12dp"/>
 
+            <ImageButton
+                android:id="@+id/micButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_btn_speak_now"
+                android:contentDescription="Start voice input" />
+
             <Button
                 android:id="@+id/saveDreamButton"
                 android:layout_width="wrap_content"

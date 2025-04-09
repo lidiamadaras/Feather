@@ -10,17 +10,17 @@ class AIService @Inject constructor(
     private val safeStorage: SecureStorage
 ) {
     suspend fun analyzeDream(dream: DreamModel, prompt: String): Result<String> {
-        val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing"))
+        val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing! Request a Gemini api key and enter it in Settings. https://aistudio.google.com/app/apikey"))
         return repository.analyzeDream(apiKey, dream, prompt)
     }
 
     suspend fun analyzeWeekly(prompt: String): Result<String> {
-        val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing"))
+        val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing! Request a Gemini api key and enter it in Settings. https://aistudio.google.com/app/apikey"))
         return repository.weeklyAnalysis(apiKey, prompt)
     }
 
     suspend fun analyzeMonthly(prompt: String): Result<String> {
-        val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing"))
+        val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing! Request a Gemini api key and enter it in Settings. https://aistudio.google.com/app/apikey"))
         return repository.monthlyAnalysis(apiKey, prompt)
     }
 

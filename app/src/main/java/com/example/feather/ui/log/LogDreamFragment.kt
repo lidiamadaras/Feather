@@ -1,7 +1,15 @@
 package com.example.feather.ui.log
 
+import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -11,11 +19,15 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ListView
 import android.widget.PopupMenu
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -27,6 +39,7 @@ import com.example.feather.models.KeywordModel
 import com.example.feather.viewmodels.DreamViewModel
 import com.google.firebase.Timestamp
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.Locale
 
 @AndroidEntryPoint
 class LogDreamFragment : Fragment() {
@@ -42,10 +55,19 @@ class LogDreamFragment : Fragment() {
     private lateinit var dreamTitleEditText: EditText
     private lateinit var keywordSelectionButton: Button
 
+    //for speech-to-text:
+    private lateinit var speechRecognizer: SpeechRecognizer
+    private lateinit var speechIntent: Intent
+
     private val dreamViewModel : DreamViewModel by viewModels()
 
     private val selectedKeywords = mutableListOf<KeywordModel>()
 
+    private val speechTimeoutHandler = Handler(Looper.getMainLooper())
+    private val speechTimeoutRunnable = Runnable {
+        speechRecognizer.stopListening()
+        Toast.makeText(requireContext(), "No speech detected. Try again.", Toast.LENGTH_SHORT).show()
+    }
 
 
     //for hours slept selector:
@@ -60,6 +82,15 @@ class LogDreamFragment : Fragment() {
         return binding.root
     }
 
+    private val requestAudioPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            Toast.makeText(requireContext(), "Permission granted! Tap the mic again.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "Microphone permission is required for speech input.", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,6 +105,8 @@ class LogDreamFragment : Fragment() {
         val increaseButton = binding.increaseTimeButton
         val decreaseButton = binding.decreaseTimeButton
         keywordSelectionButton = binding.selectKeywordsButton
+
+        val micButton = view.findViewById<ImageButton>(R.id.micButton)
 
         updateHoursSleptText()
 
@@ -90,6 +123,47 @@ class LogDreamFragment : Fragment() {
         }
 
         binding.HomeTitleTextView.text = "Log a dream"
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(requireContext())
+        speechIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        }
+
+        speechRecognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onResults(results: Bundle) {
+                val matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                matches?.let {
+                    val spokenText = it[0]
+                    dreamInputEditText.append("$spokenText ")
+                }
+            }
+
+            override fun onError(error: Int) {
+                Toast.makeText(context, "Speech error: $error", Toast.LENGTH_SHORT).show()
+            }
+
+            // Optional: Handle other states
+            override fun onReadyForSpeech(params: Bundle?) {}
+            override fun onBeginningOfSpeech() {
+                speechTimeoutHandler.removeCallbacks(speechTimeoutRunnable)
+            }
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() {}
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+        })
+
+        micButton.setOnClickListener {
+            if (checkAudioPermission()) {
+                speechRecognizer.startListening(speechIntent)
+                // Start the 5-second timeout
+                speechTimeoutHandler.postDelayed(speechTimeoutRunnable, 7000)
+            } else {
+                requestAudioPermission()
+            }
+        }
 
         keywordSelectionButton.setOnClickListener {
             showKeywordSelectionDialog()
@@ -108,18 +182,6 @@ class LogDreamFragment : Fragment() {
             dreamCategorySpinner.adapter = adapter
         }
 
-//        dreamViewModel.saveKeywordResult.observe(viewLifecycleOwner) { result ->
-//            result.onSuccess {
-//                Toast.makeText(requireContext(), "Keyword saved", Toast.LENGTH_SHORT).show()
-//                //dreamViewModel.getUserKeywords()
-//                showKeywordSelectionDialog()
-//
-//            }
-//            result.onFailure { exception ->
-//                Toast.makeText(requireContext(), "Error saving keyword: ${exception.message}", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-
         dreamViewModel.saveResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
                 Toast.makeText(requireContext(), "Dream saved successfully!", Toast.LENGTH_SHORT).show()
@@ -129,10 +191,6 @@ class LogDreamFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error saving dream: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
         }
-
-
-
-
     }
 
     private fun showKeywordSelectionDialog() {
@@ -255,8 +313,22 @@ class LogDreamFragment : Fragment() {
         hoursSleptTextView.text = formattedTime
     }
 
+    private fun checkAudioPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireContext(),
+            Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
+    private fun requestAudioPermission() {
+        requestAudioPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
+        speechRecognizer.destroy()
+        speechTimeoutHandler.removeCallbacks(speechTimeoutRunnable)
         _binding = null // Clear binding to prevent memory leaks
     }
 }
