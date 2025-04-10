@@ -28,6 +28,7 @@ import com.example.feather.R
 import com.example.feather.databinding.FragmentSymbolsBinding
 import com.example.feather.ui.adapter.SymbolsAdapter
 import com.example.feather.viewmodels.ExploreViewModel
+import com.example.feather.viewmodels.ai.AIViewModel
 import com.google.firebase.Timestamp
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -40,8 +41,11 @@ class SymbolsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val exploreViewModel : ExploreViewModel by viewModels()
+    private val aiViewModel : AIViewModel by viewModels()
 
     private lateinit var adapter: SymbolsAdapter
+    private var personaGemini: String = ""
+    private var prompt: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,7 +76,21 @@ class SymbolsFragment : Fragment() {
         //only had to run ONE time, database is filled:
         //exploreViewModel.loadCSVSymbols(requireContext())
 
+        aiViewModel.preferredPersona.observe(viewLifecycleOwner) { result ->
+            result.onSuccess { persona ->
+                if (persona != null) {
+                    personaGemini = persona
+                }
+                Log.d("Persona", "Loaded preferred persona: $personaGemini")
 
+                prompt = getPromptFromPersona(personaGemini)
+            }
+
+            result.onFailure {
+                Log.e("Persona", "Failed to load preferred persona: ${it.message}")
+                personaGemini = ""
+            }
+        }
 
 
         adapter = SymbolsAdapter(
@@ -81,8 +99,8 @@ class SymbolsFragment : Fragment() {
                 navigateToSymbolDetail(symbol.id)
             },
             onGeminiClick = {
-                //findNavController().navigate(R.id.action_symbolsFragment_to_geminiFragment)
-
+                val symbol = binding.etSearchSymbols.text.toString()
+                exploreViewModel.askAboutSymbol(symbol, prompt)
             }
         )
 
@@ -116,6 +134,11 @@ class SymbolsFragment : Fragment() {
             }
         }
 
+        exploreViewModel.answerResult.observe(viewLifecycleOwner) { result ->
+            result?.let { answer ->
+                navigateToSymbolsGeminiFragment(answer)
+            }
+        }
 
     }
 
@@ -127,6 +150,38 @@ class SymbolsFragment : Fragment() {
             R.id.action_symbolsFragment_to_symbolDetailFragment,
             bundle
         )
+    }
+
+    private fun navigateToSymbolsGeminiFragment(id: String) {
+        val bundle = Bundle().apply {
+            putString("answer", id) // Pass only the recipe ID
+        }
+        findNavController().navigate(
+            R.id.action_symbolsFragment_to_symbolsGeminiFragment,
+            bundle
+        )
+    }
+
+    fun getPromptFromPersona(persona: String): String {
+        return when (persona) {
+            "Christian AI" -> """
+             Analyze this symbol based on the Christian faith, the Bible, and its symbolism.
+        """.trimIndent()
+
+            "Psychological AI" -> """
+             Analyze this symbol based on Sigmund Freud's theories in dream interpretation. Describe what it could mean in his beliefs about dream symbolism.
+        """.trimIndent()
+
+            "Comforting AI" -> """
+            Analyze this symbol using non-scientific, kind, warm tone to explain its meaning.
+        """.trimIndent()
+
+            "Jungian AI" -> """
+             Analyze this symbol based onCarl Jung's theories in dream interpretation. Describe what it could mean in his beliefs about dream symbolism.
+        """.trimIndent()
+
+            else -> ""
+        }
     }
 
     override fun onDestroyView() {

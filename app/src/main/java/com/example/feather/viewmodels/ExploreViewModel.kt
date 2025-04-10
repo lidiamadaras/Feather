@@ -27,6 +27,9 @@ class ExploreViewModel @Inject constructor(private val exploreService: ExploreSe
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
+    private val _answerResult = MutableLiveData<String?>()
+    val answerResult: LiveData<String?> get() = _answerResult
+
 
     fun getSymbolById(id: String) {
         viewModelScope.launch {
@@ -42,6 +45,27 @@ class ExploreViewModel @Inject constructor(private val exploreService: ExploreSe
             _symbols.value = temp
         }
         _isLoading.value = false
+    }
+
+    fun askAboutSymbol(symbol: String, prompt: String) {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                val result = exploreService.askAboutSymbol(symbol, prompt)
+                result.onSuccess { response ->
+                    _answerResult.value = response
+                }
+                result.onFailure { error ->
+                    val errorMessage = error.localizedMessage ?: "Unknown error occurred"
+                    Log.e("ExploreViewModel", "Failed to answer: $errorMessage", error)
+                    _answerResult.value = "Answering failed: $errorMessage"
+                }
+            } catch (e: Exception) {
+                Log.e("ExploreViewModel", "Unexpected error", e)
+                _answerResult.value = "Answering failed: ${e.localizedMessage ?: "Unexpected error"}"
+            }
+            _isLoading.postValue(false)
+        }
     }
 
     fun filterSymbols(query: String) {

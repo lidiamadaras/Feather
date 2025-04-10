@@ -5,6 +5,8 @@ import android.util.Log
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.feather.models.SymbolModel
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.generationConfig
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -12,6 +14,8 @@ import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 import java.io.InputStream
 import com.opencsv.CSVReader
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.InputStreamReader
 import javax.inject.Inject
 
@@ -36,6 +40,43 @@ class ExploreRepository  @Inject constructor() {
             emptyList()
         }
 }
+    suspend fun askAboutSymbolGemini(apiKey: String, symbol: String, promptPersona: String): Result<String>{
+        return withContext(Dispatchers.IO) {
+            try {
+                val generativeModel = GenerativeModel(
+                    modelName = "gemini-2.5-pro-exp-03-25",
+                    apiKey = apiKey,
+                    generationConfig = generationConfig {
+                        temperature = 1f
+                        topK = 64
+                        topP = 0.95f
+                        maxOutputTokens = 8000
+                        responseMimeType = "text/plain"
+                    }
+                )
+
+                val prompt = """
+                    Analyze this symbol:
+                    
+                    $symbol
+                    
+                    Provide insight on what it could mean if this symbol occurs in a dream. Try to talk about the different interpretations for the symbol.
+                    Keep your answer short, and to the point. 
+                    
+                    $promptPersona
+                    
+                """.trimIndent()
+
+                val response = generativeModel.generateContent(prompt)
+
+                val text = response.text ?: "No response received"
+                Result.success(text)
+
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
 
 
     suspend fun getSymbolById(symbolId: String): SymbolModel?{
