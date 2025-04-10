@@ -81,8 +81,23 @@
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
 
+            <TextView
+                android:id="@+id/warningTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="left"
+                android:padding="5dp"
+                android:text="Use with care, remember: AI content is generated based on your dream data, it is not reviewed by a human. It might contain false information. If you have concerns for your mental health, please consult a professional."
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
         </LinearLayout>
+
+
     </androidx.core.widget.NestedScrollView>
+
+
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

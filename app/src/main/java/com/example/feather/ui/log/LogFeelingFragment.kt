@@ -53,8 +53,11 @@ class LogFeelingFragment : Fragment() {
 
 
     //for hours slept selector:
-    private var hours = 0
-    private var minutes = 0
+    private var startHour = 0
+    private var startMinute = 0
+    private var endHour = 0
+    private var endMinute = 0
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,14 +80,12 @@ class LogFeelingFragment : Fragment() {
         emotionSelectionButton = binding.selectEmotionButton
 
         timeStartedTextView.setOnClickListener {
-            showTimePickerDialog()
+            showTimePickerDialog(isStartTime = true)
         }
 
         timeEndedTextView.setOnClickListener {
-            showTimePickerDialog()
+            showTimePickerDialog(isStartTime = false)
         }
-
-        updateTimeStartedText()
 
 
         binding.HomeTitleTextView.text = "Log a feeling"
@@ -198,10 +199,18 @@ class LogFeelingFragment : Fragment() {
             return
         }
 
+        val startTotalMinutes = startHour * 60 + startMinute
+        val endTotalMinutes = endHour * 60 + endMinute
+
+        if (endTotalMinutes <= startTotalMinutes) {
+            Toast.makeText(requireContext(), "End time must be after start time", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val feeling = FeelingModel(
             dateAdded = Timestamp.now(), // Automatically get the current timestamp
-            timeStarted = timeStartedTextView.text.toString(),
-            timeEnded = timeEndedTextView.text.toString(),
+            timeStarted = String.format("%02d:%02d", startHour, startMinute),
+            timeEnded = String.format("%02d:%02d", endHour, endMinute),
             intensity = intensity,
             emotion = firstEmotion.name
         )
@@ -210,7 +219,7 @@ class LogFeelingFragment : Fragment() {
     }
 
 
-    private fun showTimePickerDialog() {
+    private fun showTimePickerDialog(isStartTime: Boolean) {
         val calendar = Calendar.getInstance()
         val hour = calendar.get(Calendar.HOUR_OF_DAY)
         val minute = calendar.get(Calendar.MINUTE)
@@ -218,31 +227,41 @@ class LogFeelingFragment : Fragment() {
         val timePickerDialog = TimePickerDialog(
             requireContext(),
             { _, selectedHour, selectedMinute ->
-                hours = selectedHour
-                minutes = selectedMinute
-                updateTimeStartedText()
+                if (isStartTime) {
+                    startHour = selectedHour
+                    startMinute = selectedMinute
+
+                    // If end time is still default, set it to 1 hour later
+                    if (endHour == 0 && endMinute == 0) {
+                        val endCalendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, startHour)
+                            set(Calendar.MINUTE, startMinute)
+                            add(Calendar.HOUR_OF_DAY, 1)
+                        }
+                        endHour = endCalendar.get(Calendar.HOUR_OF_DAY)
+                        endMinute = endCalendar.get(Calendar.MINUTE)
+                    }
+                } else {
+                    endHour = selectedHour
+                    endMinute = selectedMinute
+                }
+
+                updateDisplayedTimes()
             },
             hour,
             minute,
-            true // Use 24-hour format
+            true
         )
+
         timePickerDialog.show()
     }
 
-    private fun updateTimeStartedText() {
 
-        if (hours == 0 && minutes == 0) {
-            val calendar = Calendar.getInstance()
-            hours = calendar.get(Calendar.HOUR_OF_DAY)
-            minutes = calendar.get(Calendar.MINUTE)
-        }
-
-        val formattedTime = String.format("%d:%02d", hours, minutes)
-        val formattedTime2 = String.format("%d:%02d",--hours, minutes)
-
-        timeStartedTextView.text = formattedTime2
-        timeEndedTextView.text = formattedTime
+    private fun updateDisplayedTimes() {
+        timeStartedTextView.text = String.format("%02d:%02d", startHour, startMinute)
+        timeEndedTextView.text = String.format("%02d:%02d", endHour, endMinute)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

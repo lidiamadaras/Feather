@@ -166,6 +166,8 @@ class AIRepository @Inject constructor() {
                     Keywords: ${dream.keywords.joinToString(", ")}
                     Category: ${dream.category}
                     Provide insights on symbolism and meaning.
+                    At the end of the analysis, ask occasional reflective questions to help the dreamer engage in their own inner exploration.
+
                     
                     $personaPrompt
                     
@@ -234,8 +236,6 @@ class AIRepository @Inject constructor() {
                     """.trimIndent()
                 }
 
-                Log.d("Persona", "prompt in repo: $personaPrompt")
-
                 val prompt = """
                    
                     $periodName Dream Analysis:
@@ -244,6 +244,8 @@ class AIRepository @Inject constructor() {
                     $dreamsText
                     
                     Provide insights into recurring themes, symbols, emotions, and potential meanings.
+                    At the end of the analysis, ask occasional reflective questions to help the dreamer engage in their own inner exploration.
+
                     
                     $personaPrompt
                     
