@@ -21,7 +21,9 @@ data class DreamModel(
     val hoursSlept: String = "",
     val isRecurring: Boolean = false,
     val title: String = "",
-    val keywords: List<String> = emptyList()
+    val keywords: List<String> = emptyList(),
+    val symbols: List<String> = emptyList()
+
 )
 
 data class AffirmationModel(

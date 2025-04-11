@@ -36,10 +36,13 @@ import com.example.feather.R
 import com.example.feather.databinding.FragmentLogDreamBinding
 import com.example.feather.models.DreamModel
 import com.example.feather.models.KeywordModel
+import com.example.feather.models.SymbolModel
 import com.example.feather.viewmodels.DreamViewModel
+import com.example.feather.viewmodels.ExploreViewModel
 import com.google.firebase.Timestamp
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
+import kotlin.math.exp
 
 @AndroidEntryPoint
 class LogDreamFragment : Fragment() {
@@ -60,8 +63,10 @@ class LogDreamFragment : Fragment() {
     private lateinit var speechIntent: Intent
 
     private val dreamViewModel : DreamViewModel by viewModels()
+    private val exploreViewModel : ExploreViewModel by viewModels()
 
     private val selectedKeywords = mutableListOf<KeywordModel>()
+    private val selectedSymbols = mutableListOf<SymbolModel>()
 
     private val speechTimeoutHandler = Handler(Looper.getMainLooper())
     private val speechTimeoutRunnable = Runnable {
@@ -169,6 +174,10 @@ class LogDreamFragment : Fragment() {
             showKeywordSelectionDialog()
         }
 
+        binding.selectSymbolsButton.setOnClickListener {
+            showSymbolSelectionDialog()
+        }
+
 
         saveDreamButton.setOnClickListener {
             saveDream()
@@ -191,6 +200,70 @@ class LogDreamFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error saving dream: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showSymbolSelectionDialog() {
+        val symbolList = mutableListOf<SymbolModel>()
+        val selectedSymbolNames = selectedSymbols.map { it.name }.toMutableSet()
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_select_symbols, null)
+        val symbolListView = dialogView.findViewById<ListView>(R.id.symbolListView)
+        val emptySymbolTextView = dialogView.findViewById<TextView>(R.id.emptySymbolTextView)
+
+        val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_list_item_multiple_choice)
+        symbolListView.adapter = adapter
+
+
+        exploreViewModel.getSymbols()
+
+        val alertDialog = AlertDialog.Builder(requireContext())
+            .setTitle("Select Symbols")
+            .setView(dialogView)
+            .setPositiveButton("Done", null)
+            .setNegativeButton("Cancel", null)
+            .create()
+
+        exploreViewModel.symbols.observe(viewLifecycleOwner) { symbols ->
+            //Log.d("keyword vm", keywords.toString())
+            symbolList.clear()
+            symbolList.addAll(symbols)
+
+            adapter.clear()
+            adapter.addAll(symbols.map { it.name })
+            adapter.notifyDataSetChanged()
+
+            if (symbols.isEmpty()) {
+                symbolListView.visibility = View.GONE
+                emptySymbolTextView.visibility = View.VISIBLE
+
+                alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)?.visibility = View.GONE
+                alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE)?.text = "OK"
+            } else {
+                symbolListView.visibility = View.VISIBLE
+                emptySymbolTextView.visibility = View.GONE
+            }
+
+            for (i in symbolList.indices) {
+                if (selectedSymbolNames.contains(symbolList[i].name)) {
+                    symbolListView.setItemChecked(i, true)
+                }
+            }
+        }
+
+        alertDialog.setOnShowListener {
+            val doneButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            doneButton.setOnClickListener {
+                selectedSymbols.clear()
+                for (i in 0 until symbolListView.count) {
+                    if (symbolListView.isItemChecked(i)) {
+                        selectedSymbols.add(symbolList[i])
+                    }
+                }
+                alertDialog.dismiss() // Ensure it closes immediately
+            }
+        }
+
+        alertDialog.show()
     }
 
     private fun showKeywordSelectionDialog() {
@@ -278,7 +351,8 @@ class LogDreamFragment : Fragment() {
             hoursSlept = hoursSleptTextView.text.toString(),
             isRecurring = isRecurring,
             title = title,
-            keywords = selectedKeywords.map { it.name }
+            keywords = selectedKeywords.map { it.name },
+            symbols = selectedSymbols.map { it.name }
         )
 
         Log.d("keywords", dream.keywords.toString())

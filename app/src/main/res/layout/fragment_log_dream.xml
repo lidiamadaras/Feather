@@ -96,6 +96,15 @@
                 android:layout_marginBottom="8dp"
                 android:layout_gravity="left"/>
 
+            <Button
+                android:id="@+id/selectSymbolsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Symbols"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:layout_gravity="left"/>
+
 
             <EditText
                 android:id="@+id/dreamTitleEditText"
