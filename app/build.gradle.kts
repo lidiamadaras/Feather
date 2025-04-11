@@ -118,6 +118,11 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    //glide for images:
+    implementation (libs.glide)
+    annotationProcessor (libs.compiler)
+
 }
 
 kapt {

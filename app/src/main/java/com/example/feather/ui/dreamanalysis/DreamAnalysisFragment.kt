@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -70,10 +71,6 @@ class DreamAnalysisFragment : Fragment() {
                 putString("prompt", prompt)
             }
             findNavController().navigate(R.id.action_dreamAnalysisFragment_to_selectDreamFragment, bundle)
-        }
-
-        binding.generateImageTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_dreamAnalysisFragment_to_selectDreamImageGenerationFragment)
         }
 
         aiViewModel.analysisResultWeekly.observe(viewLifecycleOwner) { result ->

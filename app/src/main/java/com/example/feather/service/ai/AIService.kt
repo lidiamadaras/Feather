@@ -37,20 +37,6 @@ class AIService @Inject constructor(
         return repository.loadPreferredPersona()
     }
 
-//    suspend fun generateImage(prompt: String): String?{
-//        val apiKey = safeStorage.getApiKey() ?: return null
-//        return repository.generateImage(apiKey, prompt)
-//    }
-
-    fun generateImage(prompt: String): Unit? {
-        val apiKey = safeStorage.getApiKey()
-        return apiKey?.let { repository.generateImage(it, prompt) }
-    }
-
-    fun saveImage(imageData: String): String? {
-        return repository.saveImage(imageData)
-    }
-
     suspend fun getUserInterpretations(type: String): List<DreamInterpretationModel> {
         return repository.getUserInterpretations(type)
     }

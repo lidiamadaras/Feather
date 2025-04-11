@@ -14,13 +14,9 @@ import android.util.Log
 import com.example.feather.models.AIPersonaModel
 
 import android.util.Base64
-import com.example.feather.models.Content
 import com.example.feather.models.DreamInterpretationModel
-import com.example.feather.models.GeminiRequest
-import com.example.feather.models.GeminiResponse
-import com.example.feather.models.GenerationConfig
-import com.example.feather.models.Part
-import com.example.feather.service.ai.RetrofitClient
+import com.example.feather.models.InputData
+import com.example.feather.models.PredictionRequest
 import com.google.firebase.firestore.Query
 import retrofit2.Call
 import retrofit2.Callback
@@ -32,51 +28,6 @@ import java.io.FileOutputStream
 class AIRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-
-     fun generateImage(apiKey: String, prompt: String) {
-        val requestBody = GeminiRequest(
-            model = "gemini-2.0-flash-exp-image-generation",
-            contents = listOf(
-                Content(parts = listOf(Part(text = "Hi, can you create a 3D rendered image of a cockatoo with wings and a top hat flying over a happy futuristic sci-fi city with lots of greenery?")))
-            ),
-            generationConfig = GenerationConfig(responseModalities = listOf("TEXT","IMAGE"))
-        )
-        RetrofitClient.instance.generateImage(apiKey, requestBody).enqueue(object :
-            Callback<GeminiResponse> {
-            override fun onResponse(call: Call<GeminiResponse>, response: Response<GeminiResponse>) {
-                if (response.isSuccessful) {
-                    val imageData = response.body()?.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.inlineData?.data
-                    if (imageData != null) {
-                        saveImage(imageData)
-                    } else {
-                        Log.e("GeminiAPI", "No image data found")
-                    }
-                } else {
-                    Log.e("GeminiAPI", "API request failed: ${response.errorBody()?.string()}")
-                }
-            }
-            override fun onFailure(call: Call<GeminiResponse>, t: Throwable) {
-                Log.e("GeminiAPI", "Request failed", t)
-            }
-        })
-    }
-
-    fun saveImage(base64String: String): String? {
-        return try {
-            val decodedBytes = Base64.decode(base64String, Base64.DEFAULT)
-            val file = File("/data/data/com.example.feather/files/generated_image_YAY2.png") // Adjust path as needed
-
-            FileOutputStream(file).use { fos ->
-                fos.write(decodedBytes)
-            }
-
-            Log.d("GeminiAPI", "Image saved successfully at: ${file.absolutePath}")
-            file.absolutePath // Return the saved file path
-        } catch (e: Exception) {
-            Log.e("GeminiAPI", "Error saving image", e)
-            null // Return null in case of failure
-        }
-    }
 
     suspend fun savePreferredPersona(persona: String) {
         Log.d("Persona", "persona passed string to repo save: $persona")

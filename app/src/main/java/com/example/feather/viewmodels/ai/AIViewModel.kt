@@ -37,9 +37,6 @@ class AIViewModel @Inject constructor(
     private val _preferredPersona = MutableLiveData<Result<String?>>()
     val preferredPersona: LiveData<Result<String?>> = _preferredPersona
 
-    private val _imageResult = MutableLiveData<String?>()
-    val imageResult: LiveData<String?> get() = _imageResult
-
     private val _userInterpretations = MutableLiveData<List<DreamInterpretationModel>>()
     val userInterpretations: LiveData<List<DreamInterpretationModel>> = _userInterpretations
 
@@ -49,36 +46,6 @@ class AIViewModel @Inject constructor(
     private val _interpretation = MutableLiveData<DreamInterpretationModel?>()
     val interpretation: LiveData<DreamInterpretationModel?> = _interpretation
 
-
-//    fun generateImage(prompt: String) {
-//        _isLoading.value = true
-//        viewModelScope.launch {
-//            try {
-//                val imageData = aiService.generateImage(prompt)
-//                val savedPath = imageData?.let { aiService.saveImage(it) }
-//                _imageResult.value = savedPath
-//            } catch (e: Exception) {
-//                Log.e("AIViewModel", "Image generation failed", e)
-//                _imageResult.value = null
-//            }
-//            _isLoading.postValue(false)
-//        }
-//    }
-
-//    fun generateImage(prompt: String) {
-//        _isLoading.value = true
-//        viewModelScope.launch {
-//            try {
-//                val imageData = aiService.generateImage(prompt)
-//                val savedPath = imageData?.let { aiService.saveImage(it) }
-//                _imageResult.value = savedPath
-//            } catch (e: Exception) {
-//                Log.e("AIViewModel", "Image generation failed", e)
-//                _imageResult.value = null
-//            }
-//            _isLoading.postValue(false)
-//        }
-//    }
 
     fun savePreferredPersona(persona: String) {
         Log.d("Persona VM", "entered savepersona in vm")
