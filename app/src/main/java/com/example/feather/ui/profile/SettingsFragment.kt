@@ -93,8 +93,8 @@ class SettingsFragment : Fragment() {
                 when (persona) {
                     "Psychological AI" -> binding.radioPersona1.isChecked = true
                     "Christian AI" -> binding.radioPersona2.isChecked = true
-                    "Comforting AI" -> binding.radioPersona3.isChecked = false
-                    "Jungian AI" -> binding.radioPersona4.isChecked = false
+                    "Comforting AI" -> binding.radioPersona3.isChecked = true
+                    "Jungian AI" -> binding.radioPersona4.isChecked = true
                     else -> binding.radioPersona1.isChecked = true
                 }
             }
