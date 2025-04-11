@@ -12,6 +12,15 @@ data class UserData(
     constructor() : this("", "", "", "", "")
 }
 
+data class DreamInterpretationModel(
+    val id: String = "",
+    val title: String = "",
+    val analysisText: String = "",
+    val timeAdded: Timestamp? = null,
+    val personaGemini: String = ""
+)
+
+
 
 data class DreamModel(
     val id: String = "",

@@ -4,7 +4,7 @@
     <string name="profile">Profile</string>
     <string name="explore">Explore</string>
     <string name="dream_analysis">Analysis</string>
-    <string name="stats">Stats</string>
+    <string name="stats">My logs</string>
 
     <string-array name="dream_categories">
         <item>Good Dream</item>

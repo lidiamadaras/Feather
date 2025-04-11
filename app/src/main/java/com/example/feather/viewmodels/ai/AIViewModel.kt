@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.example.feather.models.DreamInterpretationModel
 
 @HiltViewModel
 class AIViewModel @Inject constructor(
@@ -38,6 +39,16 @@ class AIViewModel @Inject constructor(
 
     private val _imageResult = MutableLiveData<String?>()
     val imageResult: LiveData<String?> get() = _imageResult
+
+    private val _userInterpretations = MutableLiveData<List<DreamInterpretationModel>>()
+    val userInterpretations: LiveData<List<DreamInterpretationModel>> = _userInterpretations
+
+    private val _deleteResult = MutableLiveData<Result<Unit>>()
+    val deleteResult: LiveData<Result<Unit>> = _deleteResult
+
+    private val _interpretation = MutableLiveData<DreamInterpretationModel?>()
+    val interpretation: LiveData<DreamInterpretationModel?> = _interpretation
+
 
 //    fun generateImage(prompt: String) {
 //        _isLoading.value = true
@@ -156,9 +167,28 @@ class AIViewModel @Inject constructor(
         }
     }
 
-    fun saveAnalysis(analysisText: String, type: String, persona: String) {
+    fun saveAnalysis(analysisText: String, type: String, persona: String, title: String) {
         viewModelScope.launch {
-            _saveResult.value = runCatching { aiService.saveAnalysis(analysisText, type, persona) }
+            _saveResult.value = runCatching { aiService.saveAnalysis(analysisText, type, persona, title) }
+        }
+    }
+
+    fun getUserInterpretations(type: String) {
+        viewModelScope.launch {
+            val interpretations = aiService.getUserInterpretations(type)
+            _userInterpretations.value = interpretations
+        }
+    }
+
+    fun deleteInterpretation(id: String, type: String) {
+        viewModelScope.launch {
+            _deleteResult.value = runCatching { aiService.deleteInterpretation(id, type) }
+        }
+    }
+
+    fun getInterpretationById(id: String, type: String) {
+        viewModelScope.launch {
+            _interpretation.value = aiService.getInterpretationById(id, type)
         }
     }
 }

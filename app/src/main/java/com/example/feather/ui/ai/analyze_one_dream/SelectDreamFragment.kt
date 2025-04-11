@@ -30,6 +30,7 @@ class SelectDreamFragment : Fragment() {
 
     private lateinit var adapter: AIDreamsAdapter
     private var personaGemini: String = ""
+    private var dreamTitle: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,6 +54,7 @@ class SelectDreamFragment : Fragment() {
             listOf(),
             onItemClick = { dream ->
                 if (prompt != null) {
+                    dreamTitle = dream.title
                     aiViewModel.analyzeDream(dream, prompt)
                 }
             }
@@ -99,18 +101,18 @@ class SelectDreamFragment : Fragment() {
 
         aiViewModel.analysisResult.observe(viewLifecycleOwner) { result ->
             result?.let { analysis ->
-                navigateToAnalyzeDreamFragment(analysis, personaGemini)
+                navigateToAnalyzeDreamFragment(analysis, personaGemini, dreamTitle)
             }
         }
     }
 
 
 
-    private fun navigateToAnalyzeDreamFragment(analysisResult: String, persona: String) {
+    private fun navigateToAnalyzeDreamFragment(analysisResult: String, persona: String, title: String) {
         val bundle = Bundle().apply {
             putString("analysis_result", analysisResult)
         }
-        aiViewModel.saveAnalysis(analysisResult, "single_dream_interpretations", persona)
+        aiViewModel.saveAnalysis(analysisResult, "single_dream_interpretations", persona, title)
         findNavController().navigate(
             R.id.action_selectDreamFragment_to_analyzeDreamFragment,
             bundle

@@ -28,7 +28,7 @@ class StatsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.HomeTitleTextView.text = "Stats"
+        binding.HomeTitleTextView.text = "My logs"
 
         binding.myDreamsTextView.setOnClickListener {
             findNavController().navigate(R.id.myDreamsFragment)
@@ -52,6 +52,10 @@ class StatsFragment : Fragment() {
 
         binding.myEmotionsTextView.setOnClickListener {
             findNavController().navigate(R.id.myEmotionsFragment)
+        }
+
+        binding.myInterpretationsTextView.setOnClickListener {
+            findNavController().navigate(R.id.myInterpretationsFragment)
         }
     }
 

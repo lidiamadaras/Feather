@@ -1,6 +1,7 @@
 package com.example.feather.service.ai
 
 import com.example.feather.ai.SecureStorage
+import com.example.feather.models.DreamInterpretationModel
 import com.example.feather.models.DreamModel
 import com.example.feather.repository.ai.AIRepository
 import javax.inject.Inject
@@ -24,8 +25,8 @@ class AIService @Inject constructor(
         return repository.monthlyAnalysis(apiKey, prompt)
     }
 
-    suspend fun saveAnalysis(analysisText: String, type: String, persona: String): Result<Unit> {
-        return repository.saveInterpretation(analysisText, type, persona)
+    suspend fun saveAnalysis(analysisText: String, type: String, persona: String, title: String): Result<Unit> {
+        return repository.saveInterpretation(analysisText, type, persona, title)
     }
 
     suspend fun savePreferredPersona(persona: String) {
@@ -50,6 +51,19 @@ class AIService @Inject constructor(
         return repository.saveImage(imageData)
     }
 
+    suspend fun getUserInterpretations(type: String): List<DreamInterpretationModel> {
+        return repository.getUserInterpretations(type)
+    }
+
+    suspend fun getInterpretationById(id: String, type: String): DreamInterpretationModel? {
+        if (id.isBlank()) return null
+        return repository.getInterpretationById(id, type)
+    }
+
+    suspend fun deleteInterpretation(id: String, type: String): Result<Unit>  {
+        if (id.isBlank()) return Result.failure(Exception("id is empty"))
+        return repository.deleteInterpretation(id, type)
+    }
 
 //    suspend fun generateImage(dream: DreamModel): Bitmap? {
 //        val apiKey = safeStorage.getApiKey() ?: return null

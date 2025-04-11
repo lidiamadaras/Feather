@@ -77,6 +77,9 @@
         <action
             android:id="@+id/action_statsFragment_to_myEmotionsFragment"
             app:destination="@id/myEmotionsFragment" />
+        <action
+            android:id="@+id/action_statsFragment_to_myInterpretationsFragment"
+            app:destination="@id/myInterpretationsFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -181,6 +184,48 @@
             android:id="@+id/action_myEmotionsFragment_to_emotionDetailFragment"
             app:destination="@id/emotionDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/myInterpretationsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MyInterpretationsFragment"
+        android:label="fragment_my_interpretations"
+        tools:layout="@layout/fragment_my_interpretations" >
+        <action
+            android:id="@+id/action_myInterpretationsFragment_to_mySingleDreamInterpretationsFragment"
+            app:destination="@id/mySingleDreamInterpretationsFragment" />
+        <action
+            android:id="@+id/action_myInterpretationsFragment_to_myWeeklyInterpretationsFragment"
+            app:destination="@id/myWeeklyInterpretationsFragment" />
+        <action
+            android:id="@+id/action_myInterpretationsFragment_to_myMonthlyInterpretationsFragment"
+            app:destination="@id/myMonthlyInterpretationsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mySingleDreamInterpretationsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MySingleDreamInterpretationsFragment"
+        android:label="fragment_my_single_dream_interpretations"
+        tools:layout="@layout/fragment_my_single_dream_interpretations" >
+        <action
+            android:id="@+id/action_mySingleDreamInterpretationsFragment_to_interpretationDetailFragment"
+            app:destination="@id/interpretationDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myWeeklyInterpretationsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MyWeeklyInterpretationsFragment"
+        android:label="fragment_my_weekly_interpretations"
+        tools:layout="@layout/fragment_my_weekly_interpretations" >
+        <action
+            android:id="@+id/action_myWeeklyInterpretationsFragment_to_interpretationDetailFragment"
+            app:destination="@id/interpretationDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/myMonthlyInterpretationsFragment"
+        android:name="com.example.feather.ui.log.mylogs.MyMonthlyInterpretationsFragment"
+        android:label="fragment_my_monthly_interpretations"
+        tools:layout="@layout/fragment_my_monthly_interpretations" >
+        <action
+            android:id="@+id/action_myMonthlyInterpretationsFragment_to_interpretationDetailFragment"
+            app:destination="@id/interpretationDetailFragment" />
+    </fragment>
 
 
 
@@ -223,6 +268,12 @@
         android:name="com.example.feather.ui.log.mylogs.details.EmotionDetailFragment"
         android:label="fragment_reflection_details"
         tools:layout="@layout/fragment_emotion_detail" >
+    </fragment>
+    <fragment
+        android:id="@+id/interpretationDetailFragment"
+        android:name="com.example.feather.ui.log.mylogs.details.InterpretationDetailFragment"
+        android:label="fragment_interpretation_detail"
+        tools:layout="@layout/fragment_interpretation_detail" >
     </fragment>
 
 

@@ -100,6 +100,18 @@
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
 
+            <TextView
+                android:id="@+id/myInterpretationsTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="My Interpretations"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/purple_500"
+                android:gravity="left"
+                android:padding="12dp"
+                android:layout_marginBottom="10dp"/>
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

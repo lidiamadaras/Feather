@@ -15,11 +15,13 @@ import com.example.feather.models.AIPersonaModel
 
 import android.util.Base64
 import com.example.feather.models.Content
+import com.example.feather.models.DreamInterpretationModel
 import com.example.feather.models.GeminiRequest
 import com.example.feather.models.GeminiResponse
 import com.example.feather.models.GenerationConfig
 import com.example.feather.models.Part
 import com.example.feather.service.ai.RetrofitClient
+import com.google.firebase.firestore.Query
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,32 +32,6 @@ import java.io.FileOutputStream
 class AIRepository @Inject constructor() {
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
-
-//    suspend fun generateImage(apiKey: String, prompt: String): String? {
-//        return withContext(Dispatchers.IO) {
-//            try {
-//                val requestBody = GeminiRequest(
-//                    model = "gemini-2.0-flash-exp-image-generation",
-//                    contents = listOf(
-//                        Content(parts = listOf(Part(text = prompt)))
-//                    ),
-//                    generationConfig = GenerationConfig(responseModalities = listOf("TEXT", "IMAGE"))
-//                )
-//
-//                val response = RetrofitClient.instance.generateImage(apiKey, requestBody).execute()
-//
-//                if (response.isSuccessful) {
-//                    response.body()?.candidates?.firstOrNull()?.content?.parts?.firstOrNull()?.inlineData?.data
-//                } else {
-//                    Log.e("GeminiAPI", "API request failed: ${response.errorBody()?.string()}")
-//                    null
-//                }
-//            } catch (e: Exception) {
-//                Log.e("GeminiAPI", "Request failed", e)
-//                null
-//            }
-//        }
-//    }
 
      fun generateImage(apiKey: String, prompt: String) {
         val requestBody = GeminiRequest(
@@ -184,7 +160,6 @@ class AIRepository @Inject constructor() {
         }
     }
 
-
     suspend fun weeklyAnalysis(apiKey: String, prompt: String): Result<String> {
         return analyzeDreamsForPeriod(apiKey, daysBack = 7, periodName = "Weekly", prompt)
     }
@@ -260,7 +235,7 @@ class AIRepository @Inject constructor() {
         }
     }
 
-    suspend fun saveInterpretation(analysisText: String, type: String, persona: String): Result<Unit> {
+    suspend fun saveInterpretation(analysisText: String, type: String, persona: String, title: String): Result<Unit> {
         val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not authenticated"))
 
         if (type !in listOf("single_dream_interpretations", "weekly_interpretations", "monthly_interpretations")) {
@@ -270,7 +245,8 @@ class AIRepository @Inject constructor() {
         val interpretationData = mapOf(
             "analysisText" to analysisText,
             "timeAdded" to com.google.firebase.Timestamp.now(),
-            "personaGemini" to persona
+            "personaGemini" to persona,
+            "title" to title
         )
 
         return withContext(Dispatchers.IO) {
@@ -287,5 +263,79 @@ class AIRepository @Inject constructor() {
             }
         }
     }
+
+    suspend fun getUserInterpretations(type: String): List<DreamInterpretationModel> {
+        return try {
+            Log.d("Type", type)
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val interpretationsRef = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection(type) // dynamic type: "single_dream_interpretations", etc.
+                    .orderBy("timeAdded", Query.Direction.DESCENDING)
+
+                val snapshot = interpretationsRef.get().await()
+
+                snapshot.documents.mapNotNull { document ->
+                    document.toObject(DreamInterpretationModel::class.java)?.copy(id = document.id)
+                }
+
+
+            } else {
+                Log.d("Type", "current user null")
+                emptyList()
+            }
+        } catch (e: Exception) {
+            e.message?.let { Log.e("AIRepo", it) }
+            emptyList()
+        }
+    }
+
+    suspend fun deleteInterpretation(id: String, type: String): Result<Unit>{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                db.collection("users")
+                    .document(currentUser.uid)
+                    .collection(type)
+                    .document(id)
+                    .delete()
+                    .await()
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("User not logged in"))
+            }
+        } catch (e: Exception) {
+            Log.e("AIRepo", "Error deleting analysis: ${e.message}")
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getInterpretationById(id: String, type: String): DreamInterpretationModel?{
+        return try {
+            val currentUser = auth.currentUser
+            if (currentUser != null) {
+                val dreamDoc = db.collection("users")
+                    .document(currentUser.uid)
+                    .collection(type)
+                    .document(id)
+                    .get()
+                    .await()
+
+                if (dreamDoc.exists()) {
+                    dreamDoc.toObject(DreamInterpretationModel::class.java)?.copy(id = dreamDoc.id)
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("AIRepo", "Error fetching interpretation: ${e.message}")
+            null
+        }
+
+    }
+
 
 }
