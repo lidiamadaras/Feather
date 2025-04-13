@@ -4,7 +4,7 @@
         android:title="@string/dream_analysis"
         android:icon="@drawable/selector_dreamanalysis"/>
     <item
-        android:id="@+id/exploreFragment"
+        android:id="@+id/symbolsFragment"
         android:title="@string/explore"
         android:icon="@drawable/selector_explore"/>
     <item

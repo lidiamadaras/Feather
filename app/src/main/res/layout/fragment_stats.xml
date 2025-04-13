@@ -32,7 +32,6 @@
                 android:text="My Dreams"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
@@ -45,7 +44,6 @@
                 android:text="My Feelings"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
@@ -58,7 +56,6 @@
                 android:text="My Affirmations"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
@@ -71,7 +68,6 @@
                 android:text="My Reflections"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
@@ -83,7 +79,6 @@
                 android:text="My Keywords"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
@@ -95,7 +90,6 @@
                 android:text="My Emotions"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
@@ -107,7 +101,6 @@
                 android:text="My Interpretations"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>

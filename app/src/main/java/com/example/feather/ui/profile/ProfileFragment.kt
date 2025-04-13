@@ -44,9 +44,9 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_profileFragment_to_settingsFragment)
         }
 
-        binding.statisticsTextView.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_statisticsFragment)
-        }
+//        binding.statisticsTextView.setOnClickListener {
+//            findNavController().navigate(R.id.action_profileFragment_to_statisticsFragment)
+//        }
 
 
     }

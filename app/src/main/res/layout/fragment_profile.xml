@@ -32,7 +32,6 @@
                 android:text="Profile Data"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
@@ -45,19 +44,6 @@
                 android:text="Settings"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/purple_500"
-                android:gravity="left"
-                android:padding="12dp"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:id="@+id/statisticsTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Statistics"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/purple_500"
                 android:gravity="left"
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>

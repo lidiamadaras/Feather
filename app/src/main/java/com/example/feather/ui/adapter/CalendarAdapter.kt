@@ -19,7 +19,10 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.sql.DataSource
 
-class CalendarAdapter(private val days: List<CalendarDay>) :
+class CalendarAdapter(
+    private val days: List<CalendarDay>,
+    private val onDayClick: (CalendarDay) -> Unit
+) :
     RecyclerView.Adapter<CalendarAdapter.DayViewHolder>() {
 
     class DayViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -60,6 +63,11 @@ class CalendarAdapter(private val days: List<CalendarDay>) :
         if (day.hasFeeling) addDot(R.color.feelingDot)
         if (day.hasReflection) addDot(R.color.reflectionDot)
         if (day.hasAffirmation) addDot(R.color.affirmationDot)
+
+
+        holder.itemView.setOnClickListener {
+            onDayClick(day) // Invoke the onDayClick lambda when a day is clicked
+        }
     }
 
     override fun getItemCount() = days.size

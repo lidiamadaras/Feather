@@ -92,6 +92,15 @@
                 android:layout_marginBottom="12dp"/>
 
             <TextView
+                android:id="@+id/symbolsTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:maxLength="100"
+                android:padding="10dp"
+                android:layout_marginBottom="12dp"/>
+
+            <TextView
                 android:id="@+id/dreamTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

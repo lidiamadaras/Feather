@@ -346,6 +346,15 @@
         android:name="com.example.feather.ui.profile.StatisticsFragment"
         android:label="fragment_statistics"
         tools:layout="@layout/fragment_statistics" >
+        <action
+            android:id="@+id/action_statisticsFragment_to_dayLogsFragment"
+            app:destination="@id/dayLogsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dayLogsFragment"
+        android:name="com.example.feather.ui.stats.details.DayLogsFragment"
+        android:label="fragment_day_logs"
+        tools:layout="@layout/fragment_day_logs" >
     </fragment>
 
 

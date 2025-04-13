@@ -39,8 +39,15 @@ class InterpretationsAdapter(
     override fun onBindViewHolder(holder: InterpretationViewHolder, position: Int) {
         val interpretation = interpretations[position]
 
-        holder.nameTextView.text = interpretation.title
-        holder.personaTextView.text = "Persona used: ${interpretation.personaGemini}"
+        val titleText = if (interpretation.title.isNullOrBlank()) "None" else interpretation.title
+        holder.nameTextView.text = titleText
+
+        val personaText = if (interpretation.personaGemini.isNullOrBlank())
+            "Gemini Persona: Unknown"
+        else
+            "Gemini Persona: ${interpretation.personaGemini}"
+        holder.personaTextView.text = personaText
+        
         holder.dateTextView.text = "Date:  ${formatTimestamp(interpretation.timeAdded)}"
 
         holder.itemView.setOnClickListener {

@@ -39,8 +39,6 @@ class FeelingDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var feelingIntensityTextView: TextView
-    private lateinit var timeStartedTextView: TextView
-    private lateinit var timeEndedTextView: TextView
     private lateinit var emotionTextView: TextView
 
     private val feelingDetailViewModel : FeelingDetailViewModel by viewModels()
@@ -80,8 +78,8 @@ class FeelingDetailFragment : Fragment() {
         emotionTextView = binding.emotionTextView
 
         emotionTextView.text = selectedFeeling.emotion
-        timeStartedTextView.text = selectedFeeling.timeStarted
-        timeEndedTextView.text = selectedFeeling.timeEnded
+        binding.timeStartedTextView.text = selectedFeeling.timeStarted
+        binding.timeEndedTextView.text = selectedFeeling.timeEnded
     }
 
     override fun onDestroyView() {

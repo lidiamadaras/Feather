@@ -13,6 +13,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.feather.R
+import com.example.feather.databinding.FragmentSettingsBinding
 import com.example.feather.databinding.FragmentStatisticsBinding
 import com.example.feather.models.CalendarDay
 import com.example.feather.ui.adapter.CalendarAdapter
@@ -42,12 +43,27 @@ class StatisticsFragment : Fragment() {
         binding.HomeTitleTextView.text = "Statistics"
 
         val calendarDays = generateCalendarDays()
-        adapter = CalendarAdapter(calendarDays)
+        adapter = CalendarAdapter(calendarDays) { selectedDay ->
+            selectedDay.dayNumber?.let { day ->
+                val calendar = Calendar.getInstance()
+                val month = calendar.get(Calendar.MONTH) + 1
+                val year = calendar.get(Calendar.YEAR)
+
+                val bundle = Bundle().apply {
+                    putInt("day", day)
+                    putInt("month", month)
+                    putInt("year", year)
+                }
+
+                findNavController().navigate(
+                    R.id.action_statisticsFragment_to_dayLogsFragment,
+                    bundle
+                )
+            }
+        }
 
         binding.calendarRecyclerView.layoutManager = GridLayoutManager(requireContext(), 7)
         binding.calendarRecyclerView.adapter = adapter
-
-
     }
 
     private fun generateCalendarDays(): List<CalendarDay> {

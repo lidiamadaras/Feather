@@ -58,7 +58,7 @@ class MyKeywordsFragment : Fragment() {
         adapter = KeywordsAdapter(
             listOf(),
             onItemClick = { keyword ->
-                navigateToKeywordDetail(keyword.name)
+                //navigateToKeywordDetail(keyword.name)
             },
             onItemLongClick = { keyword ->
                 showDeleteConfirmationDialog(keyword)

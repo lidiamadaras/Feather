@@ -40,11 +40,9 @@ class DreamDetailFragment : Fragment() {
     private lateinit var recurringCheckBox: CheckBox
     private lateinit var dreamTextView: TextView
     private lateinit var keywordsTextView: TextView
+    private lateinit var symbolsTextView: TextView
 
     private val dreamDetailViewModel : DreamDetailViewModel by viewModels()
-
-    private var hours = 7
-    private var minutes = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,6 +80,7 @@ class DreamDetailFragment : Fragment() {
         recurringCheckBox = binding.recurringCheckBox
         dreamTextView = binding.dreamTextView
         keywordsTextView = binding.keywordsTextView
+        symbolsTextView = binding.symbolsTextView
 
         binding.HomeTitleTextView.text = selectedDream.title
 
@@ -96,6 +95,11 @@ class DreamDetailFragment : Fragment() {
         }
         dreamCategoryTextView.text = "Category: ${selectedDream.category}"
 
+        if(selectedDream.symbols.isEmpty()){
+            symbolsTextView.text = "Symbols: none"
+        }else{
+            symbolsTextView.text = "Symbols: ${selectedDream.symbols}"
+        }
     }
 
     override fun onDestroyView() {

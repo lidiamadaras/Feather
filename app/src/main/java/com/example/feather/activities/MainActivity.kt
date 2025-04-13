@@ -70,8 +70,8 @@ class MainActivity : AppCompatActivity()  {
                     navController.navigate(R.id.dreamAnalysisFragment)
                     true
                 }
-                R.id.exploreFragment -> {
-                    navController.navigate(R.id.exploreFragment)
+                R.id.symbolsFragment -> {
+                    navController.navigate(R.id.symbolsFragment)
                     true
                 }
                 R.id.homeFragment -> {
