@@ -141,6 +141,8 @@ class DreamAnalysisFragment : Fragment() {
         )
     }
 
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null // Clear binding to prevent memory leaks

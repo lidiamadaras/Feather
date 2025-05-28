@@ -53,7 +53,18 @@
         <action
             android:id="@+id/action_homeFragment_to_affirmationFragment"
             app:destination="@id/affirmationFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_reflectionPromptsFragment"
+            app:destination="@id/reflectionPromptsFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/reflectionPromptsFragment"
+        android:name="com.example.feather.ui.ai.ReflectionPromptsFragment"
+        android:label="fragment_reflection_prompts"
+        tools:layout="@layout/fragment_reflection_prompts" >
+    </fragment>
+
     <fragment
         android:id="@+id/statsFragment"
         android:name="com.example.feather.ui.stats.StatsFragment"

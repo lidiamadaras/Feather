@@ -22,6 +22,12 @@ class AIViewModel @Inject constructor(
     private val _saveResult = MutableLiveData<Result<Unit>>()
     val saveResult: LiveData<Result<Unit>> = _saveResult
 
+    private val _savePromptReflectionResult = MutableLiveData<Result<Unit>>()
+    val savePromptReflectionResult: LiveData<Result<Unit>> = _savePromptReflectionResult
+
+    private val _analysisPromptReflectionMonthly= MutableLiveData<String?>()
+    val analysisPromptReflectionMonthly: LiveData<String?> get() = _analysisPromptReflectionMonthly
+
     private val _analysisResult = MutableLiveData<String?>()
     val analysisResult: LiveData<String?> get() = _analysisResult
 
@@ -134,9 +140,36 @@ class AIViewModel @Inject constructor(
         }
     }
 
+    fun monthlyPromptReflection() {
+        _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                val result = aiService.monthlyPromptReflection()
+                result.onSuccess { response ->
+                    _analysisPromptReflectionMonthly.value = response
+                }
+                result.onFailure { error ->
+                    val errorMessage = error.localizedMessage ?: "Unknown error occurred"
+//                    Log.e("AIViewModel", "Dream analysis failed: $errorMessage", error)
+                    _analysisPromptReflectionMonthly.value = "Answer failed: $errorMessage"
+                }
+            } catch (e: Exception) {
+                Log.e("AIViewModel", "Unexpected error", e)
+                _analysisPromptReflectionMonthly.value = "Analysis failed: ${e.localizedMessage ?: "Unexpected error"}"
+            }
+            _isLoading.postValue(false)
+        }
+    }
+
     fun saveAnalysis(analysisText: String, type: String, persona: String, title: String) {
         viewModelScope.launch {
             _saveResult.value = runCatching { aiService.saveAnalysis(analysisText, type, persona, title) }
+        }
+    }
+
+    fun savePromptReflection(analysisText: String) {
+        viewModelScope.launch {
+            _saveResult.value = runCatching { aiService.savePromptReflectionAnalysis(analysisText) }
         }
     }
 

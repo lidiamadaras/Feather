@@ -25,8 +25,18 @@ class AIService @Inject constructor(
         return repository.monthlyAnalysis(apiKey, prompt)
     }
 
+    suspend fun monthlyPromptReflection(): Result<String> {
+        val apiKey = safeStorage.getApiKey() ?: return Result.failure(Exception("API key missing! Request a Gemini api key and enter it in Settings. https://aistudio.google.com/app/apikey"))
+        return repository.monthlyPromptReflection(apiKey)
+    }
+
+
     suspend fun saveAnalysis(analysisText: String, type: String, persona: String, title: String): Result<Unit> {
         return repository.saveInterpretation(analysisText, type, persona, title)
+    }
+
+    suspend fun savePromptReflectionAnalysis(analysisText: String): Result<Unit> {
+        return repository.savePromptReflection(analysisText)
     }
 
     suspend fun savePreferredPersona(persona: String) {

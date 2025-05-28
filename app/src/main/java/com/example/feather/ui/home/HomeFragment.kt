@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.feather.R
 import com.example.feather.databinding.FragmentHomeBinding
 import com.example.feather.viewmodels.AffirmationViewModel
+import com.example.feather.viewmodels.ai.AIViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +28,8 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val affirmationViewModel : AffirmationViewModel by viewModels()
+    private val aiViewModel : AIViewModel by viewModels()
+
 
     //database:
     private val firestore by lazy { FirebaseFirestore.getInstance() }
@@ -43,9 +46,18 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("HomeFragment", "onViewCreated called. Binding initialized? ${_binding != null}")
+//        Log.d("HomeFragment", "onViewCreated called. Binding initialized? ${_binding != null}")
 
-        //binding.HomeTitleTextView.text = "Home"
+
+        aiViewModel.analysisPromptReflectionMonthly.observe(viewLifecycleOwner) { result ->
+            result?.let { analysis ->
+                navigateToPromptReflectionFragment(analysis)
+            }
+        }
+
+        binding.selfReflectionPromptTextView.setOnClickListener {
+            aiViewModel.monthlyPromptReflection()
+        }
 
         binding.fabLog.setOnClickListener {
             showPopupMenu(it)
@@ -67,6 +79,19 @@ class HomeFragment : Fragment() {
 
         //welcome user message:
         fetchAndDisplayWelcomeMessage()
+
+
+    }
+
+    private fun navigateToPromptReflectionFragment(analysisResult: String) {
+        val bundle = Bundle().apply {
+            putString("prompt_result", analysisResult)
+        }
+        aiViewModel.savePromptReflection(analysisResult)
+        findNavController().navigate(
+            R.id.action_homeFragment_to_reflectionPromptsFragment,
+            bundle
+        )
     }
 
     private fun showPopupMenu(anchor: View) {

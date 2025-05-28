@@ -47,7 +47,7 @@ class InterpretationsAdapter(
         else
             "Gemini Persona: ${interpretation.personaGemini}"
         holder.personaTextView.text = personaText
-        
+
         holder.dateTextView.text = "Date:  ${formatTimestamp(interpretation.timeAdded)}"
 
         holder.itemView.setOnClickListener {

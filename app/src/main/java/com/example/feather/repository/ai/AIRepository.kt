@@ -119,6 +119,99 @@ class AIRepository @Inject constructor() {
         return analyzeDreamsForPeriod(apiKey, daysBack = 30, periodName = "Monthly", prompt)
     }
 
+    suspend fun monthlyPromptReflection(apiKey: String): Result<String> {
+        return getMonthlyReflectionPrompts(apiKey, daysBack = 30)
+    }
+
+    private suspend fun getMonthlyReflectionPrompts(apiKey: String, daysBack: Int): Result<String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val userId = auth.currentUser?.uid
+                    ?: return@withContext Result.failure(Exception("User not authenticated"))
+
+                val generativeModel = GenerativeModel(
+                    modelName = "gemini-1.5-flash",
+                    apiKey = apiKey,
+                    generationConfig = generationConfig {
+                        temperature = 1f
+                        topK = 64
+                        topP = 0.95f
+                        maxOutputTokens = 8000
+                        responseMimeType = "text/plain"
+                    }
+                )
+
+                val cutoffDate = Calendar.getInstance().apply {
+                    add(Calendar.DAY_OF_YEAR, -daysBack)
+                }.time
+
+                val dreams = db.collection("users")
+                    .document(userId)
+                    .collection("dreams")
+                    .whereGreaterThan("dateAdded", cutoffDate)
+                    .get()
+                    .await()
+                    .toObjects(DreamModel::class.java)
+
+                if (dreams.isEmpty()) {
+                    return@withContext Result.success("No dreams recorded in the past $daysBack days.")
+                }
+
+                val dreamsText = dreams.joinToString("\n\n") { dream ->
+                    """
+                    Title: ${dream.title}
+                    Description: ${dream.description}
+                    Keywords: ${dream.keywords.joinToString(", ")}
+                    Category: ${dream.category}
+                    """.trimIndent()
+                }
+
+                val prompt = """
+                    
+                    You are a self-reflection coach helping a user understand themselves through the lens of their dreams.
+
+                    Here is a collection of dreams the user has recorded over the past month:
+
+                    $dreamsText
+
+                    Please analyze these dreams and do the following:
+
+                    1. Identify any **recurring themes, symbols, or motifs**.
+                    2. Detect any **recurring or strong emotions** that appear across dreams.
+                    3. Reflect on what these themes and emotions might suggest about the user's **inner thoughts, fears, needs, or desires**.
+                    4. Based on this, generate a list of **5–7 self-reflection questions** that help the user:
+                       - Better understand themselves
+                       - Explore possible sources of recurring emotions or symbols
+                       - Consider how these dreams relate to their waking life
+                       - Prompt deeper journaling or meditation
+                       - Encourage healing, awareness, and growth
+
+                    Format the output like this:
+
+                    ---
+                    **Themes & Emotional Patterns Identified:**
+                    - Theme 1: ...
+                    - Emotion 1: ...
+                    (brief interpretation)
+
+                    **Self-Reflection Prompts:**
+                    1. ...
+                    2. ...
+                    ...
+
+                    Keep the tone gentle, supportive, and introspective. Your goal is to guide the user toward clarity and emotional insight.
+                    
+                """.trimIndent()
+
+                val response = generativeModel.generateContent(prompt)
+                Result.success(response.text ?: "No response received")
+
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
     private suspend fun analyzeDreamsForPeriod(apiKey: String, daysBack: Int, periodName: String, personaPrompt: String): Result<String> {
         return withContext(Dispatchers.IO) {
             try {
@@ -205,6 +298,29 @@ class AIRepository @Inject constructor() {
                 db.collection("users")
                     .document(userId)
                     .collection(type)
+                    .add(interpretationData)
+                    .await()
+
+                Result.success(Unit)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
+        }
+    }
+
+    suspend fun savePromptReflection(analysisText: String): Result<Unit> {
+        val userId = auth.currentUser?.uid ?: return Result.failure(Exception("User not authenticated"))
+
+        val interpretationData = mapOf(
+            "analysisText" to analysisText,
+            "timeAdded" to com.google.firebase.Timestamp.now(),
+        )
+
+        return withContext(Dispatchers.IO) {
+            try {
+                db.collection("users")
+                    .document(userId)
+                    .collection("reflection_prompts")
                     .add(interpretationData)
                     .await()
 

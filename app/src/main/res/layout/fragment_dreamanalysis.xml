@@ -77,16 +77,6 @@
                 android:padding="12dp"
                 android:layout_marginBottom="10dp"/>
 
-            <!-- Links (styled as links) -->
-            <TextView
-                android:id="@+id/exampleLinkTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Click here to learn more"
-                android:textSize="16sp"
-                android:textColor="?android:textColorLink"
-                android:layout_marginBottom="10dp"
-                android:gravity="start"/>
 
             <!-- Warning Text -->
             <TextView
